@@ -1,0 +1,55 @@
+schema: hermes.skill.v1
+skill:
+  id: react-component-builder
+  name: React Component Builder
+  version: 0.1.0
+  source:
+    type: native
+    path: skills/react-component-builder/SKILL.md
+  description: "Build or modify React components using project conventions."
+  applies_to:
+    task_types:
+      - frontend_implementation
+      - ui_component_change
+    roles:
+      - frontend-developer
+    capability_tags:
+      - react
+      - typescript
+      - css
+      - accessibility
+  provider_policy:
+    usable_by:
+      - codex
+      - codebuddy
+    preferred_executor: codebuddy
+    requires_codex_planning_from_risk: medium
+    requires_codex_review_from_risk: medium
+  risk_policy:
+    min_risk: trivial
+    max_independent_risk: low
+    forbidden_domains:
+      - security
+      - payment
+      - migration
+  context_requirements:
+    required:
+      - task_goal
+      - target_files
+      - acceptance_criteria
+    optional:
+      - related_tests
+      - memory_hints
+    preferred_scope: file_set
+    max_scope: module
+  outputs:
+    expected:
+      - code_changes
+      - changed_files_summary
+      - validation_result
+    must_report:
+      - files_changed
+      - assumptions
+      - risks
+      - tests_run
+
