@@ -1,0 +1,29 @@
+schema: hermes.task.v1
+example:
+  id: task-001
+  title: "Add login form validation"
+  status: executing
+  phase: build
+  mode: stable
+  risk_level: medium
+  retry_count: 1
+  parent_task_id: epic-001
+  user_goal: "Add email validation before login submit."
+  acceptance_criteria:
+    - "Invalid email displays an error."
+    - "Valid login flow remains unchanged."
+  role:
+    id: frontend-developer
+  provider:
+    planner: codex
+    executor: codebuddy
+    reviewer: codex
+  workflow:
+    template: engineering-feature
+    current_step: build
+  review:
+    level: 3
+    required: true
+  memory:
+    writeback_required: true
+
