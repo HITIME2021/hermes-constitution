@@ -1,0 +1,24 @@
+schema: hermes.memory_item.v1
+memory_item:
+  id: mem-001
+  type: project_memory
+  scope: project
+  subject: validation
+  claim: "Project prefers existing validation helpers over new dependencies."
+  evidence:
+    - source: task-001
+      detail: "User requested no new dependencies."
+    - source: file
+      path: src/validation/auth.ts
+  confidence: high
+  created_at: "2026-07-02T00:00:00Z"
+  updated_at: "2026-07-02T00:00:00Z"
+  expires_at: null
+  tags:
+    - validation
+    - dependency_policy
+  access_policy:
+    visible_to:
+      - codex
+    share_with_codebuddy: as_hint_only
+
