@@ -1,0 +1,52 @@
+schema: hermes.execution_request.v1
+execution_request:
+  id: exec-001
+  task_id: task-001
+  created_by: hermes
+  assigned_provider: codebuddy
+  mode: stable
+  risk_level: medium
+  role:
+    id: frontend-developer
+    division: engineering
+  skill:
+    id: react-component-builder
+    version: 0.1.0
+  goal: "Add email validation to LoginForm before submit."
+  allowed_scope:
+    files:
+      - src/components/LoginForm.tsx
+      - src/components/LoginForm.test.tsx
+    commands:
+      - "npm test -- LoginForm"
+    tools:
+      - file_edit
+      - shell_test
+  forbidden_scope:
+    files:
+      - src/auth/session.ts
+      - src/api/auth.ts
+      - db/**
+    actions:
+      - add_dependency
+      - change_public_api
+      - modify_auth_session
+      - delete_files
+      - access_secrets
+  context:
+    project_hints:
+      - "Use existing validation helpers if available."
+      - "Do not add validation dependencies."
+  acceptance_criteria:
+    - "Invalid email displays an error before submit."
+    - "Valid login flow remains unchanged."
+  report_contract:
+    required_fields:
+      - status
+      - files_changed
+      - summary
+      - tests_run
+      - assumptions
+      - risks
+      - validation_result
+
