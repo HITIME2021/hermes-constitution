@@ -1,0 +1,24 @@
+schema: hermes.execution_result.v1
+execution_result:
+  id: result-001
+  execution_id: exec-001
+  task_id: task-001
+  provider: codebuddy
+  status: completed
+  files_changed:
+    - src/components/LoginForm.tsx
+    - src/components/LoginForm.test.tsx
+  summary:
+    - "Added email validation before submit."
+    - "Added test for invalid email."
+  tests_run:
+    - command: "npm test -- LoginForm"
+      status: passed
+      output_summary: "5 tests passed"
+  assumptions:
+    - "Existing submit handler should remain unchanged."
+  risks:
+    - "No browser manual validation performed."
+  validation_result:
+    passed: true
+
