@@ -1,0 +1,38 @@
+flowchart TD
+    A["User Intent"] --> B["Intake / Clarification"]
+    B --> C["Workflow Engine"]
+    C --> D["Task Planner"]
+    D --> E["Risk Evaluator"]
+    E --> F["Agency Registry"]
+    F --> F1["agency-agents Adapter"]
+    F1 --> F2["Hermes AgentProfile"]
+    E --> G["Context Manager"]
+    F2 --> H["Capability Resolver"]
+    G --> H
+    I["HAS Skill Registry"] --> H
+    J["Provider Matrix"] --> H
+    K["Project Policy"] --> E
+    K --> G
+    K --> H
+    H --> L["Execution Plan"]
+    L --> M{"Provider Routing"}
+    M --> N["Codex / GPT-5.5<br/>Plan, Architecture, Review, Replan, Memory Synthesis"]
+    M --> O["CodeBuddy<br/>Scoped Execution, Code Writing, Tests"]
+    N --> P["Execution Result"]
+    O --> P
+    P --> Q["Review Gate"]
+    Q --> R{"Pass?"}
+    R -->|No: revision| S["Needs Revision"]
+    S --> O
+    R -->|No: replan| T["Dynamic Replanner"]
+    T --> D
+    R -->|Blocked| U["Blocked / Approval Required"]
+    R -->|Yes| V["Testing / Verification"]
+    V --> W{"Tests Pass?"}
+    W -->|No| T
+    W -->|Yes| X["Finalize"]
+    X --> Y["Memory Candidate Extractor"]
+    Y --> Z["Codex Memory Synthesizer"]
+    Z --> AA["Memory Center"]
+    AA --> G
+
