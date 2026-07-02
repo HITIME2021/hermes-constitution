@@ -1,0 +1,74 @@
+schema: hermes.project_policy.v1
+project_policy:
+  id: hermes-default-policy
+  version: 0.1.0
+  mode_default: stable
+  file_policy:
+    allowed_roots:
+      - src/**
+      - tests/**
+      - docs/**
+    protected_roots:
+      - db/**
+      - infra/**
+      - .github/workflows/**
+      - scripts/deploy/**
+      - src/auth/**
+      - src/security/**
+    forbidden_roots:
+      - secrets/**
+      - .env
+      - .env.*
+    approval_required:
+      - package.json
+      - package-lock.json
+      - pnpm-lock.yaml
+      - yarn.lock
+      - db/migrations/**
+      - infra/**
+      - src/auth/**
+      - src/security/**
+  command_policy:
+    allowed:
+      - npm test
+      - npm run test
+      - npm run typecheck
+      - npm run lint
+      - npm run build
+    approval_required:
+      - npm install
+      - pnpm add
+      - yarn add
+      - database migration commands
+      - deployment commands
+    forbidden:
+      - destructive deletion
+      - git reset --hard
+      - force push
+      - secret scanning bypass
+  dependency_policy:
+    allow_new_dependencies: false
+    approval_required: true
+    lockfile_changes_require_review: true
+  provider_policy:
+    codebuddy:
+      max_independent_risk: low
+      requires_codex_review_from: medium
+      cannot_modify:
+        - db/**
+        - infra/**
+        - src/auth/**
+        - src/security/**
+        - .github/workflows/**
+      cannot_perform:
+        - add_dependency
+        - delete_files
+        - deployment
+        - migration
+    codex:
+      required_for:
+        - planning_medium_plus
+        - review_medium_plus
+        - high_risk_tasks
+        - memory_writeback_summary
+
