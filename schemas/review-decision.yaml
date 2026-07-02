@@ -1,0 +1,14 @@
+schema: hermes.review_decision.v1
+review_decision:
+  status: needs_revision
+  review_level: 3
+  findings:
+    - severity: medium
+      message: "Validation duplicates an existing helper."
+      file: src/components/LoginForm.tsx
+  required_actions:
+    - "Replace custom regex with existing validation helper."
+  next_state: executing
+  memory_candidates:
+    - "Similar auth UI tasks should include validation helper context."
+
