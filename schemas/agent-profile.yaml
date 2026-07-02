@@ -1,0 +1,42 @@
+schema: hermes.agent_profile.v1
+agent_profile:
+  id: frontend-developer
+  name: Frontend Developer
+  division: engineering
+  source:
+    type: github
+    repo: msitarzewski/agency-agents
+    path: engineering/frontend-developer.md
+    version: pinned_commit_or_release
+  persona:
+    enabled: true
+    summary: "Frontend specialist focused on UI implementation, accessibility, and performance."
+    prompt_ref: original_markdown
+  responsibilities:
+    - ui_implementation
+    - component_development
+    - frontend_state_management
+    - accessibility
+    - frontend_performance
+  capability_tags:
+    - react
+    - typescript
+    - css
+    - responsive_design
+    - accessibility
+  task_affinity:
+    implementation: high
+    architecture: medium
+    review: medium
+    testing: medium
+  risk_policy:
+    default_risk: medium
+    can_handle_independent_risk: low
+    requires_codex_planning_from: medium
+    requires_codex_review_from: medium
+  provider_policy:
+    preferred_executor: codebuddy
+    planner: codex
+    reviewer: codex
+    fallback_executor: codex
+
