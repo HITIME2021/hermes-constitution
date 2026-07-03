@@ -87,7 +87,7 @@ Effects:
 - do not mutate target projects
 - do not write long-term memory unless explicitly approved
 
-## Snapshot Content
+## Snapshot Content and Format
 
 A useful snapshot should include:
 
@@ -102,6 +102,26 @@ A useful snapshot should include:
 - provider adapter boundaries
 - reload conditions
 
-Keep snapshots short enough to load routinely. The target size is about 120
-lines unless a larger snapshot is explicitly needed.
+Snapshots should optimize for operator reviewability, not maximum compression.
+The goal is to reduce repeated constitution loading while keeping policy easy to
+audit by a human.
 
+Allowed formatting:
+
+- compact tables
+- matrix-style blocks
+- short grouped lists
+- stable section numbering
+- concise examples for command or execution rules
+
+Prefer clearer table or matrix structure for:
+
+- provider roles
+- model backends
+- WSL / Windows execution plane
+- language policy
+- dry-run and memory policy
+- command handler effects and forbidden effects
+
+Default target size is 120-180 lines. A shorter snapshot is not better if it
+becomes harder to review, compare, or clean up manually.

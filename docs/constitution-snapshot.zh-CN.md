@@ -81,7 +81,7 @@ constitution_snapshot:
 - 不修改目标项目
 - 除非用户明确批准，否则不写入长期记忆
 
-## 快照内容
+## 快照内容与格式
 
 有效快照应包含：
 
@@ -96,5 +96,23 @@ constitution_snapshot:
 - provider adapter 边界
 - reload 条件
 
-快照应保持足够短，适合日常加载。默认目标约 120 行，除非用户明确要求更长。
+快照应优先保证操作者可审查性，而不是追求极限压缩。目标是减少重复加载完整宪法，同时让人类容易审查、比较和清理。
 
+允许使用：
+
+- 简洁表格
+- 矩阵式块
+- 短分组列表
+- 稳定章节编号
+- 针对 command 或 execution 规则的简短示例
+
+以下内容优先使用更清晰的表格或矩阵结构：
+
+- provider roles
+- model backends
+- WSL / Windows 执行面
+- 语言策略
+- dry-run 与 memory 策略
+- command handler 的 effects / no_effects
+
+默认长度目标为 120-180 行。更短并不必然更好；如果压缩导致人工审查、比较或清理更困难，应优先保留清晰结构。
