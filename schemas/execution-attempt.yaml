@@ -1,0 +1,28 @@
+schema: hermes.execution_attempt.v1
+execution_attempt:
+  id: attempt-001
+  execution_id: exec-001
+  task_id: task-001
+  provider: codex
+  status: transport_failed
+  started_at: "2026-07-03T00:00:00Z"
+  ended_at: "2026-07-03T00:02:00Z"
+  retry_index: 0
+  retry_budget_remaining: 2
+  error:
+    category: transport_error
+    type: timeout
+    retryable: true
+    counts_as_task_failure: false
+    should_trigger_replanning: false
+
+statuses:
+  - pending
+  - running
+  - succeeded
+  - transport_failed
+  - provider_failed
+  - execution_failed
+  - timed_out
+  - cancelled
+
