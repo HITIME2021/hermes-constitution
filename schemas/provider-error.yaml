@@ -1,0 +1,48 @@
+schema: hermes.provider_error.v1
+provider_error:
+  id: error-001
+  execution_id: exec-001
+  attempt_id: attempt-001
+  provider: codex
+  category: transport_error
+  type: timeout
+  retryable: true
+  counts_as_task_failure: false
+  counts_as_provider_reliability_signal: true
+  should_trigger_replanning: false
+  evidence:
+    - "Codex CLI timed out after 120 seconds."
+  recommended_action: retry_with_backoff
+
+categories:
+  transport_error:
+    description: "Provider channel failed; this is not evidence that the task plan is wrong."
+    examples:
+      - timeout
+      - network_error
+      - rate_limit
+      - auth_error
+      - provider_unavailable
+      - cli_crash
+      - malformed_response
+    default_should_trigger_replanning: false
+
+  provider_error:
+    description: "Provider process or adapter failed for provider-local reasons."
+    examples:
+      - tool_unavailable
+      - sandbox_setup_failed
+      - adapter_protocol_mismatch
+    default_should_trigger_replanning: false
+
+  execution_error:
+    description: "The task attempt semantically failed."
+    examples:
+      - test_failure
+      - implementation_failed
+      - review_failed
+      - scope_conflict
+      - missing_context
+      - invalid_assumption
+    default_should_trigger_replanning: maybe
+
