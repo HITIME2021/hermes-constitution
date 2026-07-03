@@ -1,0 +1,63 @@
+schema: hermes.provider_profile.v1
+providers:
+  codex:
+    role_in_hermes: brain_and_senior_engineer
+    primary_interface: cli
+    secondary_interface: api
+    gui_interface: optional_human_collaboration
+    cost_tier: high
+    default_functions:
+      - planning
+      - architecture_design
+      - algorithm_design
+      - risk_evaluation
+      - task_decomposition
+      - code_review
+      - failure_analysis
+      - replanning
+      - memory_synthesis
+      - provider_routing
+    best_for:
+      - ambiguous_requirements
+      - high_risk_tasks
+      - architecture_changes
+      - algorithm_design
+      - complex_debugging
+      - review
+      - memory_writeback
+    avoid_for:
+      - massive_mechanical_edits
+      - repetitive_boilerplate
+      - low_value_bulk_generation
+
+  codebuddy:
+    role_in_hermes: low_cost_scoped_executor
+    primary_interface: cli
+    secondary_interface: api
+    gui_interface: optional_debugging
+    cost_tier: low
+    default_functions:
+      - scoped_code_editing
+      - code_generation
+      - repetitive_refactor
+      - simple_bugfix
+      - test_writing
+      - file_level_changes
+    best_for:
+      - clear_low_risk_tasks
+      - scoped_implementation
+      - boilerplate_generation
+      - repetitive_code_changes
+      - small_feature_implementation
+      - adding_tests
+    avoid_for:
+      - architecture_decisions
+      - ambiguous_requirements
+      - security_logic
+      - irreversible_operations
+      - production_changes
+      - cross_system_design
+    max_independent_risk: low
+    requires_codex_planning_from: medium
+    requires_codex_review_from: medium
+
