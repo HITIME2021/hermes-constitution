@@ -80,6 +80,8 @@ diagrams/
   CodeBuddy execution unless Project Policy explicitly promotes it.
 - Normal sessions should load `~/hermes-snapshots/current.md` as a pinned
   constitution snapshot instead of rereading the full constitution repository.
+- User slash commands should be implemented through Command Handlers with
+  declared `effects`, `no_effects`, and a Command Policy Gate.
 - Codex and CodeBuddy should be integrated through provider adapters over
   CLI/API for automation.
 - Project Policy has priority over AgentProfile, Skill, and Provider preference.

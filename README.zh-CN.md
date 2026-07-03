@@ -105,6 +105,7 @@ diagrams/
 - [Hermes v0.1 架构](docs/hermes-v0.1-architecture.zh-CN.md)
 - [运行时与 Provider 接口](docs/runtime-and-provider-interfaces.zh-CN.md)
 - [宪法快照策略](docs/constitution-snapshot.zh-CN.md)
+- [Command Handler 设计](docs/command-handler-design.zh-CN.md)
 - [项目策略](docs/project-policy.zh-CN.md)
 - [工作流状态机](docs/workflow-state-machine.zh-CN.md)
 - [能力解析器](docs/capability-resolver.zh-CN.md)
@@ -125,6 +126,7 @@ diagrams/
 - medium 及以上风险任务必须有 Codex planning 或 Codex review。
 - DeepSeek-V4-Pro 可以作为 LLM model backend 使用，但在 v0.1 中不是正式 Hermes Provider。它不能默认替代 Codex 的 planning/review，也不能替代 CodeBuddy 的 scoped execution，除非 Project Policy 明确升级它。
 - 普通会话默认加载 `~/hermes-snapshots/current.md` 作为 constitution snapshot，不应每轮全量读取 `~/projects/hermes-constitution`。
+- 用户 slash command 应通过 Command Handler 实现，并声明 `effects`、`no_effects`，先经过 Command Policy Gate。
 
 ## 回家后如何使用
 
@@ -144,16 +146,17 @@ cd hermes-constitution
 3. docs/hermes-v0.1-architecture.md
 4. docs/runtime-and-provider-interfaces.md
 5. docs/constitution-snapshot.md
-6. docs/project-policy.md
-7. docs/workflow-state-machine.md
-8. docs/capability-resolver.md
-9. docs/context-manager.md
-10. docs/execution-protocol.md
-11. docs/review-gate.md
-12. docs/memory-center.md
-13. docs/agent-profile-and-skills.md
-14. schemas/*.yaml
-15. decisions/*.md
+6. docs/command-handler-design.md
+7. docs/project-policy.md
+8. docs/workflow-state-machine.md
+9. docs/capability-resolver.md
+10. docs/context-manager.md
+11. docs/execution-protocol.md
+12. docs/review-gate.md
+13. docs/memory-center.md
+14. docs/agent-profile-and-skills.md
+15. schemas/*.yaml
+16. decisions/*.md
 ```
 
 ## WSL / Windows 运行面原则
