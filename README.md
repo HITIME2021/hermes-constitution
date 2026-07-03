@@ -1,5 +1,7 @@
 # Hermes Constitution
 
+Chinese overview: [README.zh-CN.md](README.zh-CN.md)
+
 This repository contains the working constitution for Hermes v0.1.
 
 Hermes is designed as a multi-agent automation platform. Its core job is not to
@@ -83,4 +85,3 @@ cd "Hermes Constitution"
 
 Then use the files in `docs/`, `schemas/`, and `decisions/` as the design source
 for implementation.
-
