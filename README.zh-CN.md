@@ -60,6 +60,28 @@ task -> role -> skill -> provider -> review -> memory
 
 Hermes 不应该简单地把任务交给某个 Agent，而应该先判断任务类型、风险、角色、技能、上下文、Provider 能力和审查等级。
 
+## 运行时原则
+
+Hermes Core 默认 headless，不依赖 GUI。
+
+```text
+Hermes Core
+  负责 workflow、policy、state、memory、routing。
+
+CLI / API
+  负责自动化调用 Codex、CodeBuddy 和未来 Provider。
+
+GUI / Desktop
+  只是人类驾驶舱，用于观察、调试、审批和协作。
+```
+
+所以：
+
+```text
+生产自动化走 CLI/API。
+人工协作和复杂讨论可以用桌面软件。
+```
+
 ## 文档结构
 
 ```text
@@ -81,6 +103,7 @@ diagrams/
 优先阅读：
 
 - [Hermes v0.1 架构](docs/hermes-v0.1-architecture.zh-CN.md)
+- [运行时与 Provider 接口](docs/runtime-and-provider-interfaces.zh-CN.md)
 - [项目策略](docs/project-policy.zh-CN.md)
 - [工作流状态机](docs/workflow-state-machine.zh-CN.md)
 - [能力解析器](docs/capability-resolver.zh-CN.md)
@@ -92,6 +115,9 @@ diagrams/
 
 - 角色来自 `msitarzewski/agency-agents`，但 Hermes 不直接调度原始 Markdown，而是通过 Adapter 转成 Hermes `AgentProfile`。
 - `garrytan/gstack` 可以作为 workflow、skill、review routing 的参考，但不直接作为 Hermes 的评分核心。
+- Hermes Core 默认 headless，不依赖 GUI。
+- Codex 和 CodeBuddy 的自动化调用优先走 CLI/API。
+- GUI / Desktop 只是人类驾驶舱，用于观察、调试、审批和协作。
 - Project Policy 优先级高于 AgentProfile、Skill 和 Provider 偏好。
 - CodeBuddy 默认禁止修改 `auth`、`security`、`db`、`infra`。
 - 新增依赖默认需要 approval。
@@ -113,16 +139,17 @@ cd hermes-constitution
 1. README.md
 2. README.zh-CN.md
 3. docs/hermes-v0.1-architecture.md
-4. docs/project-policy.md
-5. docs/workflow-state-machine.md
-6. docs/capability-resolver.md
-7. docs/context-manager.md
-8. docs/execution-protocol.md
-9. docs/review-gate.md
-10. docs/memory-center.md
-11. docs/agent-profile-and-skills.md
-12. schemas/*.yaml
-13. decisions/*.md
+4. docs/runtime-and-provider-interfaces.md
+5. docs/project-policy.md
+6. docs/workflow-state-machine.md
+7. docs/capability-resolver.md
+8. docs/context-manager.md
+9. docs/execution-protocol.md
+10. docs/review-gate.md
+11. docs/memory-center.md
+12. docs/agent-profile-and-skills.md
+13. schemas/*.yaml
+14. decisions/*.md
 ```
 
 建议先让 Hermes agent 做一次 dry-run，不要马上接真实 CodeBuddy：
