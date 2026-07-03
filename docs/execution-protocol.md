@@ -21,6 +21,7 @@ execution_request:
   task_id: task-001
   created_by: hermes
   assigned_provider: codebuddy
+  execution_mode: live
   mode: stable
   risk_level: medium
   role:
@@ -84,6 +85,34 @@ execution_result:
   validation_result:
     passed: true
 ```
+
+## Dry-Run Execution
+
+Dry-run mode simulates planning, routing, scope construction, review planning,
+and report contracts without calling a real provider or mutating files.
+
+Dry-run requests must still name the intended provider in `assigned_provider`.
+Hermes must not invent a pseudo-provider such as `agent` to represent dry-run
+execution. Use `execution_mode: dry_run` instead.
+
+```yaml
+execution_request:
+  id: exec-dryrun-001
+  task_id: task-dryrun-001
+  created_by: hermes
+  assigned_provider: codebuddy
+  execution_mode: dry_run
+  mode: stable
+  risk_level: trivial
+```
+
+In dry-run mode:
+
+- Provider adapters are not invoked.
+- Files are not modified.
+- Memory writeback is disabled unless explicitly approved.
+- The output must remain schema-valid.
+- The ReviewPlan should describe what would be checked after live execution.
 
 ## Failure Types
 
@@ -232,6 +261,7 @@ provider_error:
 ## Hard Rules
 
 - Provider only executes within `allowed_scope`.
+- Dry-run must use `execution_mode: dry_run`; it must not create fake providers.
 - Provider cannot expand scope.
 - Provider cannot lower risk.
 - Provider must return structured results.

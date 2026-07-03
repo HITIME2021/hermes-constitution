@@ -152,6 +152,19 @@ cd hermes-constitution
 14. decisions/*.md
 ```
 
+## WSL / Windows 运行面原则
+
+Hermes 在你的 Windows 11 + WSL 环境中默认遵守：
+
+```text
+WSL = production execution plane
+Windows = human control / constitution maintenance plane
+```
+
+Codex CLI、CodeBuddy CLI、Hermes Core、Provider Adapter、Python/uv、Node.js、测试、lint、build 和包管理器都应放在 WSL。Windows 只作为 Codex Desktop / GUI、人工批准、宪法维护、策略审查、交互调试和观察的控制面。
+
+Hermes 不应把同一个执行任务拆到 Windows 和 WSL 两边完成。实现、测试、依赖、Provider 执行和自动化状态默认在 WSL 执行；宪法设计、策略审查、批准和人类协作可以在 Windows 控制面完成。
+
 建议先让 Hermes agent 做一次 dry-run，不要马上接真实 CodeBuddy：
 
 ```text
@@ -159,4 +172,3 @@ cd hermes-constitution
 输出它理解到的 v0.1 定位、Provider 分工、Project Policy、Risk Policy、Execution Protocol
 然后模拟一个低风险任务，生成 Task、RiskEvaluation、ExecutionPlan、ExecutionRequest、ReviewPlan、MemoryCandidate
 ```
-

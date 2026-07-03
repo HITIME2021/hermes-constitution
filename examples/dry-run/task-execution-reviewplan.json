@@ -1,0 +1,172 @@
+{
+  "schema": "hermes.dry_run.v1",
+  "created_at": "2026-07-03T00:00:00Z",
+  "constitution_inputs": [
+    "README.md",
+    "docs/hermes-v0.1-architecture.md",
+    "docs/runtime-and-provider-interfaces.md",
+    "docs/project-policy.md",
+    "docs/workflow-state-machine.md",
+    "docs/capability-resolver.md",
+    "docs/context-manager.md",
+    "docs/execution-protocol.md",
+    "docs/review-gate.md",
+    "docs/memory-center.md",
+    "docs/agent-profile-and-skills.md",
+    "docs/provider-adapter-design.md",
+    "docs/provider-adapter-design.zh-CN.md",
+    "schemas/json/hermes.schema.json"
+  ],
+  "user_intent": "Simulate a low-risk scoped frontend task without calling a real provider.",
+  "task": {
+    "schema": "hermes.task.v1",
+    "id": "task-dryrun-001",
+    "title": "Add login email validation",
+    "status": "executing",
+    "phase": "build",
+    "mode": "stable",
+    "risk_level": "low",
+    "retry_count": 0,
+    "parent_task_id": null,
+    "user_goal": "Add client-side email format validation before LoginForm submit.",
+    "acceptance_criteria": [
+      "Invalid email displays an inline error before submit.",
+      "Valid login flow remains unchanged.",
+      "No new dependency is added."
+    ],
+    "role": {
+      "id": "frontend-developer"
+    },
+    "provider": {
+      "planner": "codex",
+      "executor": "codebuddy",
+      "reviewer": "codex"
+    },
+    "workflow": {
+      "template": "engineering-feature",
+      "current_step": "build"
+    },
+    "review": {
+      "level": 2,
+      "required": true
+    },
+    "memory": {
+      "writeback_required": true
+    }
+  },
+  "execution_request": {
+    "schema": "hermes.execution_request.v1",
+    "id": "exec-dryrun-001",
+    "task_id": "task-dryrun-001",
+    "created_by": "hermes",
+    "assigned_provider": "codebuddy",
+    "execution_mode": "dry_run",
+    "mode": "stable",
+    "risk_level": "low",
+    "role": {
+      "id": "frontend-developer",
+      "division": "engineering"
+    },
+    "skill": {
+      "id": "react-component-builder",
+      "version": "0.1.0"
+    },
+    "goal": "Modify LoginForm so invalid email is rejected before submit using existing project validation patterns.",
+    "allowed_scope": {
+      "files": [
+        "src/components/LoginForm.tsx",
+        "src/components/LoginForm.test.tsx"
+      ],
+      "commands": [
+        "npm test -- LoginForm"
+      ],
+      "tools": [
+        "file_edit",
+        "shell_test"
+      ]
+    },
+    "forbidden_scope": {
+      "files": [
+        "src/auth/**",
+        "src/security/**",
+        "db/**",
+        "infra/**",
+        ".env",
+        ".env.*"
+      ],
+      "actions": [
+        "add_dependency",
+        "change_public_api",
+        "modify_auth_session",
+        "delete_files",
+        "access_secrets"
+      ]
+    },
+    "context": {
+      "project_hints": [
+        "Prefer existing validation helpers if present.",
+        "Do not add validation dependencies.",
+        "Keep submit handler semantics unchanged for valid input."
+      ],
+      "adapter_policy": {
+        "provider": "codebuddy",
+        "reject_if_scope_expands": true,
+        "require_structured_report": true
+      }
+    },
+    "acceptance_criteria": [
+      "Invalid email displays an inline error before submit.",
+      "Valid login flow remains unchanged.",
+      "No new dependency is added."
+    ],
+    "report_contract": {
+      "required_fields": [
+        "status",
+        "files_changed",
+        "summary",
+        "tests_run",
+        "assumptions",
+        "risks",
+        "validation_result"
+      ]
+    }
+  },
+  "review_plan": {
+    "schema": "hermes.review_plan.v1",
+    "id": "review-dryrun-001",
+    "task_id": "task-dryrun-001",
+    "execution_request_id": "exec-dryrun-001",
+    "reviewer": "codex",
+    "review_level": 2,
+    "required": true,
+    "focus": [
+      "Scope stayed inside the allowed file set.",
+      "No auth/session/security behavior changed.",
+      "No dependency was added.",
+      "Validation behavior matches acceptance criteria.",
+      "Tests cover invalid and valid email paths."
+    ],
+    "checks": [
+      "Inspect provider report contract fields.",
+      "Inspect changed files and diff summary.",
+      "Verify tests_run contains npm test -- LoginForm.",
+      "Return ReviewDecision with approved, needs_revision, rejected, or blocked."
+    ],
+    "decision_contract": {
+      "allowed_statuses": [
+        "approved",
+        "needs_revision",
+        "rejected",
+        "blocked"
+      ],
+      "required_fields": [
+        "status",
+        "review_level",
+        "findings",
+        "required_actions",
+        "next_state",
+        "memory_candidates"
+      ]
+    }
+  }
+}

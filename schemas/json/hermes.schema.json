@@ -1,0 +1,373 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hitime2021.github.io/hermes-constitution/schemas/json/hermes.schema.json",
+  "title": "Hermes Constitution Protocol Schemas",
+  "description": "Normalized JSON Schema bundle for Hermes v0.1 protocol objects.",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "#/$defs/Task" },
+    { "$ref": "#/$defs/ExecutionRequest" },
+    { "$ref": "#/$defs/ExecutionResult" },
+    { "$ref": "#/$defs/ExecutionAttempt" },
+    { "$ref": "#/$defs/ProviderError" },
+    { "$ref": "#/$defs/ReviewPlan" },
+    { "$ref": "#/$defs/ReviewDecision" },
+    { "$ref": "#/$defs/ProjectPolicy" },
+    { "$ref": "#/$defs/ProviderProfiles" },
+    { "$ref": "#/$defs/AgentProfile" },
+    { "$ref": "#/$defs/Skill" },
+    { "$ref": "#/$defs/MemoryItem" }
+  ],
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:-]*$"
+    },
+    "Semver": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"
+    },
+    "IsoDateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "RiskLevel": {
+      "type": "string",
+      "enum": ["trivial", "low", "medium", "high", "critical"]
+    },
+    "Mode": {
+      "type": "string",
+      "enum": ["explore", "stable", "strict"]
+    },
+    "ProviderName": {
+      "type": "string",
+      "enum": ["codex", "codebuddy"]
+    },
+    "ExecutionMode": {
+      "type": "string",
+      "enum": ["dry_run", "live"]
+    },
+    "TaskStatus": {
+      "type": "string",
+      "enum": ["intake", "planned", "executing", "reviewing", "blocked", "completed", "failed", "cancelled"]
+    },
+    "WorkflowPhase": {
+      "type": "string",
+      "enum": ["intake", "plan", "build", "review", "verify", "finalize", "memory"]
+    },
+    "AttemptStatus": {
+      "type": "string",
+      "enum": ["pending", "running", "succeeded", "transport_failed", "provider_failed", "execution_failed", "timed_out", "cancelled"]
+    },
+    "ExecutionResultStatus": {
+      "type": "string",
+      "enum": ["completed", "partial", "failed", "cancelled"]
+    },
+    "ReviewStatus": {
+      "type": "string",
+      "enum": ["approved", "needs_revision", "rejected", "blocked"]
+    },
+    "FailureCategory": {
+      "type": "string",
+      "enum": ["transport_error", "provider_error", "execution_error"]
+    },
+    "StringList": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": []
+    },
+    "RoleRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "division": { "type": "string" }
+      }
+    },
+    "SkillRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/Semver" }
+      }
+    },
+    "Scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "files": { "$ref": "#/$defs/StringList" },
+        "commands": { "$ref": "#/$defs/StringList" },
+        "tools": { "$ref": "#/$defs/StringList" },
+        "actions": { "$ref": "#/$defs/StringList" }
+      }
+    },
+    "ProviderRouting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["planner", "executor", "reviewer"],
+      "properties": {
+        "planner": { "$ref": "#/$defs/ProviderName" },
+        "executor": { "$ref": "#/$defs/ProviderName" },
+        "reviewer": { "$ref": "#/$defs/ProviderName" }
+      }
+    },
+    "TestRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["command", "status"],
+      "properties": {
+        "command": { "type": "string", "minLength": 1 },
+        "status": { "type": "string", "enum": ["passed", "failed", "skipped", "not_run"] },
+        "output_summary": { "type": "string" }
+      }
+    },
+    "ValidationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["passed"],
+      "properties": {
+        "passed": { "type": "boolean" },
+        "notes": { "$ref": "#/$defs/StringList" }
+      }
+    },
+    "Task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "id", "title", "status", "phase", "mode", "risk_level", "user_goal", "acceptance_criteria", "role", "provider", "workflow", "review", "memory"],
+      "properties": {
+        "schema": { "const": "hermes.task.v1" },
+        "id": { "$ref": "#/$defs/Identifier" },
+        "title": { "type": "string", "minLength": 1 },
+        "status": { "$ref": "#/$defs/TaskStatus" },
+        "phase": { "$ref": "#/$defs/WorkflowPhase" },
+        "mode": { "$ref": "#/$defs/Mode" },
+        "risk_level": { "$ref": "#/$defs/RiskLevel" },
+        "retry_count": { "type": "integer", "minimum": 0, "default": 0 },
+        "parent_task_id": { "type": ["string", "null"] },
+        "user_goal": { "type": "string", "minLength": 1 },
+        "acceptance_criteria": { "$ref": "#/$defs/StringList" },
+        "role": { "$ref": "#/$defs/RoleRef" },
+        "provider": { "$ref": "#/$defs/ProviderRouting" },
+        "workflow": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["template", "current_step"],
+          "properties": {
+            "template": { "type": "string", "minLength": 1 },
+            "current_step": { "type": "string", "minLength": 1 }
+          }
+        },
+        "review": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["level", "required"],
+          "properties": {
+            "level": { "type": "integer", "minimum": 0, "maximum": 5 },
+            "required": { "type": "boolean" }
+          }
+        },
+        "memory": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["writeback_required"],
+          "properties": {
+            "writeback_required": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "ExecutionRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "id", "task_id", "created_by", "assigned_provider", "mode", "risk_level", "role", "skill", "goal", "allowed_scope", "forbidden_scope", "acceptance_criteria", "report_contract"],
+      "properties": {
+        "schema": { "const": "hermes.execution_request.v1" },
+        "id": { "$ref": "#/$defs/Identifier" },
+        "task_id": { "$ref": "#/$defs/Identifier" },
+        "created_by": { "type": "string", "minLength": 1 },
+        "assigned_provider": { "$ref": "#/$defs/ProviderName" },
+        "execution_mode": { "$ref": "#/$defs/ExecutionMode", "default": "live" },
+        "mode": { "$ref": "#/$defs/Mode" },
+        "risk_level": { "$ref": "#/$defs/RiskLevel" },
+        "role": { "$ref": "#/$defs/RoleRef" },
+        "skill": { "$ref": "#/$defs/SkillRef" },
+        "goal": { "type": "string", "minLength": 1 },
+        "allowed_scope": { "$ref": "#/$defs/Scope" },
+        "forbidden_scope": { "$ref": "#/$defs/Scope" },
+        "context": { "type": "object", "additionalProperties": true },
+        "acceptance_criteria": { "$ref": "#/$defs/StringList" },
+        "report_contract": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["required_fields"],
+          "properties": {
+            "required_fields": { "$ref": "#/$defs/StringList" }
+          }
+        }
+      }
+    },
+    "ExecutionResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "id", "execution_id", "task_id", "provider", "status", "files_changed", "summary", "tests_run", "assumptions", "risks", "validation_result"],
+      "properties": {
+        "schema": { "const": "hermes.execution_result.v1" },
+        "id": { "$ref": "#/$defs/Identifier" },
+        "execution_id": { "$ref": "#/$defs/Identifier" },
+        "task_id": { "$ref": "#/$defs/Identifier" },
+        "provider": { "$ref": "#/$defs/ProviderName" },
+        "status": { "$ref": "#/$defs/ExecutionResultStatus" },
+        "files_changed": { "$ref": "#/$defs/StringList" },
+        "summary": { "$ref": "#/$defs/StringList" },
+        "tests_run": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/TestRun" }
+        },
+        "assumptions": { "$ref": "#/$defs/StringList" },
+        "risks": { "$ref": "#/$defs/StringList" },
+        "validation_result": { "$ref": "#/$defs/ValidationResult" }
+      }
+    },
+    "ProviderError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "id", "execution_id", "attempt_id", "provider", "category", "type", "retryable", "counts_as_task_failure", "counts_as_provider_reliability_signal", "should_trigger_replanning", "evidence", "recommended_action"],
+      "properties": {
+        "schema": { "const": "hermes.provider_error.v1" },
+        "id": { "$ref": "#/$defs/Identifier" },
+        "execution_id": { "$ref": "#/$defs/Identifier" },
+        "attempt_id": { "$ref": "#/$defs/Identifier" },
+        "provider": { "$ref": "#/$defs/ProviderName" },
+        "category": { "$ref": "#/$defs/FailureCategory" },
+        "type": { "type": "string", "minLength": 1 },
+        "retryable": { "type": "boolean" },
+        "counts_as_task_failure": { "type": "boolean" },
+        "counts_as_provider_reliability_signal": { "type": "boolean" },
+        "should_trigger_replanning": { "type": "boolean" },
+        "evidence": { "$ref": "#/$defs/StringList" },
+        "recommended_action": { "type": "string", "minLength": 1 }
+      }
+    },
+    "ExecutionAttempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "id", "execution_id", "task_id", "provider", "status", "started_at", "retry_index", "retry_budget_remaining"],
+      "properties": {
+        "schema": { "const": "hermes.execution_attempt.v1" },
+        "id": { "$ref": "#/$defs/Identifier" },
+        "execution_id": { "$ref": "#/$defs/Identifier" },
+        "task_id": { "$ref": "#/$defs/Identifier" },
+        "provider": { "$ref": "#/$defs/ProviderName" },
+        "status": { "$ref": "#/$defs/AttemptStatus" },
+        "started_at": { "$ref": "#/$defs/IsoDateTime" },
+        "ended_at": { "anyOf": [{ "$ref": "#/$defs/IsoDateTime" }, { "type": "null" }] },
+        "retry_index": { "type": "integer", "minimum": 0 },
+        "retry_budget_remaining": { "type": "integer", "minimum": 0 },
+        "error": { "$ref": "#/$defs/ProviderError" }
+      }
+    },
+    "ReviewPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "id", "task_id", "execution_request_id", "reviewer", "review_level", "required", "focus", "checks", "decision_contract"],
+      "properties": {
+        "schema": { "const": "hermes.review_plan.v1" },
+        "id": { "$ref": "#/$defs/Identifier" },
+        "task_id": { "$ref": "#/$defs/Identifier" },
+        "execution_request_id": { "$ref": "#/$defs/Identifier" },
+        "reviewer": { "$ref": "#/$defs/ProviderName" },
+        "review_level": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "required": { "type": "boolean" },
+        "focus": { "$ref": "#/$defs/StringList" },
+        "checks": { "$ref": "#/$defs/StringList" },
+        "decision_contract": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["allowed_statuses", "required_fields"],
+          "properties": {
+            "allowed_statuses": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/ReviewStatus" }
+            },
+            "required_fields": { "$ref": "#/$defs/StringList" }
+          }
+        }
+      }
+    },
+    "ReviewDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema", "status", "review_level", "findings", "required_actions", "next_state", "memory_candidates"],
+      "properties": {
+        "schema": { "const": "hermes.review_decision.v1" },
+        "status": { "$ref": "#/$defs/ReviewStatus" },
+        "review_level": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["severity", "message"],
+            "properties": {
+              "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+              "message": { "type": "string", "minLength": 1 },
+              "file": { "type": "string" }
+            }
+          }
+        },
+        "required_actions": { "$ref": "#/$defs/StringList" },
+        "next_state": { "$ref": "#/$defs/TaskStatus" },
+        "memory_candidates": { "$ref": "#/$defs/StringList" }
+      }
+    },
+    "ProjectPolicy": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["schema", "project_policy"],
+      "properties": {
+        "schema": { "const": "hermes.project_policy.v1" },
+        "project_policy": { "type": "object" }
+      }
+    },
+    "ProviderProfiles": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["schema", "providers"],
+      "properties": {
+        "schema": { "const": "hermes.provider_profile.v1" },
+        "providers": { "type": "object" }
+      }
+    },
+    "AgentProfile": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["schema", "agent_profile"],
+      "properties": {
+        "schema": { "const": "hermes.agent_profile.v1" },
+        "agent_profile": { "type": "object" }
+      }
+    },
+    "Skill": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["schema", "skill"],
+      "properties": {
+        "schema": { "const": "hermes.skill.v1" },
+        "skill": { "type": "object" }
+      }
+    },
+    "MemoryItem": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["schema", "memory_item"],
+      "properties": {
+        "schema": { "const": "hermes.memory_item.v1" },
+        "memory_item": { "type": "object" }
+      }
+    }
+  }
+}

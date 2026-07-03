@@ -11,10 +11,60 @@ or desktop control plane.
 ```yaml
 runtime_policy:
   core_mode: headless
+  production_execution_plane: wsl
   primary_interface: cli
   secondary_interface: api
-  gui_role: optional_control_plane
+  windows_role: human_control_and_constitution_maintenance
+  gui_role: optional_human_control_plane
 ```
+
+## Execution Plane Policy
+
+Hermes production automation should run inside WSL when the project runtime,
+package managers, test commands, and provider CLIs are installed there.
+
+For the Windows 11 + WSL operator setup, Hermes treats the environments as two
+separate planes:
+
+```text
+WSL
+  production execution plane
+  Hermes Core
+  provider adapters
+  Codex CLI
+  CodeBuddy CLI
+  Python / uv
+  Node.js / package managers
+  tests, lint, build, and project commands
+
+Windows
+  human control plane
+  Codex Desktop / GUI
+  constitution maintenance
+  policy review and approval
+  interactive debugging and observation
+```
+
+Provider CLIs must be installed in the same execution plane as the repository,
+dependencies, and test commands they operate on. If `uv`, Node.js, package
+manager state, and the production checkout live in WSL, then Codex CLI and
+CodeBuddy CLI should also be installed and invoked from WSL.
+
+Hermes must not split a single execution across Windows and WSL. In particular,
+CodeBuddy should not edit from Windows while tests run in WSL, and Codex review
+should not assume Windows paths when the production repository is a WSL
+checkout.
+
+```text
+If a task touches implementation, tests, dependencies, provider execution, or
+automation state, execute it in WSL.
+
+If a task touches constitution design, policy review, approval, or human
+collaboration, Windows may be used as the control plane.
+```
+
+Provider adapters must resolve paths, commands, dependency assumptions, and
+runtime evidence against the WSL workspace for production execution.
 
 ## Why Headless
 

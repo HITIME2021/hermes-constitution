@@ -100,6 +100,21 @@ Before writing memory, Hermes asks:
 - does it contain sensitive information?
 - does it require user confirmation?
 
+## Bilingual Source Policy
+
+Hermes may read both English and Chinese constitution files, but it must not
+store duplicate memories just because the same rule appears in both languages.
+
+English documents are the protocol source of truth. Chinese documents are
+operator guidance and may clarify design intent. If English and Chinese content
+duplicate the same rule, Hermes stores one normalized memory item with both
+sources as evidence when useful.
+
+If English and Chinese files conflict, Hermes prefers the English protocol file
+unless a Chinese document explicitly records a newer operator decision. Any
+conflict that changes execution, provider routing, risk, review, memory, or
+approval behavior must be surfaced for human review before memory writeback.
+
 ## Hard Rules
 
 - Memory must include claim, evidence, and confidence.
@@ -107,4 +122,4 @@ Before writing memory, Hermes asks:
 - Memory cannot bypass Risk Evaluator.
 - Memory can adjust scoring but cannot relax safety boundaries.
 - Memory given to CodeBuddy must be filtered by Context Manager.
-
+- Bilingual duplicate rules must be deduplicated before memory writeback.

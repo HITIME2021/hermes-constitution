@@ -182,3 +182,30 @@ GUI 帮人类观察和批准。
 
 Provider 通道失败由 Adapter 和 ExecutionAttempt 策略处理。它不能伪装成架构失败、流程失败或任务计划失败。
 
+## WSL / Windows 运行面原则
+
+在 Windows 11 + WSL 的操作者环境中，Hermes 必须把 WSL 和 Windows 视为两个不同的运行面：
+
+```text
+WSL = production execution plane
+Windows = human control / constitution maintenance plane
+```
+
+也就是说：
+
+- WSL 是生产执行面，负责 Hermes Core、Provider Adapter、Codex CLI、CodeBuddy CLI、Python/uv、Node.js、包管理器、测试、lint、build 和项目命令。
+- Windows 是人类控制面，负责 Codex Desktop / GUI、宪法维护、策略审查、人工批准、交互式调试和观察。
+
+如果生产仓库、Python/uv 环境、Node.js 环境、包管理状态和验证命令都在 WSL，那么 Codex CLI 和 CodeBuddy CLI 也必须安装并从 WSL 调用。
+
+Hermes 不应把一次执行拆到 Windows 和 WSL 两边完成。尤其不应让 CodeBuddy 在 Windows 修改文件，却让测试在 WSL 跑；也不应让 Codex review 基于 Windows 路径假设去审查 WSL 生产仓。
+
+硬规则：
+
+```text
+凡是触及实现、测试、依赖、Provider 执行或自动化状态的任务，都在 WSL 执行。
+
+凡是触及宪法设计、策略审查、批准或人类协作的任务，Windows 可以作为控制面使用。
+```
+
+Provider Adapter 必须按 WSL workspace 解析路径、命令、依赖假设和运行证据。

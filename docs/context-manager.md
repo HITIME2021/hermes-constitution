@@ -117,3 +117,16 @@ These fields must never be removed by context compression:
 - Forbidden files may be named by path but not provided as content.
 - User memory is only shared when directly relevant and appropriately filtered.
 
+## Bilingual Context Policy
+
+When both English and Chinese constitution files are available, Context Manager
+may use Chinese files to clarify operator intent, but it must treat English
+files as the protocol source of truth.
+
+Provider context packets must not include duplicate bilingual rules. Context
+Manager should normalize duplicated English/Chinese guidance into one rule and
+preserve source references only when they help review or audit.
+
+If bilingual sources disagree on a rule that affects execution, risk, provider
+routing, review, memory, or approval, Context Manager must mark the conflict and
+route it to Codex or the human operator instead of silently choosing both.

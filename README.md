@@ -67,6 +67,11 @@ diagrams/
   Think -> Plan -> Build -> Review -> Test -> Ship -> Reflect.
 - Hermes core is headless. CLI/API is the primary automation interface. GUI is
   an optional control plane for humans.
+- In the Windows 11 + WSL operator setup, WSL is the production execution plane.
+  Windows is the human control and constitution maintenance plane.
+- Codex CLI and CodeBuddy CLI should be installed and invoked in WSL when the
+  production repository, Python/uv, Node.js, tests, and package managers live
+  there.
 - Codex and CodeBuddy should be integrated through provider adapters over
   CLI/API for automation.
 - Project Policy has priority over AgentProfile, Skill, and Provider preference.
