@@ -165,6 +165,34 @@ Codex CLI、CodeBuddy CLI、Hermes Core、Provider Adapter、Python/uv、Node.js
 
 Hermes 不应把同一个执行任务拆到 Windows 和 WSL 两边完成。实现、测试、依赖、Provider 执行和自动化状态默认在 WSL 执行；宪法设计、策略审查、批准和人类协作可以在 Windows 控制面完成。
 
+## 人类输出与记忆语言原则
+
+Hermes 在这个操作者环境中，面向用户的输出和长期记忆默认使用简体中文，方便后续人工审查、筛选和清理记忆体。
+
+默认使用中文的内容包括：
+
+- 任务摘要
+- 规划解释
+- 风险说明
+- Review 结论
+- Memory candidate
+- Memory claim / summary
+- 人工批准问题
+- 记忆清理备注
+
+但以下内容必须保持原样，不翻译、不改写：
+
+- JSON / YAML 字段名
+- schema id
+- 文件路径
+- shell 命令
+- 代码符号
+- 包名
+- Provider 名称
+- 引用的原文证据
+
+英文宪法文档仍然是协议事实源；中文内容用于操作者解释、偏好和人工维护。由英文协议生成长期记忆时，Hermes 应写入一条中文 claim，并保留英文来源作为 evidence。
+
 建议先让 Hermes agent 做一次 dry-run，不要马上接真实 CodeBuddy：
 
 ```text

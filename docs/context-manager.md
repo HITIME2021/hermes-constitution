@@ -130,3 +130,33 @@ preserve source references only when they help review or audit.
 If bilingual sources disagree on a rule that affects execution, risk, provider
 routing, review, memory, or approval, Context Manager must mark the conflict and
 route it to Codex or the human operator instead of silently choosing both.
+
+## Human-Facing Language Policy
+
+For this operator environment, human-facing output should default to Simplified
+Chinese (`zh-CN`).
+
+This applies to:
+
+- task summaries
+- planning explanations
+- review conclusions
+- risk explanations
+- memory candidates
+- memory writeback text
+- operator questions and approval prompts
+
+Context packets must preserve protocol and implementation literals exactly:
+
+- JSON/YAML field names
+- schema identifiers
+- file paths
+- shell commands
+- code symbols
+- package names
+- provider names
+- quoted source text
+
+Provider-facing packets may include English protocol terms when required by a
+tool or schema, but their human-readable explanation should remain Chinese when
+the operator is the audience.

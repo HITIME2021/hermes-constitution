@@ -72,6 +72,9 @@ diagrams/
 - Codex CLI and CodeBuddy CLI should be installed and invoked in WSL when the
   production repository, Python/uv, Node.js, tests, and package managers live
   there.
+- Human-facing output and long-term memory should default to Simplified Chinese
+  for this operator environment. Protocol keys, schema fields, commands, paths,
+  and code symbols remain in their original language.
 - Codex and CodeBuddy should be integrated through provider adapters over
   CLI/API for automation.
 - Project Policy has priority over AgentProfile, Skill, and Provider preference.

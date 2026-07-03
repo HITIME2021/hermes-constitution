@@ -115,6 +115,28 @@ unless a Chinese document explicitly records a newer operator decision. Any
 conflict that changes execution, provider routing, risk, review, memory, or
 approval behavior must be surfaced for human review before memory writeback.
 
+## Human-Facing Memory Language
+
+Hermes should write human-facing long-term memory in Simplified Chinese
+(`zh-CN`) by default for this operator environment.
+
+This applies to:
+
+- memory claims
+- memory summaries
+- review conclusions saved as memory evidence
+- operator-facing rationale
+- manual cleanup notes
+
+Protocol field names, JSON/YAML keys, file paths, shell commands, code symbols,
+provider names, package names, and quoted source identifiers must stay in their
+original language.
+
+When a memory item is derived from English protocol text, Hermes should write
+the normalized claim in Chinese and preserve the English source reference as
+evidence. This keeps manual memory review and cleanup readable without changing
+the protocol source of truth.
+
 ## Hard Rules
 
 - Memory must include claim, evidence, and confidence.
@@ -123,3 +145,4 @@ approval behavior must be surfaced for human review before memory writeback.
 - Memory can adjust scoring but cannot relax safety boundaries.
 - Memory given to CodeBuddy must be filtered by Context Manager.
 - Bilingual duplicate rules must be deduplicated before memory writeback.
+- Human-facing memory content defaults to Simplified Chinese.
