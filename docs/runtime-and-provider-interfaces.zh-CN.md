@@ -89,6 +89,16 @@ Hermes Workflow Engine
 
 Hermes Core 不应该直接绑定某个 Provider 的 GUI。
 
+Provider Adapter 还必须负责通道可靠性和错误分类。CLI/API 超时必须被报告为 `transport_error`，不能被当作任务语义失败。
+
+```text
+CLI timeout
+  -> Provider Adapter
+  -> transport_error
+  -> bounded retry 或 blocked
+  -> 默认不触发 task replanning
+```
+
 ## Codex Provider
 
 Codex 是高级大脑。
@@ -169,4 +179,6 @@ Provider 干活。
 Review Gate 判质量。
 GUI 帮人类观察和批准。
 ```
+
+Provider 通道失败由 Adapter 和 ExecutionAttempt 策略处理。它不能伪装成架构失败、流程失败或任务计划失败。
 
