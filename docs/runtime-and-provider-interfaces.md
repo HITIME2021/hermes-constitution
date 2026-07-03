@@ -86,6 +86,18 @@ Hermes Workflow Engine
 
 Hermes should not bind its core logic directly to a provider UI.
 
+Provider adapters are responsible for transport reliability and error
+classification. A CLI/API timeout must be reported as `transport_error`, not as
+a semantic task failure.
+
+```text
+CLI timeout
+  -> Provider Adapter
+  -> transport_error
+  -> bounded retry or blocked
+  -> no task replanning by default
+```
+
 ## Codex Provider
 
 Codex is the senior brain.
@@ -161,3 +173,5 @@ Review Gate decides quality.
 GUI helps humans supervise.
 ```
 
+Provider transport failure is handled by the adapter and ExecutionAttempt
+policy. It must not be allowed to masquerade as architecture failure.
