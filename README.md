@@ -65,6 +65,10 @@ diagrams/
   normalize them into Hermes `AgentProfile` objects.
 - `garrytan/gstack` is useful as workflow and skill inspiration, especially for
   Think -> Plan -> Build -> Review -> Test -> Ship -> Reflect.
+- Hermes core is headless. CLI/API is the primary automation interface. GUI is
+  an optional control plane for humans.
+- Codex and CodeBuddy should be integrated through provider adapters over
+  CLI/API for automation.
 - Project Policy has priority over AgentProfile, Skill, and Provider preference.
 - CodeBuddy is forbidden by default from modifying `auth`, `security`, `db`, and
   `infra` domains.
