@@ -160,3 +160,18 @@ Context packets must preserve protocol and implementation literals exactly:
 Provider-facing packets may include English protocol terms when required by a
 tool or schema, but their human-readable explanation should remain Chinese when
 the operator is the audience.
+
+## Constitution Snapshot Context
+
+Normal sessions should use a pinned constitution snapshot instead of rereading
+the full constitution repository every turn.
+
+Default snapshot path:
+
+```text
+~/hermes-snapshots/current.md
+```
+
+Context Manager should load the full constitution only when the snapshot is
+missing, stale, explicitly reloaded by the user, or a schema/policy conflict is
+detected. See [Constitution Snapshot Policy](constitution-snapshot.md).
