@@ -122,6 +122,7 @@ diagrams/
 - CodeBuddy 默认禁止修改 `auth`、`security`、`db`、`infra`。
 - 新增依赖默认需要 approval。
 - medium 及以上风险任务必须有 Codex planning 或 Codex review。
+- DeepSeek-V4-Pro 可以作为 LLM model backend 使用，但在 v0.1 中不是正式 Hermes Provider。它不能默认替代 Codex 的 planning/review，也不能替代 CodeBuddy 的 scoped execution，除非 Project Policy 明确升级它。
 
 ## 回家后如何使用
 

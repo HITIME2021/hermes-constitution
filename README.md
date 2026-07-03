@@ -75,6 +75,9 @@ diagrams/
 - Human-facing output and long-term memory should default to Simplified Chinese
   for this operator environment. Protocol keys, schema fields, commands, paths,
   and code symbols remain in their original language.
+- DeepSeek-V4-Pro may be configured as an LLM model backend, but it is not a
+  formal Hermes provider in v0.1. It cannot replace Codex planning/review or
+  CodeBuddy execution unless Project Policy explicitly promotes it.
 - Codex and CodeBuddy should be integrated through provider adapters over
   CLI/API for automation.
 - Project Policy has priority over AgentProfile, Skill, and Provider preference.

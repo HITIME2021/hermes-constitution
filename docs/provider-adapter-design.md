@@ -40,6 +40,24 @@ Adapters may implement these operations through CLI, API, local process control,
 or a test double. The provider-specific command shape must stay inside the
 adapter.
 
+## Provider Role and Model Backend Separation
+
+Provider adapters bind Hermes workflow provider roles to executable transport.
+A model backend is not automatically a provider adapter.
+
+DeepSeek-V4-Pro may be configured as an LLM backend for low-risk Chinese
+summarization, explanation drafting, report generation, or memory candidate
+drafting. That configuration does not create a `deepseek` Hermes provider and
+does not make DeepSeek eligible for `assigned_provider` in `ExecutionRequest`.
+
+In v0.1, `assigned_provider` remains limited to formal provider roles such as
+`codex` and `codebuddy`. If Hermes needs DeepSeek to become a provider, the
+constitution must first define a ProviderProfile, risk policy, adapter contract,
+failure classification, review authority, and memory permissions for it.
+
+Adapters must reject execution requests that route protected decisions to a
+model backend as if it were a formal provider.
+
 ## Adapter Submission
 
 ```yaml

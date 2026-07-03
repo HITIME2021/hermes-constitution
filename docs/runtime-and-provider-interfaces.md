@@ -148,6 +148,49 @@ CLI timeout
   -> no task replanning by default
 ```
 
+## Provider Role vs Model Backend
+
+Hermes provider roles are workflow responsibilities. Model backends are the
+underlying LLM services that may power a provider role or auxiliary reasoning
+step. They are not the same thing.
+
+```text
+provider_role:
+  codex     -> senior planning, review, architecture, replanning
+  codebuddy -> scoped execution
+
+model_backend:
+  deepseek-v4-pro -> optional LLM backend for selected reasoning or summaries
+```
+
+DeepSeek-V4-Pro may be available through Hermes configuration, but it is not a
+formal Hermes provider in v0.1. It must not replace Codex as the required senior
+planning, review, provider-routing, or approval authority unless Project Policy
+explicitly promotes it to a `ProviderProfile`.
+
+Allowed default uses for DeepSeek-V4-Pro as a model backend:
+
+- Chinese summarization
+- operator-facing explanation drafts
+- low-risk document cleanup
+- memory candidate drafting before review
+- report generation
+- non-authoritative classification support
+
+Forbidden default uses unless explicitly approved by policy:
+
+- high-risk planning
+- final Codex review
+- provider routing decisions
+- security, auth, database, infrastructure, or deployment decisions
+- automatic approval
+- direct long-term memory writeback
+- direct provider execution
+
+If DeepSeek output influences a decision that affects execution, risk, review,
+memory, or approval, Hermes must record it as supporting evidence, not as the
+authoritative decision source.
+
 ## Codex Provider
 
 Codex is the senior brain.

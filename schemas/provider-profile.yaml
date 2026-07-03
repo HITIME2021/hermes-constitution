@@ -1,4 +1,29 @@
 schema: hermes.provider_profile.v1
+model_backends:
+  deepseek-v4-pro:
+    kind: llm_backend
+    formal_provider: false
+    may_power:
+      - chinese_summarization
+      - operator_explanation_drafting
+      - low_risk_document_cleanup
+      - memory_candidate_drafting
+      - report_generation
+      - non_authoritative_classification_support
+    must_not_power_by_default:
+      - high_risk_planning
+      - final_review
+      - provider_routing_decision
+      - security_decision
+      - auth_decision
+      - database_decision
+      - infrastructure_decision
+      - deployment_decision
+      - automatic_approval
+      - direct_memory_writeback
+      - direct_provider_execution
+    rule: "Model backend is not the same as Hermes provider role."
+
 providers:
   codex:
     role_in_hermes: brain_and_senior_engineer
@@ -60,4 +85,3 @@ providers:
     max_independent_risk: low
     requires_codex_planning_from: medium
     requires_codex_review_from: medium
-
