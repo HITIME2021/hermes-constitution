@@ -11,7 +11,7 @@ version inspection, and git status.
 
 ```text
 If the user explicitly asks for an allowlisted read-only inspection command,
-Hermes may execute it directly and return concise results.
+Hermes may execute it directly and return the raw command output.
 ```
 
 Direct mode must not:
@@ -178,12 +178,29 @@ or explicit approval.
 For direct-mode commands, Hermes should:
 
 - execute only the requested command
-- return raw output or a short summary
+- return the command's raw `stdout`
+- never replace short command output with a semantic summary
+- preserve and display `stderr` when present
+- explicitly display non-zero exit codes
 - avoid extra reasoning
 - avoid reading unrelated files
 - avoid provider calls
 - avoid memory writeback
 
-If the command output is large, Hermes should summarize and offer a bounded
-follow-up view.
+Short output must be shown in full. This includes typical output from commands
+such as `grep`, `wc`, `head`, `tail`, `git status`, version checks, and package
+inventory checks.
 
+```yaml
+direct_mode_output_limits:
+  raw_stdout_max_lines: 200
+  raw_stdout_max_chars: 12000
+```
+
+If `stdout` is within both limits, Hermes must display it exactly as command
+output, without summarizing or analyzing it.
+
+If `stdout` exceeds either limit, Hermes may truncate to the first 200 lines or
+first 12000 characters, then state that the output was truncated and suggest a
+bounded follow-up command such as `head`, `tail`, `sed -n`, or a narrower
+`grep`/`rg` query.
