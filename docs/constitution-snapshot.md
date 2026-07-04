@@ -127,5 +127,16 @@ Prefer clearer table or matrix structure for:
 - command handler effects and forbidden effects
 - simple shell direct-mode allowlist
 
-Default target size is 120-180 lines. A shorter snapshot is not better if it
-becomes harder to review, compare, or clean up manually.
+Snapshot length is a soft optimization, not a correctness limit. A snapshot
+must not omit required policy merely to stay under a target line count.
+
+Guidance:
+
+- prefer concise wording when clarity is preserved
+- keep all current critical policy sections represented
+- preserve explicit budgets, stop conditions, allowlists, and forbidden actions
+- allow the snapshot to exceed 180 lines when the constitution grows
+- treat missing policy as a defect, even if the snapshot is short
+
+A shorter snapshot is not better if it loses information or becomes harder to
+review, compare, or clean up manually.
