@@ -43,6 +43,10 @@ The Command Policy Gate checks a command before dispatch:
 If the gate cannot prove the command is safe, it returns a structured command
 error instead of dispatching the handler.
 
+Simple read-only shell inspection commands may use Simple Shell Direct Mode
+instead of deep planning, as long as they match the allowlist and forbidden
+effects in [Simple Shell Direct Mode](simple-shell-direct-mode.md).
+
 ## Command Schema
 
 ```yaml
@@ -86,6 +90,7 @@ conversation suggests it.
 | `write_file` | Write or overwrite one declared file |
 | `archive_file` | Move or copy one declared file to an archive path |
 | `require_approval` | Prompt the operator for approval before acting |
+| `read_only_shell_inspection` | Execute an allowlisted read-only shell inspection command |
 
 | No Effect | Meaning |
 |-----------|---------|
@@ -99,6 +104,10 @@ conversation suggests it.
 | `provider_routing` | Must not route work to a provider |
 | `task_state_transition` | Must not change Task state |
 | `delete_file` | Must not delete files |
+| `file_mutation` | Must not create, edit, move, or delete files |
+| `dependency_change` | Must not install, remove, update, or reconfigure dependencies |
+| `network_access` | Must not access the network |
+| `secret_access` | Must not read secrets, tokens, credentials, or `.env` values |
 
 ## Command Registry
 
@@ -245,4 +254,3 @@ The test contract:
 - output schema matches declared `required_fields`
 - command policy gate rejects undeclared or conflicting effects
 - command execution does not mutate Task state unless explicitly declared
-

@@ -65,6 +65,14 @@ npm run lint
 npm run build
 ```
 
+Simple read-only inspection commands may use direct mode when they match the
+allowlist in [Simple Shell Direct Mode](simple-shell-direct-mode.md). This
+includes routine checks such as `pwd`, `ls`, `rg`, `git status`, runtime version
+queries, and installed package inventory commands.
+
+Direct mode is not approval for code execution, dependency changes, network
+access, provider execution, secret access, or file mutation.
+
 Approval-required commands include:
 
 ```text
@@ -114,4 +122,3 @@ dependency_approval_request:
 - New dependencies require approval.
 - Project Policy changes are high risk and require Codex review.
 - Secrets never enter provider context or memory.
-

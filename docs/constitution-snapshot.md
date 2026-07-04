@@ -99,6 +99,7 @@ A useful snapshot should include:
 - dry-run policy
 - memory policy
 - human intervention policy
+- simple shell direct mode
 - risk and review policy
 - provider adapter boundaries
 - reload conditions
@@ -124,6 +125,7 @@ Prefer clearer table or matrix structure for:
 - dry-run and memory policy
 - human intervention budgets and stop conditions
 - command handler effects and forbidden effects
+- simple shell direct-mode allowlist
 
 Default target size is 120-180 lines. A shorter snapshot is not better if it
 becomes harder to review, compare, or clean up manually.
