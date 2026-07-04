@@ -92,6 +92,7 @@ constitution_snapshot:
 - 语言策略
 - dry-run 策略
 - memory 策略
+- 人工介入策略
 - risk / review 策略
 - provider adapter 边界
 - reload 条件
@@ -113,6 +114,7 @@ constitution_snapshot:
 - WSL / Windows 执行面
 - 语言策略
 - dry-run 与 memory 策略
+- 人工介入预算与停止条件
 - command handler 的 effects / no_effects
 
 默认长度目标为 120-180 行。更短并不必然更好；如果压缩导致人工审查、比较或清理更困难，应优先保留清晰结构。

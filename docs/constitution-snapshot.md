@@ -98,6 +98,7 @@ A useful snapshot should include:
 - language policy
 - dry-run policy
 - memory policy
+- human intervention policy
 - risk and review policy
 - provider adapter boundaries
 - reload conditions
@@ -121,6 +122,7 @@ Prefer clearer table or matrix structure for:
 - WSL / Windows execution plane
 - language policy
 - dry-run and memory policy
+- human intervention budgets and stop conditions
 - command handler effects and forbidden effects
 
 Default target size is 120-180 lines. A shorter snapshot is not better if it

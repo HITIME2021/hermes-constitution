@@ -106,6 +106,7 @@ diagrams/
 - [运行时与 Provider 接口](docs/runtime-and-provider-interfaces.zh-CN.md)
 - [宪法快照策略](docs/constitution-snapshot.zh-CN.md)
 - [Command Handler 设计](docs/command-handler-design.zh-CN.md)
+- [人工介入策略](docs/human-intervention-policy.zh-CN.md)
 - [项目策略](docs/project-policy.zh-CN.md)
 - [工作流状态机](docs/workflow-state-machine.zh-CN.md)
 - [能力解析器](docs/capability-resolver.zh-CN.md)
@@ -127,8 +128,9 @@ diagrams/
 - DeepSeek-V4-Pro 可以作为 LLM model backend 使用，但在 v0.1 中不是正式 Hermes Provider。它不能默认替代 Codex 的 planning/review，也不能替代 CodeBuddy 的 scoped execution，除非 Project Policy 明确升级它。
 - 普通会话默认加载 `~/hermes-snapshots/current.md` 作为 constitution snapshot，不应每轮全量读取 `~/projects/hermes-constitution`。
 - 用户 slash command 应通过 Command Handler 实现，并声明 `effects`、`no_effects`，先经过 Command Policy Gate。
+- 自动化重试、修正和重规划都有预算；重复失败、方向不清、范围不安全或 token/time 不值得时，必须停止并请求人工介入。
 
-## 回家后如何使用
+## WSL 如何使用
 
 在运行 Hermes agent 的 Windows 11 + WSL 机器上：
 
@@ -147,16 +149,17 @@ cd hermes-constitution
 4. docs/runtime-and-provider-interfaces.md
 5. docs/constitution-snapshot.md
 6. docs/command-handler-design.md
-7. docs/project-policy.md
-8. docs/workflow-state-machine.md
-9. docs/capability-resolver.md
-10. docs/context-manager.md
-11. docs/execution-protocol.md
-12. docs/review-gate.md
-13. docs/memory-center.md
-14. docs/agent-profile-and-skills.md
-15. schemas/*.yaml
-16. decisions/*.md
+7. docs/human-intervention-policy.md
+8. docs/project-policy.md
+9. docs/workflow-state-machine.md
+10. docs/capability-resolver.md
+11. docs/context-manager.md
+12. docs/execution-protocol.md
+13. docs/review-gate.md
+14. docs/memory-center.md
+15. docs/agent-profile-and-skills.md
+16. schemas/*.yaml
+17. decisions/*.md
 ```
 
 ## WSL / Windows 运行面原则

@@ -66,6 +66,10 @@ Task is done and eligible for memory writeback.
 Hermes cannot proceed without missing information, permission, environment, or
 human decision.
 
+Hermes must also enter `blocked` when Human Intervention Policy stop conditions
+are reached, such as repeated semantic failures, repeated review findings,
+exhausted retry budget, unsafe scope expansion, or token/time waste risk.
+
 ### replanning
 
 The original plan failed or became invalid. Codex analyzes and creates a new
@@ -104,3 +108,21 @@ executing -> reviewing:
 
 CLI timeout is a provider transport failure. It is not evidence that the
 architecture, workflow, or task plan is wrong.
+
+## Human Intervention Rule
+
+Hermes must not continue automatic execution indefinitely.
+
+```text
+executing -> blocked:
+  human intervention stop condition reached
+
+reviewing -> blocked:
+  repeated review finding or required approval
+
+replanning -> blocked:
+  replan budget exhausted or strategic direction unclear
+```
+
+See [Human Intervention Policy](human-intervention-policy.md) for budgets and
+stop conditions.

@@ -61,6 +61,10 @@ Required for:
 - payment or billing logic
 - irreversible changes
 
+Also required when Human Intervention Policy stop conditions require operator
+judgment, such as repeated failed revisions, repeated review findings, unsafe
+scope expansion, or unclear strategic direction.
+
 ## Risk to Review Mapping
 
 ```text
@@ -90,4 +94,4 @@ failed
 - Secrets exposure blocks immediately.
 - Failed tests cannot enter completed state.
 - Review Gate can raise risk but cannot lower risk.
-
+- The same required action repeated across two reviews must block automatic revision and request human intervention.

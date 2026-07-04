@@ -216,6 +216,29 @@ Only semantic execution failures, review failures, repeated implementation
 failures, invalid assumptions, or newly discovered constraints may trigger
 `replanning`.
 
+## Human Intervention Budget
+
+Execution retries and semantic revisions are bounded. Hermes must stop and ask
+for human intervention when repeated failure suggests missing context, wrong
+direction, unsafe scope, or wasteful token burn.
+
+Default v0.1 budgets:
+
+```yaml
+human_intervention_defaults:
+  transport_retry_budget: 2
+  semantic_revision_budget: 2
+  replanning_budget: 1
+  malformed_output_budget: 1
+  clarification_budget: 1
+  provider_switch_budget: 1
+```
+
+When a budget is exhausted, Hermes emits `human_intervention_request` and moves
+the task to `blocked` instead of continuing automatic execution.
+
+See [Human Intervention Policy](human-intervention-policy.md).
+
 ## PermissionRequest
 
 ```yaml
@@ -274,3 +297,4 @@ provider_error:
 - Permission gaps require `permission_request`.
 - Code changes must capture diff.
 - CodeBuddy result must pass Review Gate before delivery.
+- Repeated semantic failure, repeated review failure, or exhausted retry budget requires human intervention.
