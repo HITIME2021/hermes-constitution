@@ -76,6 +76,25 @@ minimal CodeBuddy smoke test, only when explicitly approved
 Hermes must not read CodeBuddy credential files, tokens, session stores, or
 configuration secrets.
 
+Forbidden by default:
+
+```text
+read ~/.codebuddy/*
+read ~/.codebuddy/settings.json
+read ~/.codebuddy/user-state.json
+read CodeBuddy auth files
+read CodeBuddy token files
+read CodeBuddy session stores
+read CodeBuddy config secrets
+infer auth mode from credential file contents
+copy CodeBuddy credentials to another provider
+store CodeBuddy auth material in memory
+```
+
+Hermes may verify CodeBuddy readiness through CLI behavior, not credential file
+inspection. If `codebuddy auth status` is unavailable or hangs, use an explicitly
+approved minimal smoke test instead of reading files under `~/.codebuddy/`.
+
 ## Auth Readiness Record
 
 Hermes may record non-secret readiness metadata:
@@ -119,7 +138,7 @@ surface unless verified in that execution plane.
 - Auth setup is a bootstrap/operator responsibility.
 - Hermes must not automatically log in, log out, rotate, copy, or inspect credentials.
 - Hermes must not default Codex CLI to API-key billing when the operator intends ChatGPT/Plus OAuth.
+- Hermes must not read provider home credential/config directories such as `~/.codebuddy/`.
 - Provider auth failures move tasks to `blocked`, not `failed`.
 - Auth checks must be read-only unless the user explicitly approves a smoke test.
 - Auth material must never enter Memory Center.
-
