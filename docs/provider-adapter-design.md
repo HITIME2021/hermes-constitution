@@ -143,6 +143,21 @@ Before submitting a request, the adapter validates:
 The adapter may reject the request with `policy_violation` if it cannot safely
 submit it.
 
+## Auth Boundary Enforcement
+
+Provider adapters may use existing operator-authorized CLI sessions, but they
+must not manage credential material.
+
+For Codex in this operator environment, the default auth path is WSL
+ChatGPT/OAuth login through `codex login`. Adapters must not default to
+`OPENAI_API_KEY` for Codex execution when the operator intends to use
+ChatGPT/Plus entitlement.
+
+Adapters must reject or block requests that require reading token files, copying
+credentials between surfaces, injecting API keys, or passing auth material to
+another provider. Auth failures are classified as transport/provider readiness
+issues and move the task to `blocked`, not semantic task failure.
+
 ## Execution Plane Enforcement
 
 Adapters must execute in the same production plane as the project checkout,

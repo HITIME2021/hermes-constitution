@@ -106,6 +106,7 @@ diagrams/
 - [运行时与 Provider 接口](docs/runtime-and-provider-interfaces.zh-CN.md)
 - [宪法快照策略](docs/constitution-snapshot.zh-CN.md)
 - [Command Handler 设计](docs/command-handler-design.zh-CN.md)
+- [Provider 认证策略](docs/provider-auth-policy.zh-CN.md)
 - [人工介入策略](docs/human-intervention-policy.zh-CN.md)
 - [简单 Shell 直通模式](docs/simple-shell-direct-mode.zh-CN.md)
 - [项目策略](docs/project-policy.zh-CN.md)
@@ -127,6 +128,7 @@ diagrams/
 - 新增依赖默认需要 approval。
 - medium 及以上风险任务必须有 Codex planning 或 Codex review。
 - DeepSeek-V4-Pro 可以作为 LLM model backend 使用，但在 v0.1 中不是正式 Hermes Provider。它不能默认替代 Codex 的 planning/review，也不能替代 CodeBuddy 的 scoped execution，除非 Project Policy 明确升级它。
+- Codex CLI 默认使用操作者在 WSL 中通过 `codex login` 建立的 ChatGPT/OAuth 会话。Hermes 不得默认注入 `OPENAI_API_KEY`，也不得查看或保存认证材料。
 - 普通会话默认加载 `~/hermes-snapshots/current.md` 作为 constitution snapshot，不应每轮全量读取 `~/projects/hermes-constitution`。
 - 用户 slash command 应通过 Command Handler 实现，并声明 `effects`、`no_effects`，先经过 Command Policy Gate。
 - 安全、高频、只读的 shell 检查命令可以使用简单直通模式，减少不必要的规划和 token 消耗。
@@ -151,18 +153,19 @@ cd hermes-constitution
 4. docs/runtime-and-provider-interfaces.md
 5. docs/constitution-snapshot.md
 6. docs/command-handler-design.md
-7. docs/human-intervention-policy.md
-8. docs/simple-shell-direct-mode.md
-9. docs/project-policy.md
-10. docs/workflow-state-machine.md
-11. docs/capability-resolver.md
-12. docs/context-manager.md
-13. docs/execution-protocol.md
-14. docs/review-gate.md
-15. docs/memory-center.md
-16. docs/agent-profile-and-skills.md
-17. schemas/*.yaml
-18. decisions/*.md
+7. docs/provider-auth-policy.md
+8. docs/human-intervention-policy.md
+9. docs/simple-shell-direct-mode.md
+10. docs/project-policy.md
+11. docs/workflow-state-machine.md
+12. docs/capability-resolver.md
+13. docs/context-manager.md
+14. docs/execution-protocol.md
+15. docs/review-gate.md
+16. docs/memory-center.md
+17. docs/agent-profile-and-skills.md
+18. schemas/*.yaml
+19. decisions/*.md
 ```
 
 ## WSL / Windows 运行面原则

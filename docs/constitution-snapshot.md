@@ -94,6 +94,7 @@ A useful snapshot should include:
 - constitution version / git commit
 - execution plane policy
 - provider roles
+- provider auth policy
 - model backends
 - language policy
 - dry-run policy
@@ -119,6 +120,7 @@ Allowed formatting:
 Prefer clearer table or matrix structure for:
 
 - provider roles
+- provider auth and surface separation
 - model backends
 - WSL / Windows execution plane
 - language policy

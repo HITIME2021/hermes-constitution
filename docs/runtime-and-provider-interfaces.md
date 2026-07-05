@@ -148,6 +148,22 @@ CLI timeout
   -> no task replanning by default
 ```
 
+## Provider Auth Policy
+
+Provider authentication is owned by the operator, not Hermes automation.
+
+For the Windows 11 + WSL operator setup, Codex CLI should use the user's WSL
+ChatGPT/OAuth session created by `codex login`. Hermes must not inject
+`OPENAI_API_KEY` into Codex execution by default when the operator intends to use
+ChatGPT/Plus entitlement.
+
+Hermes may verify provider readiness through non-secret checks such as provider
+path, version, `codex doctor`, and explicitly approved smoke tests. It must not
+read, copy, store, or synthesize tokens, API keys, session cookies, credential
+files, or `.env` values.
+
+See [Provider Auth Policy](provider-auth-policy.md).
+
 ## Provider Role vs Model Backend
 
 Hermes provider roles are workflow responsibilities. Model backends are the

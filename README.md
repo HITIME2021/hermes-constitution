@@ -78,6 +78,9 @@ diagrams/
 - DeepSeek-V4-Pro may be configured as an LLM model backend, but it is not a
   formal Hermes provider in v0.1. It cannot replace Codex planning/review or
   CodeBuddy execution unless Project Policy explicitly promotes it.
+- Codex CLI should use the operator's WSL ChatGPT/OAuth session by default.
+  Hermes must not inject `OPENAI_API_KEY` or inspect credential material unless
+  explicitly approved.
 - Normal sessions should load `~/hermes-snapshots/current.md` as a pinned
   constitution snapshot instead of rereading the full constitution repository.
 - User slash commands should be implemented through Command Handlers with

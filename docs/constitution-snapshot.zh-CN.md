@@ -88,6 +88,7 @@ constitution_snapshot:
 - constitution version / git commit
 - 运行面策略
 - provider roles
+- provider auth 策略
 - model backends
 - 语言策略
 - dry-run 策略
@@ -111,6 +112,7 @@ constitution_snapshot:
 以下内容优先使用更清晰的表格或矩阵结构：
 
 - provider roles
+- provider auth 与 surface 分离
 - model backends
 - WSL / Windows 执行面
 - 语言策略
