@@ -1,6 +1,6 @@
 # Hermes Constitution 中文说明
 
-本仓库保存 Hermes v0.1 的工作宪法。
+本仓库保存 Hermes v0.2 的工作宪法。
 
 这里的“宪法”不是最终产品文档，而是 Hermes agent 在启动、规划、派发任务、审查结果和写入记忆时应当遵守的基础规则。
 
@@ -21,7 +21,7 @@ Hermes 是一个多 Agent 自动化调度平台。
 沉淀经验
 ```
 
-当前 v0.1 的基本分工是：
+当前 v0.2 的基本分工是：
 
 ```text
 Codex / GPT-5.5
@@ -105,6 +105,7 @@ diagrams/
 - [Hermes v0.1 架构](docs/hermes-v0.1-architecture.zh-CN.md)
 - [运行时与 Provider 接口](docs/runtime-and-provider-interfaces.zh-CN.md)
 - [宪法快照策略](docs/constitution-snapshot.zh-CN.md)
+- [宪法 Release](docs/constitution-release.zh-CN.md)
 - [Command Handler 设计](docs/command-handler-design.zh-CN.md)
 - [Provider 认证策略](docs/provider-auth-policy.zh-CN.md)
 - [Run Observability](docs/run-observability.zh-CN.md)
@@ -136,6 +137,7 @@ diagrams/
 - Dashboard 和 Kanban 可以作为 Hermes-managed provider orchestration run 的可观测性界面，但不是执行权威，不得绕过 policy 或 approval gate。
 - 安全、高频、只读的 shell 检查命令可以使用简单直通模式，减少不必要的规划和 token 消耗。
 - 自动化重试、修正和重规划都有预算；重复失败、方向不清、范围不安全或 token/time 不值得时，必须停止并请求人工介入。
+- 面向人的宪法 release 是 `v0.2`；基于 git commit 的 `constitution_version` 仍然是精确 snapshot 版本。
 
 ## WSL 如何使用
 
@@ -158,18 +160,19 @@ cd hermes-constitution
 6. docs/command-handler-design.md
 7. docs/provider-auth-policy.md
 8. docs/run-observability.md
-9. docs/human-intervention-policy.md
-10. docs/simple-shell-direct-mode.md
-11. docs/project-policy.md
-12. docs/workflow-state-machine.md
-13. docs/capability-resolver.md
-14. docs/context-manager.md
-15. docs/execution-protocol.md
-16. docs/review-gate.md
-17. docs/memory-center.md
-18. docs/agent-profile-and-skills.md
-19. schemas/*.yaml
-20. decisions/*.md
+9. docs/constitution-release.md
+10. docs/human-intervention-policy.md
+11. docs/simple-shell-direct-mode.md
+12. docs/project-policy.md
+13. docs/workflow-state-machine.md
+14. docs/capability-resolver.md
+15. docs/context-manager.md
+16. docs/execution-protocol.md
+17. docs/review-gate.md
+18. docs/memory-center.md
+19. docs/agent-profile-and-skills.md
+20. schemas/*.yaml
+21. decisions/*.md
 ```
 
 ## WSL / Windows 运行面原则

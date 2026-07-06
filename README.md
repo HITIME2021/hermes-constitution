@@ -2,13 +2,13 @@
 
 Chinese overview: [README.zh-CN.md](README.zh-CN.md)
 
-This repository contains the working constitution for Hermes v0.1.
+This repository contains the working constitution for Hermes v0.2.
 
 Hermes is designed as a multi-agent automation platform. Its core job is not to
 write every line of code itself, but to orchestrate roles, skills, context,
 execution providers, review gates, and long-term memory.
 
-## Current v0.1 Position
+## Current v0.2 Position
 
 - Hermes is the orchestration and learning layer.
 - Codex / GPT-5.5 is the senior brain: architecture, planning, algorithm design,
@@ -95,6 +95,8 @@ diagrams/
   Direct Mode to avoid unnecessary planning and token usage.
 - Hermes must stop automatic loops and request human intervention after bounded
   retry, revision, or replanning budgets are exhausted.
+- The human-facing constitution release is `v0.2`; git commit based
+  `constitution_version` remains the exact snapshot version.
 - Codex and CodeBuddy should be integrated through provider adapters over
   CLI/API for automation.
 - Project Policy has priority over AgentProfile, Skill, and Provider preference.
@@ -106,7 +108,7 @@ diagrams/
 ## Resume On Another Machine
 
 On the Windows 11 + WSL machine that runs the Hermes agent, copy or pull this
-repository and point Hermes at these documents as its v0.1 constitution.
+repository and point Hermes at these documents as its v0.2 constitution.
 
 Recommended future flow:
 
