@@ -23,6 +23,8 @@ Constitution snapshot:
 
 ```text
 constitution_version: 87a7b3e
+snapshot: ~/hermes-snapshots/current.md
+index: ~/hermes-snapshots/current.index.json
 ```
 
 Target project:
@@ -46,6 +48,14 @@ Codex planning
   -> Codex review
 ```
 
+Provider readiness:
+
+| Provider | CLI path | Version | Status |
+|----------|----------|---------|--------|
+| Codex | `/home/hitime/.local/bin/codex` | `0.142.5` | Ready |
+| CodeBuddy | `/home/hitime/.local/bin/codebuddy` | `2.117.0` | Ready |
+| DeepSeek | n/a | n/a | Not used |
+
 ## Result
 
 The live smoke test passed.
@@ -53,6 +63,8 @@ The live smoke test passed.
 Observed result:
 
 - Codex performed planning.
+- Codex planning used read-only sandboxing and produced a Task,
+  ExecutionRequest, and ReviewPlan.
 - CodeBuddy performed scoped execution.
 - `pytest` verification passed.
 - Codex performed final review.
@@ -60,6 +72,33 @@ Observed result:
 - No long-term memory writeback was performed.
 - No git commit or push was performed by the test.
 - All declared human intervention stop conditions remained untriggered.
+
+Execution summary:
+
+```text
+files_changed: tests/test_main.py
+lines_added: 21
+lines_removed: 0
+```
+
+Verification summary:
+
+```text
+pytest tests/test_main.py::TestResolveCategory -v -> 9 passed
+pytest tests/ -q                                  -> 244 passed
+```
+
+Codex review result:
+
+```text
+verdict: approved
+scope_boundary: pass
+no_dependency_change: pass
+no_production_code_change: pass
+test_preservation: pass
+no_private_alias_import: pass
+semantic_correctness: pass
+```
 
 Dependency policy was evaluated through the target project's dependency
 profile. For this project, Hermes identified a Python pip-based dependency
@@ -71,6 +110,19 @@ requirements-dev.txt
 ```
 
 Hermes did not hardcode `pyproject.toml` as the dependency boundary.
+
+Human intervention stop conditions:
+
+```text
+dependency manifest or lockfile change: not triggered
+allowed_scope violation: not triggered
+repeated test failure: not triggered
+provider credential directory read: not triggered
+provider auth failure: not triggered
+scope expansion: not triggered
+Codex planning failure: not triggered
+Codex review scope violation: not triggered
+```
 
 ## Decision
 
