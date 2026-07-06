@@ -36,6 +36,11 @@ and exact `show`, `watch`, and `runs` commands. Formal Kanban CLI commands must
 pass `--board <slug>` instead of relying on the current board. A task without a
 `run_id` is observable as a Kanban task, but it is not validated as a
 gateway-managed run.
+
+Run logs must be traceable by board, task, run, and phase. Dashboard-visible
+comments should contain concise non-sensitive summaries; detailed local
+evidence should be referenced by path, not pasted into comments. Logs must not
+be written to git, long-term memory, or uploaded unless explicitly approved.
 <!-- /snapshot:block -->
 
 Expected phase events:
@@ -158,6 +163,67 @@ completed | blocked | failed
 
 If a task has comments and completion but no `run_id`, it may still be a useful
 Kanban task, but it must not be reported as a validated gateway-managed run.
+
+## Traceable Logs
+
+Run observability must preserve enough evidence to audit what happened without
+turning Dashboard comments into raw log dumps.
+
+Logs should separate:
+
+- dashboard-visible summaries
+- local evidence files
+
+Dashboard-visible comments:
+
+- use short non-sensitive summaries
+- cite local evidence paths when needed
+- do not paste full provider stdout/stderr
+- do not paste long pytest logs
+- do not paste secrets, tokens, `.env` values, or credential material
+
+Recommended local evidence path:
+
+```text
+~/.hermes/kanban/logs/<board>/<task_id>/<run_id>/
+```
+
+Recommended files:
+
+```text
+codex-planning.summary.md
+codebuddy-execution.summary.md
+verification.log
+codex-review.summary.md
+final-report.json
+```
+
+Every evidence file should be traceable back to:
+
+```text
+board
+task_id
+run_id
+phase
+provider
+created_at
+```
+
+Final reports should include evidence paths, not full logs:
+
+```text
+evidence:
+  verification_log: ~/.hermes/kanban/logs/ghtip/t_xxx/2/verification.log
+  review_summary: ~/.hermes/kanban/logs/ghtip/t_xxx/2/codex-review.summary.md
+```
+
+Raw provider logs may be saved only when they are non-sensitive or redacted.
+If Hermes cannot determine whether a log contains secrets, it must withhold the
+raw log from Dashboard and Memory, then report `redacted` or `withheld` with a
+short reason.
+
+Logs must not be committed to git, written to long-term memory, or uploaded to
+external services unless the operator explicitly approves that action.
 
 ## Safety Rules
 
