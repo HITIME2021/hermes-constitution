@@ -94,6 +94,37 @@ secret scanning bypass
 
 ## Dependency Approval Packet
 
+Dependency changes are detected by the target project's dependency profile, not
+by one hardcoded filename.
+
+Dependency manifests may include, depending on the ecosystem:
+
+```text
+requirements.txt
+requirements-dev.txt
+pyproject.toml
+Pipfile
+package.json
+Cargo.toml
+go.mod
+```
+
+Lockfiles may include, depending on the ecosystem:
+
+```text
+uv.lock
+poetry.lock
+Pipfile.lock
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+Cargo.lock
+go.sum
+```
+
+Any change to a dependency manifest or lockfile is a dependency change unless
+Project Policy explicitly classifies that file differently.
+
 When Hermes requests a new dependency, it must provide:
 
 ```yaml
@@ -120,5 +151,6 @@ dependency_approval_request:
   execution request and the required approvals are present.
 - CodeBuddy cannot add dependencies.
 - New dependencies require approval.
+- Dependency manifest or lockfile changes require approval by default.
 - Project Policy changes are high risk and require Codex review.
 - Secrets never enter provider context or memory.

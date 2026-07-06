@@ -51,7 +51,7 @@ human_intervention_request:
 | Provider 传输失败耗尽 retry budget | retry budget 用尽 | 阻塞，默认不重规划 |
 | Provider malformed output 重复 | 2 次 malformed response | 作为 provider/adapter 问题阻塞 |
 | 需要扩大范围 | 任意 forbidden/protected scope 请求 | 请求用户或批准人 |
-| 需要新增依赖 | 任意新增 dependency | 请求用户 |
+| 依赖清单或 lockfile 变更 | 命中 dependency profile | 请求用户 |
 | secrets/auth/db/infra/deployment 写入或变更 | 任意一次 | 请求用户；critical 需要 L4 |
 | 验收标准冲突 | 任意冲突 | 请求用户 |
 | 澄清后仍不明确 | 1 次 clarification cycle 后仍不清楚 | 请求用户 |
@@ -90,6 +90,7 @@ human_intervention_defaults:
 - 反复 review rejection
 - 需求不清或冲突
 - 需要扩大 scope
+- dependency manifest 或 lockfile 变更
 - 风险高于原路由判断
 - provider 输出看似合理但方向错误
 - token 消耗相对任务价值已经不划算
@@ -139,4 +140,3 @@ blocked -> failed:
 - Codex 不能在 replan budget 之外反复重规划，除非用户批准。
 - 人工批准必须明确，并作为 evidence 记录。
 - dry-run 可以建议人工介入，但不能创建真实 approval state。
-

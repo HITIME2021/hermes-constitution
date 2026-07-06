@@ -111,6 +111,35 @@ force push
 
 新增依赖默认需要 approval。
 
+依赖变更由目标项目的 dependency profile 判断，不由单一硬编码文件名判断。
+
+Dependency manifest 可以包括：
+
+```text
+requirements.txt
+requirements-dev.txt
+pyproject.toml
+Pipfile
+package.json
+Cargo.toml
+go.mod
+```
+
+Lockfile 可以包括：
+
+```text
+uv.lock
+poetry.lock
+Pipfile.lock
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+Cargo.lock
+go.sum
+```
+
+除非 Project Policy 明确另行分类，否则任何 dependency manifest 或 lockfile 变更都属于 dependency change。
+
 Hermes 如果请求新增依赖，不能只问“要不要加”，而应提供 approval packet：
 
 ```text
@@ -146,6 +175,7 @@ high / critical 不能由 CodeBuddy 独立执行。
 CodeBuddy 不能新增依赖。
 CodeBuddy 不能自己扩大 allowed_scope。
 CodeBuddy 不能降低 risk_level。
+Dependency manifest 或 lockfile 变更默认需要 approval。
 ```
 
 Codex 默认负责：
@@ -183,4 +213,3 @@ secrets / credentials / tokens 默认 critical 风险。
 所有行为变更至少需要一种验证方式。
 Project Policy 变更本身是 high 风险，需要 Codex Review。
 ```
-

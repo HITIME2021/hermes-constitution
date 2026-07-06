@@ -137,6 +137,7 @@ Guidance:
 - prefer concise wording when clarity is preserved
 - keep all current critical policy sections represented
 - preserve explicit budgets, stop conditions, allowlists, and forbidden actions
+- preserve dependency profile rules for manifests and lockfiles
 - allow the snapshot to exceed 180 lines when the constitution grows
 - treat missing policy as a defect, even if the snapshot is short
 

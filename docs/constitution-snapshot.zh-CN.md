@@ -128,6 +128,7 @@ constitution_snapshot:
 - 在不损害清晰度的前提下尽量简洁
 - 当前关键策略 section 必须完整覆盖
 - 明确预算、停止条件、白名单和禁止动作必须保留
+- dependency manifest 与 lockfile 的 profile 规则必须保留
 - 宪法增长后，快照可以超过 180 行
 - 如果短快照遗漏策略，应视为缺陷
 

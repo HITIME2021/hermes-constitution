@@ -57,7 +57,7 @@ met.
 | Provider transport failures exhaust retry budget | retry budget exhausted | Block, do not replan by default |
 | Provider malformed output repeats | 2 malformed responses | Block as provider/adapter issue |
 | Scope expansion needed | any forbidden/protected scope request | Ask human or required approver |
-| New dependency needed | any new dependency | Ask human |
+| Dependency manifest or lockfile change | any dependency profile match | Ask human |
 | Secrets, credentials, auth, db, infra, deployment | any write/change | Ask human; critical may require L4 |
 | Acceptance criteria conflict | any conflict | Ask human |
 | User intent ambiguous after clarification | 1 failed clarification cycle | Ask human |
@@ -98,6 +98,7 @@ Human intervention is required for judgment failures:
 - repeated review rejection
 - unclear or conflicting requirement
 - scope needs to expand
+- dependency manifest or lockfile changes
 - risk becomes higher than originally routed
 - provider output is plausible but directionally wrong
 - token burn is no longer justified by the expected value
@@ -148,4 +149,3 @@ blocked -> failed:
 - Codex must not repeatedly replan beyond the replan budget without human approval.
 - Human approval must be explicit and recorded as evidence.
 - Dry-run may recommend intervention but must not create real approval state.
-
