@@ -255,6 +255,27 @@ permission_request:
     proposed: medium
 ```
 
+## Codex Scoped Repair
+
+Codex may be assigned execution work when review determines that a CodeBuddy
+revision is likely insufficient or has already failed. This is an execution
+phase, not a review phase.
+
+Required boundaries:
+
+- create a new ExecutionRequest
+- set `assigned_provider: codex`
+- use a narrow `allowed_scope`
+- preserve the Review Gate level required by risk
+- record why CodeBuddy revision was not enough
+- do not let the reviewer approve its own unreviewed repair
+- request human approval when scope, dependency, auth, database, security,
+  infrastructure, deployment, or policy risk requires it
+
+`codex_scoped_repair` should be used sparingly. It is a precision escalation
+path for complex findings, not a replacement for CodeBuddy as the default
+scoped executor.
+
 ## Provider Adapter
 
 Provider adapters translate Hermes protocol into provider-native execution.

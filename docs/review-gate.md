@@ -77,6 +77,28 @@ files, run scoped execution as an executor, approve its own unreviewed changes,
 or silently expand the task scope. Required fixes must become a new
 ExecutionRequest or a bounded revision phase before they are executed.
 
+Adversarial review may recommend `codex_scoped_repair` when CodeBuddy revision
+is likely insufficient, has already failed, or the finding depends on
+architecture, algorithm, hidden invariants, tests that may be false-positive,
+or unfamiliar framework behavior. `codex_scoped_repair` is an execution phase,
+not a review phase. It requires a fresh ExecutionRequest, explicit
+`allowed_scope`, risk evaluation, Review Gate coverage, and operator approval
+when the risk or scope requires it.
+
+Preferred escalation path:
+
+```text
+CodeBuddy execution
+  -> Codex adversarial review
+  -> CodeBuddy bounded revision
+  -> Codex review
+  -> if repeated failure or complex finding:
+       Codex repair planning
+       -> codex_scoped_repair ExecutionRequest
+       -> verification
+       -> independent Review Gate
+```
+
 Review comments should distinguish:
 
 ```text
@@ -135,6 +157,8 @@ failed
 - Medium and higher risk tasks use `adversarial` Codex review unless Project
   Policy explicitly chooses a stronger human approval path instead.
 - Codex review is read-only; the reviewer does not become the executor.
+- Codex may perform scoped repair only after review creates or recommends a
+  separate ExecutionRequest; the repair result still requires Review Gate.
 - High and critical work must include recovery or rollback consideration.
 - Forbidden file modification escalates immediately.
 - Secrets exposure blocks immediately.
