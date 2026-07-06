@@ -20,6 +20,8 @@ Provider orchestration comments 应使用稳定 marker `[provider-orchestration]
 Dashboard 可见的正式任务必须显式绑定 board、task、run 上下文。报告应包含 `board`、`task_id`、可用时的 `run_id`，以及精确的 `show`、`watch`、`runs` 命令。正式 Kanban CLI 命令必须传入 `--board <slug>`，不得依赖 current board。没有 `run_id` 的任务可以算 Kanban task 可见，但不能算已验证的 gateway-managed run。
 
 Run logs 必须能按 board、task、run、phase 追溯。Dashboard 可见 comments 应只包含简短且不含敏感信息的摘要；详细本地证据应通过路径引用，不应直接粘贴到 comments。除非用户明确批准，logs 不得写入 git、长期记忆或上传。
+
+Live provider orchestration 的本地 evidence 不得只有 summary。Evidence files 必须保留足够的 audit-grade details，使操作者不用重跑任务也能复盘发生了什么。最小证据集包括 exact commands run、git status before/after、`git diff --stat`、allowed files 的 scoped diff 或 patch summary、verification command and output summary、provider planning summary、execution summary、adversarial review verdict/findings、stop-condition checklist、final report fields，以及原始日志因安全原因被 redacted/withheld 时的说明。
 <!-- /snapshot:block -->
 
 建议记录的阶段事件：
@@ -166,6 +168,27 @@ verification.log
 codex-review.summary.md
 final-report.json
 ```
+
+对于 live provider orchestration 任务，这些文件必须包含 audit-grade details，不得只有最终 summary。如果使用单个 `evidence.txt` 代替上述拆分文件，它仍然必须包含同样的最小证据集：
+
+```text
+commands_run
+git_status_before
+git_status_after
+git_diff_stat
+scoped_diff_or_patch_summary
+verification_command
+verification_output_summary
+provider_planning_summary
+execution_summary
+adversarial_review_verdict
+adversarial_review_findings
+stop_condition_checklist
+final_report_fields
+redaction_or_withheld_notes
+```
+
+Evidence completeness 是最终结果的一部分。任务可以在 execution 和 verification 上通过，但如果 evidence path 存在却只有 summary，仍应报告 `evidence_completeness: needs_improvement`。
 
 每个 evidence file 都应能追溯到：
 

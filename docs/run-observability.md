@@ -41,6 +41,15 @@ Run logs must be traceable by board, task, run, and phase. Dashboard-visible
 comments should contain concise non-sensitive summaries; detailed local
 evidence should be referenced by path, not pasted into comments. Logs must not
 be written to git, long-term memory, or uploaded unless explicitly approved.
+
+Live provider orchestration evidence must not be summary-only. Local evidence
+files must preserve audit-grade details sufficient to reconstruct what happened
+without rerunning the task. At minimum, evidence must include exact commands
+run, git status before and after, `git diff --stat`, scoped diff or patch
+summary for allowed files, verification command and output summary, provider
+planning summary, execution summary, adversarial review verdict and findings,
+stop-condition checklist, final report fields, and a redaction/withheld note
+when raw logs are omitted for safety.
 <!-- /snapshot:block -->
 
 Expected phase events:
@@ -197,6 +206,32 @@ verification.log
 codex-review.summary.md
 final-report.json
 ```
+
+For live provider orchestration tasks, these files must contain audit-grade
+details, not only final summaries. If a single `evidence.txt` file is used
+instead of the recommended split files, it must still include the same minimum
+evidence set:
+
+```text
+commands_run
+git_status_before
+git_status_after
+git_diff_stat
+scoped_diff_or_patch_summary
+verification_command
+verification_output_summary
+provider_planning_summary
+execution_summary
+adversarial_review_verdict
+adversarial_review_findings
+stop_condition_checklist
+final_report_fields
+redaction_or_withheld_notes
+```
+
+Evidence completeness is part of the final result. A task may pass execution
+and verification while still reporting `evidence_completeness:
+needs_improvement` if the evidence path exists but contains only a summary.
 
 Every evidence file should be traceable back to:
 
