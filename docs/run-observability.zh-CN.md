@@ -16,6 +16,8 @@ Hermes Dashboard 和 Kanban 是可观测性与协作界面。
 Dashboard 是可观测性界面，不是执行权威。Kanban events、comments、heartbeats 和 run summaries 可以记录 Codex planning、CodeBuddy execution、verification、Codex review 等 provider orchestration 阶段。这些记录必须继续遵守 Provider Adapter、auth、dependency、memory 和 human-intervention 策略。
 
 Provider orchestration comments 应使用稳定 marker `[provider-orchestration]`，并至少包含 `phase`、`provider`、`status`、`summary`。可选字段包括 `run_id`、`evidence`、`files_changed`、`tests_run`、`stop_condition`、`next_action`。
+
+Dashboard 可见的正式任务必须显式绑定 board、task、run 上下文。报告应包含 `board`、`task_id`、可用时的 `run_id`，以及精确的 `show`、`watch`、`runs` 命令。正式 Kanban CLI 命令必须传入 `--board <slug>`，不得依赖 current board。没有 `run_id` 的任务可以算 Kanban task 可见，但不能算已验证的 gateway-managed run。
 <!-- /snapshot:block -->
 
 建议记录的阶段事件：
@@ -89,6 +91,46 @@ next_action: ask operator for scope approval or revert the out-of-scope diff.
 ```
 
 该约定不替代 Kanban 原生 events。它是在现有 Kanban comments/events 之上的轻量 comment contract。
+
+## Board / Task / Run 上下文
+
+Dashboard 可见的正式任务必须避免隐式 board state。
+
+每个正式任务报告都应包含：
+
+```text
+board: <board_slug>
+task_id: <task_id>
+run_id: <run_id | none>
+dashboard_url: <dashboard kanban URL>
+show_command: hermes kanban --board <board_slug> show <task_id>
+watch_command: hermes kanban --board <board_slug> watch
+runs_command: hermes kanban --board <board_slug> runs <task_id>
+```
+
+正式 CLI 示例：
+
+```bash
+hermes kanban --board ghtip create "..."
+hermes kanban --board ghtip show <task_id>
+hermes kanban --board ghtip watch
+hermes kanban --board ghtip runs <task_id>
+```
+
+正式任务不得依赖 current board。default board 和具名 board 使用不同的底层存储，未限定 board 的命令可能导致操作者、CLI 和 Dashboard 看到不同任务集。
+
+Gateway-managed run 验证必须有 run lifecycle。
+
+最小证据：
+
+```text
+claimed
+spawned
+heartbeat
+completed | blocked | failed
+```
+
+如果一个任务有 comments 和 completion 但没有 `run_id`，它仍然可以是有价值的 Kanban task，但不得报告为已验证的 gateway-managed run。
 
 ## 安全规则
 

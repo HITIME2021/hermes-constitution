@@ -29,6 +29,13 @@ Provider orchestration comments should use the stable marker
 `[provider-orchestration]` with at least `phase`, `provider`, `status`, and
 `summary`. Optional fields may include `run_id`, `evidence`, `files_changed`,
 `tests_run`, `stop_condition`, and `next_action`.
+
+Dashboard-visible formal tasks must bind board, task, and run context
+explicitly. Reports should include `board`, `task_id`, `run_id` when available,
+and exact `show`, `watch`, and `runs` commands. Formal Kanban CLI commands must
+pass `--board <slug>` instead of relying on the current board. A task without a
+`run_id` is observable as a Kanban task, but it is not validated as a
+gateway-managed run.
 <!-- /snapshot:block -->
 
 Expected phase events:
@@ -108,6 +115,49 @@ next_action: ask operator for scope approval or revert the out-of-scope diff.
 
 This convention does not replace native Kanban events. It is a lightweight
 comment contract layered on top of existing Kanban comments/events.
+
+## Board / Task / Run Context
+
+Dashboard-visible formal tasks must avoid implicit board state.
+
+Every formal task report should include:
+
+```text
+board: <board_slug>
+task_id: <task_id>
+run_id: <run_id | none>
+dashboard_url: <dashboard kanban URL>
+show_command: hermes kanban --board <board_slug> show <task_id>
+watch_command: hermes kanban --board <board_slug> watch
+runs_command: hermes kanban --board <board_slug> runs <task_id>
+```
+
+Formal CLI examples:
+
+```bash
+hermes kanban --board ghtip create "..."
+hermes kanban --board ghtip show <task_id>
+hermes kanban --board ghtip watch
+hermes kanban --board ghtip runs <task_id>
+```
+
+Do not rely on the current board for formal tasks. The default board and named
+boards use different backing stores, so an unqualified command can make the
+operator, CLI, and Dashboard inspect different task sets.
+
+Gateway-managed run validation requires a run lifecycle.
+
+Minimum evidence:
+
+```text
+claimed
+spawned
+heartbeat
+completed | blocked | failed
+```
+
+If a task has comments and completion but no `run_id`, it may still be a useful
+Kanban task, but it must not be reported as a validated gateway-managed run.
 
 ## Safety Rules
 
