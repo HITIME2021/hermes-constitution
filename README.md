@@ -83,6 +83,9 @@ diagrams/
   explicitly approved.
 - Normal sessions should load `~/hermes-snapshots/current.md` as a pinned
   constitution snapshot instead of rereading the full constitution repository.
+- `/reload-constitution` should generate snapshots from declared source
+  `snapshot:block` markers and write `current.index.json`; it must not depend on
+  a hand-maintained template as the policy source of truth.
 - User slash commands should be implemented through Command Handlers with
   declared `effects`, `no_effects`, and a Command Policy Gate.
 - Safe high-frequency read-only shell inspection commands may use Simple Shell

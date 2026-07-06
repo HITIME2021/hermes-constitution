@@ -14,12 +14,15 @@
 constitution_snapshot:
   default_path: ~/hermes-snapshots/current.md
   archive_path_template: ~/hermes-snapshots/archive/constitution-<commit>-<date>.md
+  index_path: ~/hermes-snapshots/current.index.json
   source_repo: ~/projects/hermes-constitution
 ```
 
 `current.md` 是稳定加载入口。重新生成快照时可以覆盖它。
 
 `archive/constitution-<commit>-<date>.md` 是可选历史归档，用于人工审查和回滚。
+
+`current.index.json` 记录生成 `current.md` 时使用的 snapshot blocks。它是生成产物，不得写入 `hermes-constitution` 源仓。
 
 ## 默认行为
 
@@ -73,13 +76,75 @@ constitution_snapshot:
 
 - 读取 `~/projects/hermes-constitution`
 - 获取当前 git `HEAD`
-- 生成简体中文 constitution snapshot
+- 扫描源文档中声明的 snapshot blocks
+- 从 block set 生成简体中文 constitution snapshot
 - 覆盖 `~/hermes-snapshots/current.md`
 - 归档一份到 `~/hermes-snapshots/archive/constitution-<commit>-<date>.md`
+- 写入 `~/hermes-snapshots/current.index.json`
+- 对比上一次 index，输出 added / changed / removed block id
 - 输出新的 `constitution_version`
 - 不执行项目任务
 - 不修改目标项目
 - 除非用户明确批准，否则不写入长期记忆
+
+## 源驱动 Snapshot Blocks
+
+Snapshot 生成必须由源文档驱动。生成器不得把一个大型手工模板当作策略内容的事实源。
+
+源文档可以用显式 block 标记声明必须进入快照的内容：
+
+```md
+<!-- snapshot:block-example id="dependency-policy" section="Project Policy" priority="40" -->
+依赖变更由目标项目的 dependency profile 判断。
+dependency manifest 与 lockfile 变更默认需要 approval。
+<!-- /snapshot:block-example -->
+```
+
+Block 规则：
+
+- `id` 必须稳定，并且在仓库内唯一
+- `section` 用于把相关 block 归入快照章节
+- `priority` 控制同一 section 内的排序
+- block 正文是策略内容，必须保留其语义
+- 英文源文档仍是协议事实源
+- 中文 source block 可用于操作者可读的快照措辞
+
+`/reload-constitution` 必须扫描源文档、抽取 snapshot blocks、按 section 与 priority 排序，然后由得到的 block set 渲染 `current.md`。
+
+旧的 `current.md` 不是事实源。生成器可以用上一次 snapshot index 做差异报告，但不得把旧 `current.md` 当成权威文件进行自由文本 patch。
+
+## Snapshot Index
+
+每次 reload 应在 current snapshot 旁边写入 index：
+
+```json
+{
+  "schema": "hermes.constitution_snapshot_index.v1",
+  "constitution_version": "acc73eb",
+  "generated_at": "2026-07-06T00:00:00Z",
+  "source_repo": "~/projects/hermes-constitution",
+  "snapshot_path": "~/hermes-snapshots/current.md",
+  "blocks": [
+    {
+      "id": "dependency-policy",
+      "section": "Project Policy",
+      "priority": 40,
+      "source": "docs/project-policy.md",
+      "hash": "sha256:..."
+    }
+  ]
+}
+```
+
+Index 用于检测并报告：
+
+- `added` blocks
+- `changed` blocks
+- `removed` blocks
+- 重复 block id
+- 缺失的必要 section
+
+变更检测不得只靠文件名启发式判断策略。应使用 block id 和内容 hash。
 
 ## 快照内容与格式
 
@@ -129,6 +194,8 @@ constitution_snapshot:
 - 当前关键策略 section 必须完整覆盖
 - 明确预算、停止条件、白名单和禁止动作必须保留
 - dependency manifest 与 lockfile 的 profile 规则必须保留
+- 所有已声明 snapshot blocks 必须保留，除非 block 本身无效
+- 遗漏、重复或格式错误的 block 必须作为生成缺陷报告
 - 宪法增长后，快照可以超过 180 行
 - 如果短快照遗漏策略，应视为缺陷
 

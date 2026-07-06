@@ -17,6 +17,7 @@ Default local storage:
 constitution_snapshot:
   default_path: ~/hermes-snapshots/current.md
   archive_path_template: ~/hermes-snapshots/archive/constitution-<commit>-<date>.md
+  index_path: ~/hermes-snapshots/current.index.json
   source_repo: ~/projects/hermes-constitution
 ```
 
@@ -25,6 +26,9 @@ constitution is reloaded.
 
 `archive/constitution-<commit>-<date>.md` is an optional historical copy for
 manual audit and rollback.
+
+`current.index.json` records the snapshot blocks used to build `current.md`.
+It is generated output and must not be stored in `hermes-constitution`.
 
 ## Default Behavior
 
@@ -79,13 +83,82 @@ Effects:
 
 - read `~/projects/hermes-constitution`
 - get current git `HEAD`
-- generate a Simplified Chinese snapshot
+- scan declared snapshot blocks from source documents
+- generate a Simplified Chinese snapshot from the block set
 - overwrite `~/hermes-snapshots/current.md`
 - archive a copy at `~/hermes-snapshots/archive/constitution-<commit>-<date>.md`
+- write `~/hermes-snapshots/current.index.json`
+- output added / changed / removed block ids compared with the previous index
 - output the new `constitution_version`
 - do not execute project tasks
 - do not mutate target projects
 - do not write long-term memory unless explicitly approved
+
+## Source-Driven Snapshot Blocks
+
+Snapshot generation must be source-driven. The snapshot generator must not rely
+on one large hand-maintained template as the authority for policy content.
+
+Source documents may declare required snapshot content with explicit block
+markers:
+
+```md
+<!-- snapshot:block-example id="dependency-policy" section="Project Policy" priority="40" -->
+Dependency changes are detected by the target project's dependency profile.
+Dependency manifest and lockfile changes require approval by default.
+<!-- /snapshot:block-example -->
+```
+
+Block rules:
+
+- `id` must be stable and unique across the repository
+- `section` groups related blocks in the generated snapshot
+- `priority` controls ordering inside a section
+- block body is policy content and must be preserved semantically
+- the English source document remains the protocol source of truth
+- Chinese source blocks may be used for operator-facing snapshot wording
+
+`/reload-constitution` must build `current.md` by scanning source documents,
+extracting snapshot blocks, sorting them by section and priority, and rendering
+the resulting block set.
+
+The previous snapshot is not a source of truth. The generator may compare with
+the previous snapshot index to report changes, but it must not patch old
+`current.md` as if that file were authoritative.
+
+## Snapshot Index
+
+Each reload should write an index next to the current snapshot:
+
+```json
+{
+  "schema": "hermes.constitution_snapshot_index.v1",
+  "constitution_version": "acc73eb",
+  "generated_at": "2026-07-06T00:00:00Z",
+  "source_repo": "~/projects/hermes-constitution",
+  "snapshot_path": "~/hermes-snapshots/current.md",
+  "blocks": [
+    {
+      "id": "dependency-policy",
+      "section": "Project Policy",
+      "priority": 40,
+      "source": "docs/project-policy.md",
+      "hash": "sha256:..."
+    }
+  ]
+}
+```
+
+The index is used to detect and report:
+
+- `added` blocks
+- `changed` blocks
+- `removed` blocks
+- duplicate block ids
+- missing required sections
+
+Change detection must not decide policy by filename-only heuristics. It should
+use block ids and content hashes.
 
 ## Snapshot Content and Format
 
@@ -138,6 +211,8 @@ Guidance:
 - keep all current critical policy sections represented
 - preserve explicit budgets, stop conditions, allowlists, and forbidden actions
 - preserve dependency profile rules for manifests and lockfiles
+- preserve all declared snapshot blocks unless a block is invalid
+- report omitted, duplicate, or malformed blocks as generation defects
 - allow the snapshot to exceed 180 lines when the constitution grows
 - treat missing policy as a defect, even if the snapshot is short
 

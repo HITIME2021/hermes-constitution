@@ -75,6 +75,7 @@ commands:
 | `generate_snapshot` | 从源文档生成新的宪法快照 |
 | `overwrite_current_snapshot` | 覆盖 `~/hermes-snapshots/current.md` |
 | `archive_versioned_snapshot` | 在 `~/hermes-snapshots/archive/` 下写入归档副本 |
+| `write_snapshot_index` | 写入 `~/hermes-snapshots/current.index.json`，用于 block 变更追踪 |
 | `read_file` | 读取一个或多个文件 |
 | `write_file` | 写入或覆盖一个已声明文件 |
 | `archive_file` | 将一个已声明文件移动或复制到归档路径 |
@@ -175,11 +176,16 @@ commands:
         type: path
         default: ~/hermes-snapshots/archive
         required: false
+      index_path:
+        type: path
+        default: ~/hermes-snapshots/current.index.json
+        required: false
     effects:
       - read_full_constitution
       - generate_snapshot
       - overwrite_current_snapshot
       - archive_versioned_snapshot
+      - write_snapshot_index
     no_effects:
       - task_execution
       - provider_execution
@@ -195,15 +201,32 @@ commands:
         - commit
         - snapshot_path
         - archive_path
+        - index_path
         - loaded_at
+        - added_blocks
+        - changed_blocks
+        - removed_blocks
     errors:
       - source_repo_not_found: "Constitution repository not found at the expected path."
       - git_head_unavailable: "Cannot determine current git HEAD."
+      - snapshot_block_duplicate: "Two or more source blocks declare the same id."
+      - snapshot_block_malformed: "A source block marker is malformed."
       - snapshot_write_failed: "Cannot write the generated snapshot."
+      - index_write_failed: "Cannot write the generated snapshot index."
       - archive_write_failed: "Cannot write the archived snapshot."
 ```
 
 该 handler 可以写入 `~/hermes-snapshots/` 下的快照文件。它不得把生成快照写入 `~/projects/hermes-constitution`。
+
+`reload_constitution` 必须由源文档驱动：
+
+- 扫描源文档中显式声明的 `snapshot:block` 标记
+- 从抽取出的 block set 渲染 `current.md`
+- 写入 `current.index.json`，记录 block id、section、priority、source path 与内容 hash
+- 对比上一次 index，并报告 added / changed / removed blocks
+- 拒绝重复 block id 和格式错误的 block marker
+- 不得把旧的 `current.md` 当成策略事实源
+- 不得只依赖手工维护的大型模板作为策略内容来源
 
 ## Caller Contract
 
@@ -229,4 +252,3 @@ Command handler 应独立测试。
 - 输出 schema 符合 `required_fields`
 - Command Policy Gate 会拒绝未声明或冲突的 effects
 - 除非明确声明，否则 command execution 不修改 Task 状态
-

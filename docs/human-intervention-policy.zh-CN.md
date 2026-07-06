@@ -58,6 +58,10 @@ human_intervention_request:
 | token/time 成本不值得 | 预计额外工作超过任务价值 | 请求用户 |
 | 生成计划违反宪法 | 任意违反 | 停止并请求用户 |
 
+<!-- snapshot:block id="dependency-human-intervention.zh-CN" section="Human Intervention" priority="51" -->
+只要命中目标项目的 dependency profile，dependency manifest 或 lockfile 变更就必须触发人工介入。即使具体 manifest 或 lockfile 文件名因生态不同而变化，也必须按 dependency change 处理。
+<!-- /snapshot:block -->
+
 ## 默认预算
 
 除非 Project Policy 更严格，v0.1 默认如下：

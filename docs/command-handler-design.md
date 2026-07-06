@@ -86,6 +86,7 @@ conversation suggests it.
 | `generate_snapshot` | Generate a new constitution snapshot from source docs |
 | `overwrite_current_snapshot` | Overwrite `~/hermes-snapshots/current.md` |
 | `archive_versioned_snapshot` | Write an archive copy under `~/hermes-snapshots/archive/` |
+| `write_snapshot_index` | Write `~/hermes-snapshots/current.index.json` for block change tracking |
 | `read_file` | Read one or more files |
 | `write_file` | Write or overwrite one declared file |
 | `archive_file` | Move or copy one declared file to an archive path |
@@ -197,11 +198,16 @@ commands:
         type: path
         default: ~/hermes-snapshots/archive
         required: false
+      index_path:
+        type: path
+        default: ~/hermes-snapshots/current.index.json
+        required: false
     effects:
       - read_full_constitution
       - generate_snapshot
       - overwrite_current_snapshot
       - archive_versioned_snapshot
+      - write_snapshot_index
     no_effects:
       - task_execution
       - provider_execution
@@ -217,16 +223,34 @@ commands:
         - commit
         - snapshot_path
         - archive_path
+        - index_path
         - loaded_at
+        - added_blocks
+        - changed_blocks
+        - removed_blocks
     errors:
       - source_repo_not_found: "Constitution repository not found at the expected path."
       - git_head_unavailable: "Cannot determine current git HEAD."
+      - snapshot_block_duplicate: "Two or more source blocks declare the same id."
+      - snapshot_block_malformed: "A source block marker is malformed."
       - snapshot_write_failed: "Cannot write the generated snapshot."
+      - index_write_failed: "Cannot write the generated snapshot index."
       - archive_write_failed: "Cannot write the archived snapshot."
 ```
 
 The handler may write snapshot files under `~/hermes-snapshots/`. It must not
 write generated snapshots into `~/projects/hermes-constitution`.
+
+`reload_constitution` must be source-driven:
+
+- scan source documents for explicit `snapshot:block` markers
+- render `current.md` from the extracted block set
+- write `current.index.json` with block ids, sections, priorities, source paths,
+  and content hashes
+- compare with the previous index and report added / changed / removed blocks
+- reject duplicate block ids and malformed markers
+- never treat the previous `current.md` as the policy source of truth
+- never rely on a hand-maintained template as the only source of policy content
 
 ## Caller Contract
 

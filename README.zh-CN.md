@@ -130,6 +130,7 @@ diagrams/
 - DeepSeek-V4-Pro 可以作为 LLM model backend 使用，但在 v0.1 中不是正式 Hermes Provider。它不能默认替代 Codex 的 planning/review，也不能替代 CodeBuddy 的 scoped execution，除非 Project Policy 明确升级它。
 - Codex CLI 默认使用操作者在 WSL 中通过 `codex login` 建立的 ChatGPT/OAuth 会话。Hermes 不得默认注入 `OPENAI_API_KEY`，也不得查看或保存认证材料。
 - 普通会话默认加载 `~/hermes-snapshots/current.md` 作为 constitution snapshot，不应每轮全量读取 `~/projects/hermes-constitution`。
+- `/reload-constitution` 应从源文档声明的 `snapshot:block` 标记生成快照，并写入 `current.index.json`；不得把手工维护的大型模板当作策略事实源。
 - 用户 slash command 应通过 Command Handler 实现，并声明 `effects`、`no_effects`，先经过 Command Policy Gate。
 - 安全、高频、只读的 shell 检查命令可以使用简单直通模式，减少不必要的规划和 token 消耗。
 - 自动化重试、修正和重规划都有预算；重复失败、方向不清、范围不安全或 token/time 不值得时，必须停止并请求人工介入。

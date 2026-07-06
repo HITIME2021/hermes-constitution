@@ -111,6 +111,7 @@ force push
 
 新增依赖默认需要 approval。
 
+<!-- snapshot:block id="dependency-policy.zh-CN" section="Project Policy" priority="41" -->
 依赖变更由目标项目的 dependency profile 判断，不由单一硬编码文件名判断。
 
 Dependency manifest 可以包括：
@@ -139,6 +140,7 @@ go.sum
 ```
 
 除非 Project Policy 明确另行分类，否则任何 dependency manifest 或 lockfile 变更都属于 dependency change。
+<!-- /snapshot:block -->
 
 Hermes 如果请求新增依赖，不能只问“要不要加”，而应提供 approval packet：
 

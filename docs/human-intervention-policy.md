@@ -64,6 +64,13 @@ met.
 | Token/time budget concern | projected extra work exceeds task value | Ask human |
 | Generated plan contradicts constitution | any contradiction | Stop and ask human |
 
+<!-- snapshot:block id="dependency-human-intervention" section="Human Intervention" priority="50" -->
+Dependency manifest or lockfile changes require human intervention whenever they
+match the target project's dependency profile. This must be treated as a
+dependency change even when the exact manifest or lockfile name differs by
+ecosystem.
+<!-- /snapshot:block -->
+
 ## Default Budgets
 
 These are v0.1 defaults unless Project Policy defines stricter limits.

@@ -1,0 +1,22 @@
+schema: hermes.constitution_snapshot_index.v1
+constitution_snapshot_index:
+  constitution_version: acc73eb
+  generated_at: "2026-07-06T00:00:00Z"
+  source_repo: ~/projects/hermes-constitution
+  snapshot_path: ~/hermes-snapshots/current.md
+  archive_path: ~/hermes-snapshots/archive/constitution-acc73eb-2026-07-06.md
+  blocks:
+    - id: dependency-policy
+      section: Project Policy
+      priority: 40
+      source: docs/project-policy.md
+      hash: sha256:example
+  changes:
+    added:
+      - dependency-policy
+    changed: []
+    removed: []
+  diagnostics:
+    duplicate_block_ids: []
+    malformed_blocks: []
+    missing_required_sections: []

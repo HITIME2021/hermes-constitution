@@ -94,6 +94,7 @@ secret scanning bypass
 
 ## Dependency Approval Packet
 
+<!-- snapshot:block id="dependency-policy" section="Project Policy" priority="40" -->
 Dependency changes are detected by the target project's dependency profile, not
 by one hardcoded filename.
 
@@ -124,6 +125,7 @@ go.sum
 
 Any change to a dependency manifest or lockfile is a dependency change unless
 Project Policy explicitly classifies that file differently.
+<!-- /snapshot:block -->
 
 When Hermes requests a new dependency, it must provide:
 
