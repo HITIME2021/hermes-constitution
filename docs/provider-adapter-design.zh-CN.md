@@ -1,4 +1,4 @@
-# Provider Adapter 设计
+﻿# Provider Adapter 设计
 
 Provider Adapter 是 Hermes Workflow Protocol 和具体 Provider CLI/API 之间的边界层。
 
@@ -117,9 +117,17 @@ write outside sandbox
 approve elevated permission
 ```
 
-Hermes 不得自动确认这些提示。除非当前任务已经明确批准了对应的具体动作，否则 Hermes 不得传入 `-y`、`--yes`、`--force`、`--accept` 或等价绕过参数。
+Hermes 不得自动确认会增加新 trust、auth、dependency、network、destructive operation、elevated permission、provider persistent settings 或 scope expansion 的提示。
 
-如果 Provider CLI 需要确认、需要 stdin/TTY 交互，或返回与确认相关的失败，Adapter 必须停止并返回分类结果：
+Hermes 可以在满足以下全部条件时使用 `-y` 或 `--yes` 等 non-interactive scoped execution flag：
+
+- 操作者已经批准当前 exact ExecutionRequest 进入 live execution
+- `allowed_scope`、`forbidden_scope`、provider、risk 和 verification commands 已明确
+- Provider action 仅限 `allowed_scope` 内的 scoped edit/test execution
+- 该动作不批准 auth/login、dependency install、network access、destructive operations、sudo/elevated permission、git commit/push、provider settings changes、credential access 或 scope expansion
+- final evidence 必须记录 `preapproved_noninteractive_execution: true`、使用的 bypass flag 和 exact approval scope
+
+如果 Provider CLI 需要确认、需要 stdin/TTY 交互，或返回与确认相关的失败，且不满足上述 pre-approved scoped execution 规则，Adapter 必须停止并返回分类结果：
 
 ```yaml
 provider_error:
@@ -144,7 +152,7 @@ recommended_response
 whether approval would expand scope, permissions, dependencies, or auth state
 ```
 
-未知确认提示默认视为不安全，直到操作者明确决定。Hermes 不得把确认提示当作普通 transport failure 反复重试。
+未知确认提示默认视为不安全，直到操作者明确决定。Hermes 不得把确认提示当作普通 transport failure 反复重试。Pre-approved non-interactive scoped execution 是效率规则，不是权限扩张。
 
 ## Codex Adapter
 

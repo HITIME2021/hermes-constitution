@@ -175,13 +175,26 @@ write outside sandbox
 approve elevated permission
 ```
 
-Hermes must not auto-confirm these prompts. It must not pass `-y`, `--yes`,
-`--force`, `--accept`, or equivalent bypass flags unless the exact action was
-explicitly approved for the current task.
+Hermes must not auto-confirm prompts that approve new trust, auth, dependency,
+network, destructive, elevated, persistent setting, or scope-expanding actions.
+
+Hermes may use non-interactive scoped execution flags such as `-y` or `--yes`
+only when all conditions are true:
+
+- the operator already approved live execution for the exact ExecutionRequest
+- `allowed_scope`, `forbidden_scope`, provider, risk, and verification commands
+  are explicit
+- the provider action is limited to scoped edit/test execution inside
+  `allowed_scope`
+- the action does not approve auth/login, dependency install, network access,
+  destructive operations, sudo/elevated permission, git commit/push, provider
+  settings changes, credential access, or scope expansion
+- the final evidence records `preapproved_noninteractive_execution: true`, the
+  bypass flag used, and the exact approval scope
 
 If a provider CLI requires confirmation, stdin/TTY interaction, or returns a
-confirmation-related failure, the adapter must stop and return a classified
-result:
+confirmation-related failure outside the pre-approved scoped execution rules,
+the adapter must stop and return a classified result:
 
 ```yaml
 provider_error:
@@ -208,6 +221,8 @@ whether approval would expand scope, permissions, dependencies, or auth state
 
 Unknown confirmation prompts are treated as unsafe until the operator decides.
 Hermes must not keep retrying a confirmation prompt as a transport failure.
+Pre-approved non-interactive scoped execution is an efficiency rule, not a
+permission expansion.
 <!-- /snapshot:block -->
 
 ## Execution Plane Enforcement

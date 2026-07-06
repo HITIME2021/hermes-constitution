@@ -203,9 +203,11 @@ auth_error:
   Move to blocked and wait for configuration repair.
 
 needs_user_confirmation:
-  Stop and ask the operator. Do not auto-confirm provider prompts, do not pass
-  `-y`/`--yes` or equivalent bypass flags, and do not retry as a generic
-  transport error.
+  Stop and ask the operator unless the prompt is only the provider's
+  non-interactive scoped execution confirmation for an already approved exact
+  ExecutionRequest. Do not use `-y`/`--yes` for auth, dependency install,
+  network, destructive, elevated, provider settings, git commit/push,
+  credential, or scope-expanding actions.
 
 provider_unavailable:
   Retry or mark blocked depending on retry budget.
@@ -322,7 +324,9 @@ provider_error:
 - Auth errors and quota/rate-limit errors move the task to blocked or delayed, not failed.
 - Transport retries are bounded and recorded as ExecutionAttempt, not Task retry.
 - Permission gaps require `permission_request`.
-- Provider interactive confirmations require operator approval and must not be auto-confirmed.
+- Provider interactive confirmations require operator approval unless they are
+  limited to pre-approved non-interactive scoped execution inside the exact
+  ExecutionRequest.
 - Code changes must capture diff.
 - CodeBuddy result must pass Review Gate before delivery.
 - Repeated semantic failure, repeated review failure, or exhausted retry budget requires human intervention.
