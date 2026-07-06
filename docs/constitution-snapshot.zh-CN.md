@@ -35,6 +35,10 @@ constitution_snapshot:
 
 当策略会影响任务行为时，Hermes 应在输出中标注 `constitution_version`。
 
+<!-- snapshot:block id="constitution-version-attribution.zh-CN" section="Constitution Snapshot" priority="31" -->
+任务报告必须把策略决策归因到已加载的 constitution snapshot version。Hermes 必须从已加载快照或其生成的 index 读取 `constitution_version`，不得从目标项目仓库推断。目标项目缺少 `.hermes/constitution.md` 不代表 constitution version 是 `N/A`。
+<!-- /snapshot:block -->
+
 ## 重新加载条件
 
 只有以下情况才应全量重新加载宪法：

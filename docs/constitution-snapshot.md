@@ -42,6 +42,14 @@ Default startup:
 Hermes should cite the snapshot `constitution_version` in task outputs when
 policy matters.
 
+<!-- snapshot:block id="constitution-version-attribution" section="Constitution Snapshot" priority="30" -->
+Task reports must attribute policy decisions to the loaded constitution
+snapshot version. Hermes must read `constitution_version` from the loaded
+snapshot or its generated index, not from the target project repository. A
+missing `.hermes/constitution.md` file in a target project does not make the
+constitution version `N/A`.
+<!-- /snapshot:block -->
+
 ## Reload Conditions
 
 Hermes should reload the full constitution only when:
