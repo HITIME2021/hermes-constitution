@@ -24,6 +24,11 @@ comments, heartbeats, and run summaries may record provider orchestration
 phases such as Codex planning, CodeBuddy execution, verification, and Codex
 review. These records must obey existing Provider Adapter, auth, dependency,
 memory, and human-intervention policies.
+
+Provider orchestration comments should use the stable marker
+`[provider-orchestration]` with at least `phase`, `provider`, `status`, and
+`summary`. Optional fields may include `run_id`, `evidence`, `files_changed`,
+`tests_run`, `stop_condition`, and `next_action`.
 <!-- /snapshot:block -->
 
 Expected phase events:
@@ -44,6 +49,65 @@ Events may be represented as Kanban comments, task events, run metadata,
 heartbeats, or structured gateway events. The exact transport can evolve, but
 the operator must be able to inspect the current phase and final result without
 reading raw provider logs first.
+
+## Provider Orchestration Comment Convention
+
+Provider orchestration comments should use a stable marker so humans, Hermes,
+and future tooling can identify phase records without requiring a new event
+system.
+
+Minimum format:
+
+```text
+[provider-orchestration]
+phase: <phase_name>
+provider: <provider_role>
+status: <started|completed|passed|approved|blocked|failed>
+summary: <short non-sensitive summary>
+```
+
+Required fields:
+
+- `phase`
+- `provider`
+- `status`
+- `summary`
+
+Optional fields:
+
+- `run_id`
+- `evidence`
+- `files_changed`
+- `tests_run`
+- `stop_condition`
+- `next_action`
+
+Example:
+
+```text
+[provider-orchestration]
+phase: verification.passed
+provider: local
+status: passed
+summary: pytest 6/6 passed.
+tests_run: pytest tests/
+evidence: tests/test_normalize_label.py
+```
+
+Blocked example:
+
+```text
+[provider-orchestration]
+phase: codex_review.blocked
+provider: codex
+status: blocked
+stop_condition: review_scope_violation
+summary: Codex review found a modification outside allowed_scope.
+next_action: ask operator for scope approval or revert the out-of-scope diff.
+```
+
+This convention does not replace native Kanban events. It is a lightweight
+comment contract layered on top of existing Kanban comments/events.
 
 ## Safety Rules
 

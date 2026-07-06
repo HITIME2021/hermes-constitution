@@ -14,6 +14,8 @@ Hermes Dashboard 和 Kanban 是可观测性与协作界面。
 当需要 Dashboard 可视化时，provider orchestration live test 应作为 Hermes-managed Kanban task 运行，或写入等价的 Kanban events。外部终端中直接调用 Codex 或 CodeBuddy 的 CLI 不会自动出现在 Dashboard 中，除非 Hermes 把这些阶段记录为 task/run events。
 
 Dashboard 是可观测性界面，不是执行权威。Kanban events、comments、heartbeats 和 run summaries 可以记录 Codex planning、CodeBuddy execution、verification、Codex review 等 provider orchestration 阶段。这些记录必须继续遵守 Provider Adapter、auth、dependency、memory 和 human-intervention 策略。
+
+Provider orchestration comments 应使用稳定 marker `[provider-orchestration]`，并至少包含 `phase`、`provider`、`status`、`summary`。可选字段包括 `run_id`、`evidence`、`files_changed`、`tests_run`、`stop_condition`、`next_action`。
 <!-- /snapshot:block -->
 
 建议记录的阶段事件：
@@ -31,6 +33,62 @@ final_report.completed
 ```
 
 事件可以表现为 Kanban comment、task event、run metadata、heartbeat 或结构化 gateway event。具体传输方式可以演进，但操作者必须能在不先阅读原始 provider 日志的情况下看到当前阶段和最终结果。
+
+## Provider Orchestration Comment 约定
+
+Provider orchestration comments 应使用稳定 marker，方便人类、Hermes 和未来工具识别阶段记录，而不需要新建一套 event system。
+
+最小格式：
+
+```text
+[provider-orchestration]
+phase: <phase_name>
+provider: <provider_role>
+status: <started|completed|passed|approved|blocked|failed>
+summary: <short non-sensitive summary>
+```
+
+必填字段：
+
+- `phase`
+- `provider`
+- `status`
+- `summary`
+
+可选字段：
+
+- `run_id`
+- `evidence`
+- `files_changed`
+- `tests_run`
+- `stop_condition`
+- `next_action`
+
+示例：
+
+```text
+[provider-orchestration]
+phase: verification.passed
+provider: local
+status: passed
+summary: pytest 6/6 passed.
+tests_run: pytest tests/
+evidence: tests/test_normalize_label.py
+```
+
+阻塞示例：
+
+```text
+[provider-orchestration]
+phase: codex_review.blocked
+provider: codex
+status: blocked
+stop_condition: review_scope_violation
+summary: Codex review found a modification outside allowed_scope.
+next_action: ask operator for scope approval or revert the out-of-scope diff.
+```
+
+该约定不替代 Kanban 原生 events。它是在现有 Kanban comments/events 之上的轻量 comment contract。
 
 ## 安全规则
 
