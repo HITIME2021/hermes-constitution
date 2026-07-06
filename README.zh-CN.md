@@ -107,6 +107,7 @@ diagrams/
 - [宪法快照策略](docs/constitution-snapshot.zh-CN.md)
 - [Command Handler 设计](docs/command-handler-design.zh-CN.md)
 - [Provider 认证策略](docs/provider-auth-policy.zh-CN.md)
+- [Run Observability](docs/run-observability.zh-CN.md)
 - [人工介入策略](docs/human-intervention-policy.zh-CN.md)
 - [简单 Shell 直通模式](docs/simple-shell-direct-mode.zh-CN.md)
 - [项目策略](docs/project-policy.zh-CN.md)
@@ -132,6 +133,7 @@ diagrams/
 - 普通会话默认加载 `~/hermes-snapshots/current.md` 作为 constitution snapshot，不应每轮全量读取 `~/projects/hermes-constitution`。
 - `/reload-constitution` 应从源文档声明的 `snapshot:block` 标记生成快照，并写入 `current.index.json`；不得把手工维护的大型模板当作策略事实源。
 - 用户 slash command 应通过 Command Handler 实现，并声明 `effects`、`no_effects`，先经过 Command Policy Gate。
+- Dashboard 和 Kanban 可以作为 Hermes-managed provider orchestration run 的可观测性界面，但不是执行权威，不得绕过 policy 或 approval gate。
 - 安全、高频、只读的 shell 检查命令可以使用简单直通模式，减少不必要的规划和 token 消耗。
 - 自动化重试、修正和重规划都有预算；重复失败、方向不清、范围不安全或 token/time 不值得时，必须停止并请求人工介入。
 
@@ -155,18 +157,19 @@ cd hermes-constitution
 5. docs/constitution-snapshot.md
 6. docs/command-handler-design.md
 7. docs/provider-auth-policy.md
-8. docs/human-intervention-policy.md
-9. docs/simple-shell-direct-mode.md
-10. docs/project-policy.md
-11. docs/workflow-state-machine.md
-12. docs/capability-resolver.md
-13. docs/context-manager.md
-14. docs/execution-protocol.md
-15. docs/review-gate.md
-16. docs/memory-center.md
-17. docs/agent-profile-and-skills.md
-18. schemas/*.yaml
-19. decisions/*.md
+8. docs/run-observability.md
+9. docs/human-intervention-policy.md
+10. docs/simple-shell-direct-mode.md
+11. docs/project-policy.md
+12. docs/workflow-state-machine.md
+13. docs/capability-resolver.md
+14. docs/context-manager.md
+15. docs/execution-protocol.md
+16. docs/review-gate.md
+17. docs/memory-center.md
+18. docs/agent-profile-and-skills.md
+19. schemas/*.yaml
+20. decisions/*.md
 ```
 
 ## WSL / Windows 运行面原则

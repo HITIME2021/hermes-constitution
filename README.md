@@ -88,6 +88,9 @@ diagrams/
   a hand-maintained template as the policy source of truth.
 - User slash commands should be implemented through Command Handlers with
   declared `effects`, `no_effects`, and a Command Policy Gate.
+- Dashboard and Kanban may be used as observability surfaces for
+  Hermes-managed provider orchestration runs, but they are not execution
+  authority and must not bypass policy or approval gates.
 - Safe high-frequency read-only shell inspection commands may use Simple Shell
   Direct Mode to avoid unnecessary planning and token usage.
 - Hermes must stop automatic loops and request human intervention after bounded
