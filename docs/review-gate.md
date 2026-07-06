@@ -49,6 +49,49 @@ Codex checks:
 - maintainability
 - memory candidates
 
+<!-- snapshot:block id="codex-review-modes" section="Review Gate" priority="70" -->
+## Codex Review Modes
+
+Codex review has two modes:
+
+```text
+normal       = standard correctness, scope, test, and maintainability review
+adversarial  = stronger skeptical review that actively looks for hidden
+               regressions, missing edge cases, unsafe scope expansion,
+               security issues, dependency risk, and approval bypasses
+```
+
+`adversarial` review is required by default for:
+
+- medium and higher risk tasks
+- architecture, provider routing, Review Gate, memory, or constitution changes
+- dependency manifest or lockfile changes
+- auth, secrets, permissions, database, infrastructure, deployment, billing, or
+  security-sensitive changes
+- repeated test failures, repeated review findings, or replanning after a
+  failed attempt
+- any task where the operator explicitly asks for stronger review
+
+Codex review is review-only. During a review phase, the reviewer must not edit
+files, run scoped execution as an executor, approve its own unreviewed changes,
+or silently expand the task scope. Required fixes must become a new
+ExecutionRequest or a bounded revision phase before they are executed.
+
+Review comments should distinguish:
+
+```text
+approved
+approved_with_notes
+needs_revision
+blocked
+escalate_to_human
+```
+
+If adversarial review finds a blocking issue, the task must not enter
+completed state until the issue is resolved, explicitly waived by the operator,
+or escalated under Human Intervention Policy.
+<!-- /snapshot:block -->
+
 ## L4 Human Approval
 
 Required for:
@@ -89,6 +132,9 @@ failed
 
 - CodeBuddy code changes require at least L1.
 - Medium and higher risk tasks require L3 Codex review.
+- Medium and higher risk tasks use `adversarial` Codex review unless Project
+  Policy explicitly chooses a stronger human approval path instead.
+- Codex review is read-only; the reviewer does not become the executor.
 - High and critical work must include recovery or rollback consideration.
 - Forbidden file modification escalates immediately.
 - Secrets exposure blocks immediately.
