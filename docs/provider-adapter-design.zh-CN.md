@@ -101,6 +101,51 @@ execution_error
 
 传输错误默认不触发任务重规划，只消耗 `ExecutionAttempt` 的重试预算。只有语义执行失败、审查失败、重复实现失败、无效假设或新发现约束才可能触发 replanning。
 
+## 交互式确认边界
+
+Provider CLI 在执行时可能要求交互式确认，例如：
+
+```text
+trust directory
+allow command
+apply patch
+continue despite risk
+authenticate or log in
+install dependency
+use network
+write outside sandbox
+approve elevated permission
+```
+
+Hermes 不得自动确认这些提示。除非当前任务已经明确批准了对应的具体动作，否则 Hermes 不得传入 `-y`、`--yes`、`--force`、`--accept` 或等价绕过参数。
+
+如果 Provider CLI 需要确认、需要 stdin/TTY 交互，或返回与确认相关的失败，Adapter 必须停止并返回分类结果：
+
+```yaml
+provider_error:
+  category: provider_error
+  type: needs_user_confirmation
+  provider: codex | codebuddy
+  retryable: false
+  counts_as_task_failure: false
+  should_trigger_replanning: false
+  recommended_action: ask_operator
+```
+
+面向操作者的请求必须包含：
+
+```text
+provider
+prompt_type
+requested_action
+risk
+exact command or operation, when safe
+recommended_response
+whether approval would expand scope, permissions, dependencies, or auth state
+```
+
+未知确认提示默认视为不安全，直到操作者明确决定。Hermes 不得把确认提示当作普通 transport failure 反复重试。
+
 ## Codex Adapter
 
 Codex 是 Hermes 的高级推理 Provider。
@@ -173,4 +218,3 @@ Provider performs work.
 Review Gate decides quality.
 Memory Center stores reusable lessons.
 ```
-

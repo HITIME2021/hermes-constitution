@@ -120,6 +120,7 @@ In dry-run mode:
 unclear_requirement
 missing_context
 permission_denied
+needs_user_confirmation
 scope_conflict
 test_failure
 implementation_failed
@@ -200,6 +201,11 @@ rate_limit:
 
 auth_error:
   Move to blocked and wait for configuration repair.
+
+needs_user_confirmation:
+  Stop and ask the operator. Do not auto-confirm provider prompts, do not pass
+  `-y`/`--yes` or equivalent bypass flags, and do not retry as a generic
+  transport error.
 
 provider_unavailable:
   Retry or mark blocked depending on retry budget.
@@ -316,6 +322,7 @@ provider_error:
 - Auth errors and quota/rate-limit errors move the task to blocked or delayed, not failed.
 - Transport retries are bounded and recorded as ExecutionAttempt, not Task retry.
 - Permission gaps require `permission_request`.
+- Provider interactive confirmations require operator approval and must not be auto-confirmed.
 - Code changes must capture diff.
 - CodeBuddy result must pass Review Gate before delivery.
 - Repeated semantic failure, repeated review failure, or exhausted retry budget requires human intervention.

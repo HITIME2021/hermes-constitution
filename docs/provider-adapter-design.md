@@ -158,6 +158,58 @@ credentials between surfaces, injecting API keys, or passing auth material to
 another provider. Auth failures are classified as transport/provider readiness
 issues and move the task to `blocked`, not semantic task failure.
 
+<!-- snapshot:block id="provider-interactive-confirmation-boundary" section="Provider Adapter" priority="65" -->
+## Interactive Confirmation Boundary
+
+Provider CLIs may ask for interactive confirmation during execution, such as:
+
+```text
+trust directory
+allow command
+apply patch
+continue despite risk
+authenticate or log in
+install dependency
+use network
+write outside sandbox
+approve elevated permission
+```
+
+Hermes must not auto-confirm these prompts. It must not pass `-y`, `--yes`,
+`--force`, `--accept`, or equivalent bypass flags unless the exact action was
+explicitly approved for the current task.
+
+If a provider CLI requires confirmation, stdin/TTY interaction, or returns a
+confirmation-related failure, the adapter must stop and return a classified
+result:
+
+```yaml
+provider_error:
+  category: provider_error
+  type: needs_user_confirmation
+  provider: codex | codebuddy
+  retryable: false
+  counts_as_task_failure: false
+  should_trigger_replanning: false
+  recommended_action: ask_operator
+```
+
+The operator-facing request must include:
+
+```text
+provider
+prompt_type
+requested_action
+risk
+exact command or operation, when safe
+recommended_response
+whether approval would expand scope, permissions, dependencies, or auth state
+```
+
+Unknown confirmation prompts are treated as unsafe until the operator decides.
+Hermes must not keep retrying a confirmation prompt as a transport failure.
+<!-- /snapshot:block -->
+
 ## Execution Plane Enforcement
 
 Adapters must execute in the same production plane as the project checkout,

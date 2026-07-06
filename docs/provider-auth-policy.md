@@ -53,6 +53,7 @@ store auth tokens in memory
 pass auth material to CodeBuddy or other providers
 run codex logout unless explicitly requested
 run codex update as part of auth readiness
+auto-confirm Codex trust/auth/permission prompts
 ```
 
 Hermes may invoke Codex CLI through the existing WSL OAuth session. If
@@ -89,6 +90,7 @@ read CodeBuddy config secrets
 infer auth mode from credential file contents
 copy CodeBuddy credentials to another provider
 store CodeBuddy auth material in memory
+auto-confirm CodeBuddy trust/auth/permission prompts
 ```
 
 Hermes may verify CodeBuddy readiness through CLI behavior, not credential file
@@ -139,6 +141,7 @@ surface unless verified in that execution plane.
 - Hermes must not automatically log in, log out, rotate, copy, or inspect credentials.
 - Hermes must not default Codex CLI to API-key billing when the operator intends ChatGPT/Plus OAuth.
 - Hermes must not read provider home credential/config directories such as `~/.codebuddy/`.
+- Hermes must not auto-confirm provider trust, auth, permission, install, or elevated-action prompts.
 - Provider auth failures move tasks to `blocked`, not `failed`.
 - Auth checks must be read-only unless the user explicitly approves a smoke test.
 - Auth material must never enter Memory Center.
