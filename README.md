@@ -48,6 +48,8 @@ task -> role -> skill -> provider -> review -> memory
 ```text
 docs/
   Architecture and module design documents.
+  - prompt-distillation.md: Prompt compression and provider packet policy.
+  - session-startup-policy.md: Snapshot loading and reload rules.
 
 schemas/
   Draft YAML schemas for core Hermes objects.
@@ -93,6 +95,10 @@ diagrams/
   authority and must not bypass policy or approval gates.
 - Safe high-frequency read-only shell inspection commands may use Simple Shell
   Direct Mode to avoid unnecessary planning and token usage.
+- Long prompts should be distilled into structured Task, ExecutionRequest,
+  ReviewPlan, stop-condition, and evidence packets before provider dispatch.
+- New Hermes sessions should load `~/hermes-snapshots/current.md` by default;
+  full constitution reload is used only when reload conditions are met.
 - Hermes must stop automatic loops and request human intervention after bounded
   retry, revision, or replanning budgets are exhausted.
 - The human-facing constitution release is `v0.2`; git commit based

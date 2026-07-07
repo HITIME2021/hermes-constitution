@@ -107,6 +107,8 @@ diagrams/
 - [宪法快照策略](docs/constitution-snapshot.zh-CN.md)
 - [宪法 Release](docs/constitution-release.zh-CN.md)
 - [Command Handler 设计](docs/command-handler-design.zh-CN.md)
+- [Prompt Distillation](docs/prompt-distillation.zh-CN.md)
+- [Session Startup Policy](docs/session-startup-policy.zh-CN.md)
 - [Provider 认证策略](docs/provider-auth-policy.zh-CN.md)
 - [Run Observability](docs/run-observability.zh-CN.md)
 - [人工介入策略](docs/human-intervention-policy.zh-CN.md)
@@ -133,6 +135,8 @@ diagrams/
 - Codex CLI 默认使用操作者在 WSL 中通过 `codex login` 建立的 ChatGPT/OAuth 会话。Hermes 不得默认注入 `OPENAI_API_KEY`，也不得查看或保存认证材料。
 - 普通会话默认加载 `~/hermes-snapshots/current.md` 作为 constitution snapshot，不应每轮全量读取 `~/projects/hermes-constitution`。
 - `/reload-constitution` 应从源文档声明的 `snapshot:block` 标记生成快照，并写入 `current.index.json`；不得把手工维护的大型模板当作策略事实源。
+- 长 prompt 应先提炼成结构化 Task、ExecutionRequest、ReviewPlan、stop conditions 和 evidence packet，再分发给 Provider。
+- Hermes 新会话默认加载 `~/hermes-snapshots/current.md`；只有满足 reload 条件时才全量读取 constitution repo。
 - 用户 slash command 应通过 Command Handler 实现，并声明 `effects`、`no_effects`，先经过 Command Policy Gate。
 - Dashboard 和 Kanban 可以作为 Hermes-managed provider orchestration run 的可观测性界面，但不是执行权威，不得绕过 policy 或 approval gate。
 - 安全、高频、只读的 shell 检查命令可以使用简单直通模式，减少不必要的规划和 token 消耗。
@@ -159,20 +163,22 @@ cd hermes-constitution
 5. docs/constitution-snapshot.md
 6. docs/command-handler-design.md
 7. docs/provider-auth-policy.md
-8. docs/run-observability.md
-9. docs/constitution-release.md
-10. docs/human-intervention-policy.md
-11. docs/simple-shell-direct-mode.md
-12. docs/project-policy.md
-13. docs/workflow-state-machine.md
-14. docs/capability-resolver.md
-15. docs/context-manager.md
-16. docs/execution-protocol.md
-17. docs/review-gate.md
-18. docs/memory-center.md
-19. docs/agent-profile-and-skills.md
-20. schemas/*.yaml
-21. decisions/*.md
+8. docs/prompt-distillation.md
+9. docs/session-startup-policy.md
+10. docs/run-observability.md
+11. docs/constitution-release.md
+12. docs/human-intervention-policy.md
+13. docs/simple-shell-direct-mode.md
+14. docs/project-policy.md
+15. docs/workflow-state-machine.md
+16. docs/capability-resolver.md
+17. docs/context-manager.md
+18. docs/execution-protocol.md
+19. docs/review-gate.md
+20. docs/memory-center.md
+21. docs/agent-profile-and-skills.md
+22. schemas/*.yaml
+23. decisions/*.md
 ```
 
 ## WSL / Windows 运行面原则
