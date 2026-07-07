@@ -114,6 +114,50 @@ In dry-run mode:
 - The output must remain schema-valid.
 - The ReviewPlan should describe what would be checked after live execution.
 
+<!-- snapshot:block id="task-premise-validation" section="Execution Protocol" priority="45" -->
+## Task Premise Validation
+
+Before live execution, Hermes must validate that the task premise is true in
+the selected target worktree and commit.
+
+Premises include referenced files, symbols, functions, commands, tests,
+configuration keys, documented behavior, and reported bugs. They must be
+verified against the active target checkout, not inferred from dirty working
+directories, previous smoke worktrees, unrelated branches, chat history, or
+memory.
+
+If a task references a symbol, file, or behavior that does not exist in the
+selected target worktree, Hermes must stop before provider execution.
+
+Stop result:
+
+```yaml
+stop_condition: task_premise_invalid_target_absent
+status: blocked_pending_operator_approval
+provider_execution_started: false
+codebuddy_called: false
+```
+
+The evidence must include:
+
+```text
+target_project
+worktree_path
+git_branch
+git_commit
+git_status
+premise_checked
+lookup_commands
+lookup_result
+source_of_false_premise, if known
+files_changed: 0
+```
+
+Hermes must not ask CodeBuddy to implement against a premise that was not
+validated. Failing fast on an invalid premise prevents token waste, runtime
+errors, false reports, and misleading evidence for Codex review.
+<!-- /snapshot:block -->
+
 ## Failure Types
 
 ```text
@@ -121,6 +165,7 @@ unclear_requirement
 missing_context
 permission_denied
 needs_user_confirmation
+task_premise_invalid_target_absent
 scope_conflict
 test_failure
 implementation_failed
@@ -314,6 +359,7 @@ provider_error:
 
 - Provider only executes within `allowed_scope`.
 - Dry-run must use `execution_mode: dry_run`; it must not create fake providers.
+- Task premises must be validated against the selected target worktree before live execution.
 - Provider cannot expand scope.
 - Provider cannot lower risk.
 - Provider must return structured results.

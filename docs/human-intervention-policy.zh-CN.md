@@ -52,6 +52,7 @@ human_intervention_request:
 | Provider malformed output 重复 | 2 次 malformed response | 作为 provider/adapter 问题阻塞 |
 | 需要扩大范围 | 任意 forbidden/protected scope 请求 | 请求用户或批准人 |
 | 依赖清单或 lockfile 变更 | 命中 dependency profile | 请求用户 |
+| 任务前提在目标 checkout 中不存在 | 任意引用的文件、符号或行为缺失 | Provider 执行前阻塞 |
 | secrets/auth/db/infra/deployment 写入或变更 | 任意一次 | 请求用户；critical 需要 L4 |
 | 验收标准冲突 | 任意冲突 | 请求用户 |
 | 澄清后仍不明确 | 1 次 clarification cycle 后仍不清楚 | 请求用户 |
@@ -61,6 +62,22 @@ human_intervention_request:
 <!-- snapshot:block id="dependency-human-intervention.zh-CN" section="Human Intervention" priority="51" -->
 只要命中目标项目的 dependency profile，dependency manifest 或 lockfile 变更就必须触发人工介入。即使具体 manifest 或 lockfile 文件名因生态不同而变化，也必须按 dependency change 处理。
 <!-- /snapshot:block -->
+## 任务前提校验
+
+Live execution 前，Hermes 必须在当前选定的 target worktree / commit 中验证任务前提是否成立。
+
+任务前提包括：引用的文件、符号、函数、命令、测试、配置键、文档行为和 bug 描述。它们必须来自当前目标 checkout，不能从 dirty working directory、旧 smoke worktree、无关分支、聊天历史或 memory 推断。
+
+如果任务引用的 symbol、file 或 behavior 在目标 worktree 中不存在，Hermes 必须在调用 CodeBuddy 前停止：
+
+```yaml
+stop_condition: task_premise_invalid_target_absent
+status: blocked_pending_operator_approval
+provider_execution_started: false
+codebuddy_called: false
+```
+
+Evidence 必须记录 target_project、worktree_path、git_branch、git_commit、git_status、premise_checked、lookup_commands、lookup_result、source_of_false_premise（如已知）以及 files_changed: 0。
 
 ## 默认预算
 

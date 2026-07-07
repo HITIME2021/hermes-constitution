@@ -58,6 +58,7 @@ met.
 | Provider malformed output repeats | 2 malformed responses | Block as provider/adapter issue |
 | Scope expansion needed | any forbidden/protected scope request | Ask human or required approver |
 | Dependency manifest or lockfile change | any dependency profile match | Ask human |
+| Task premise invalid or absent in target checkout | any missing referenced file/symbol/behavior | Block before provider execution |
 | Secrets, credentials, auth, db, infra, deployment | any write/change | Ask human; critical may require L4 |
 | Acceptance criteria conflict | any conflict | Ask human |
 | User intent ambiguous after clarification | 1 failed clarification cycle | Ask human |
