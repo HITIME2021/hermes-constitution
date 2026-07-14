@@ -4,6 +4,35 @@
 
 目标是减少日常检查中的 token 浪费，例如列目录、查版本、看 git 状态。
 
+<!-- snapshot:block id="simple-shell-direct-mode.zh-CN" section="Command Handling" priority="89" -->
+
+Hermes 可以直接执行白名单内的只读 shell 检查命令 —
+不经过 provider 调用、agent planning、task execution 或 memory writeback。
+
+Effect：`read_only_shell_inspection`
+
+No effects：
+- 不调用 Provider（no provider_execution, no provider_routing）
+- 不写长期记忆（no memory_writeback）
+- 不修改项目（no file_mutation, no task_execution）
+- 不联网、不访问 secrets、不改动依赖
+
+白名单示例：
+  grep, rg, ls, find, wc, head, tail, file, stat, du, df, pwd, tree
+  date, whoami, uname, which, type, command -v
+  git status, git diff --stat, git diff --name-only, git log --oneline
+  python --version, python3 --version, pip list, pip show <pkg>, pip freeze
+  npm list --depth=0, node --version, uv --version
+
+输出规则：
+- 直接返回命令原始 stdout——短输出不得用语义摘要替代。
+- 保留 stderr 和非零 exit code。
+- 输出限制：≤ 200 行且 ≤ 12000 字符，原样输出。
+- 超出任一限制时截断到边界，说明已截断，并建议用 head、tail、sed -n
+  或更窄的 grep/rg 继续查看。
+
+<!-- /snapshot:block -->
+
 ## 核心规则
 
 ```text

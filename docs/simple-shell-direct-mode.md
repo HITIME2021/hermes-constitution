@@ -7,6 +7,36 @@ memory writeback.
 The purpose is to reduce token waste for routine checks such as file listing,
 version inspection, and git status.
 
+<!-- snapshot:block id="simple-shell-direct-mode" section="Command Handling" priority="88" -->
+
+Hermes may execute allowlisted read-only shell inspection commands directly —
+without provider calls, agent planning, task execution, or memory writeback.
+
+Effect: `read_only_shell_inspection`
+
+No effects:
+- No provider call (no provider_execution, no provider_routing)
+- No memory writeback (no memory_writeback)
+- No project mutation (no file_mutation, no task_execution)
+- No network access, no secret access, no dependency change
+
+Allowlisted commands include:
+  grep, rg, ls, find, wc, head, tail, file, stat, du, df, pwd, tree
+  date, whoami, uname, which, type, command -v
+  git status, git diff --stat, git diff --name-only, git log --oneline
+  python --version, python3 --version, pip list, pip show <pkg>, pip freeze
+  npm list --depth=0, node --version, uv --version
+
+Output rule:
+- Return raw command stdout verbatim — no semantic summary for short output.
+- Preserve stderr and non-zero exit codes.
+- Output limits: ≤ 200 lines AND ≤ 12000 characters raw.
+- If stdout exceeds either limit, truncate to the bound and state that output
+  was truncated, then suggest a bounded follow-up command (head, tail, sed -n,
+  or narrower grep/rg).
+
+<!-- /snapshot:block -->
+
 ## Core Rule
 
 ```text
