@@ -101,6 +101,45 @@ execution_error
 
 传输错误默认不触发任务重规划，只消耗 `ExecutionAttempt` 的重试预算。只有语义执行失败、审查失败、重复实现失败、无效假设或新发现约束才可能触发 replanning。
 
+<!-- snapshot:block id="provider-self-edit-cost-boundary.zh-CN" section="Provider Adapter" priority="67" -->
+## Hermes 自我修改与 Provider 成本边界
+
+Hermes 是 orchestrator，不是默认 coder。本地 Hermes agent 个性化修改有时是必要的，
+但通过 Hermes 自身 model backend 进行 self-edit 只是受限 fallback，不是默认实现路径。
+
+代码修改的默认路由：
+
+```text
+Hermes planning -> CodeBuddy scoped execution -> verification -> Codex review
+```
+
+只有同时满足以下条件时，才允许 Hermes self-edit：
+
+- 目标是本地操作者个性化修改，不是 upstream contribution
+- scope 很小、明确，并且只限本地文件
+- 不触碰 auth、credential、provider configuration、memory、dependency、database、
+  deployment 或 security boundary
+- 不创建 git commit、push 或 pull request
+- 修改前已定义 tests 或 smoke checks
+- evidence 记录这是 local self-edit fallback
+
+遇到以下情况时，Hermes self-edit 必须停止，并路由到 provider orchestration：
+
+- 变更影响 input dispatch、shell execution、auth、memory、provider routing、
+  command approval、filesystem mutation 或其他 safety boundary
+- 修复需要重复尝试
+- 实现开始消耗大量 model context 或 token cost
+- CodeBuddy 可用，并且任务是 scoped code edit
+- 风险等级要求 Codex adversarial review
+
+DeepSeek-V4-Pro 或其他 Hermes model backend 不会因此成为默认 coding provider。
+成本敏感的 scoped implementation 应优先使用正式 executor provider，通常是
+CodeBuddy，除非 Project Policy 或操作者对该任务明确批准其他路由。
+
+本地 Hermes agent 个性化修改默认是操作者个人变更。除非操作者对具体任务明确改变
+策略，否则不得 commit、push 或向 upstream 创建 PR。
+<!-- /snapshot:block -->
+
 ## 交互式确认边界
 
 Provider CLI 在执行时可能要求交互式确认，例如：

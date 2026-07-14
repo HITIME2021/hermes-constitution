@@ -143,6 +143,48 @@ Before submitting a request, the adapter validates:
 The adapter may reject the request with `policy_violation` if it cannot safely
 submit it.
 
+<!-- snapshot:block id="provider-self-edit-cost-boundary" section="Provider Adapter" priority="66" -->
+## Hermes Self-Edit and Provider Cost Boundary
+
+Hermes is the orchestrator, not the default coder. Local Hermes agent
+customizations may be necessary, but self-editing through Hermes' own model
+backend is a bounded fallback, not the default implementation path.
+
+Default routing for code changes:
+
+```text
+Hermes planning -> CodeBuddy scoped execution -> verification -> Codex review
+```
+
+Hermes self-edit is allowed only when all conditions are true:
+
+- the target is a local operator customization, not an upstream contribution
+- the scope is small, explicit, and limited to local files
+- no auth, credential, provider configuration, memory, dependency, database,
+  deployment, or security boundary is touched
+- no git commit, push, or pull request will be created
+- tests or smoke checks are defined before the edit
+- evidence records that this was local self-edit fallback
+
+Hermes self-edit should stop and route to provider orchestration when:
+
+- the change affects input dispatch, shell execution, auth, memory, provider
+  routing, command approval, filesystem mutation, or other safety boundary
+- the fix requires repeated attempts
+- the implementation begins to consume substantial model context or token cost
+- CodeBuddy is available and the task is a scoped code edit
+- Codex adversarial review is required by risk level
+
+DeepSeek-V4-Pro or any other model backend used by Hermes does not become the
+default coding provider. Cost-sensitive scoped implementation should prefer the
+formal executor provider, normally CodeBuddy, unless Project Policy or operator
+approval says otherwise.
+
+Local Hermes agent customizations are personal operator changes by default.
+They must not be committed, pushed, or proposed upstream unless the operator
+explicitly changes that policy for the specific task.
+<!-- /snapshot:block -->
+
 ## Auth Boundary Enforcement
 
 Provider adapters may use existing operator-authorized CLI sessions, but they
