@@ -48,6 +48,10 @@ task -> role -> skill -> provider -> review -> memory
 ```text
 docs/
   Architecture and module design documents.
+  - tools-layer.md: Frontend/Backend tool classification and intake rules.
+  - planning-modes.md: Planning source of record and Codex role by mode.
+  - artifact-intake-gate.md: Artifact validation, normalization, and mapping.
+  - token-telemetry-policy.md: Token/cost telemetry paired with quality signals.
   - prompt-distillation.md: Prompt compression and provider packet policy.
   - session-startup-policy.md: Snapshot loading and reload rules.
 
@@ -97,6 +101,19 @@ diagrams/
   Direct Mode to avoid unnecessary planning and token usage.
 - Long prompts should be distilled into structured Task, ExecutionRequest,
   ReviewPlan, stop-condition, and evidence packets before provider dispatch.
+- Tools must be classified by effect: Frontend Tools produce advisory
+  artifacts, Backend Tools produce effects, and Hermes governs both. Ambiguous
+  tools default to Backend Tool treatment until the current usage mode is
+  proven artifact-only.
+- Hermes must choose one planning source of record per task:
+  `codex_native` by default, or `frontend_artifact_assisted` for complex or
+  ambiguous work that benefits from frontend planning artifacts.
+- Frontend artifacts must pass Artifact Intake Gate before they influence live
+  execution: validate source and tool mode, classify artifact type, detect
+  hidden effects, map to Hermes-native drafts, and pass review/approval.
+- Token telemetry should be recorded per provider/tool phase when available,
+  but it must be paired with quality telemetry; Hermes must not fabricate token
+  counts or optimize for low token use alone.
 - New Hermes sessions should load `~/hermes-snapshots/current.md` by default;
   full constitution reload is used only when reload conditions are met.
 - Hermes must stop automatic loops and request human intervention after bounded

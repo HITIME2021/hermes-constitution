@@ -104,6 +104,10 @@ diagrams/
 
 - [Hermes v0.1 架构](docs/hermes-v0.1-architecture.zh-CN.md)
 - [运行时与 Provider 接口](docs/runtime-and-provider-interfaces.zh-CN.md)
+- [Tools Layer 工具层](docs/tools-layer.zh-CN.md)
+- [Planning Modes 规划模式](docs/planning-modes.zh-CN.md)
+- [Artifact Intake Gate](docs/artifact-intake-gate.zh-CN.md)
+- [Token Telemetry Policy](docs/token-telemetry-policy.zh-CN.md)
 - [宪法快照策略](docs/constitution-snapshot.zh-CN.md)
 - [宪法 Release](docs/constitution-release.zh-CN.md)
 - [Command Handler 设计](docs/command-handler-design.zh-CN.md)
@@ -136,6 +140,10 @@ diagrams/
 - 普通会话默认加载 `~/hermes-snapshots/current.md` 作为 constitution snapshot，不应每轮全量读取 `~/projects/hermes-constitution`。
 - `/reload-constitution` 应从源文档声明的 `snapshot:block` 标记生成快照，并写入 `current.index.json`；不得把手工维护的大型模板当作策略事实源。
 - 长 prompt 应先提炼成结构化 Task、ExecutionRequest、ReviewPlan、stop conditions 和 evidence packet，再分发给 Provider。
+- 工具必须按 effect 分类：Frontend Tools 只产出 advisory artifacts，Backend Tools 会产生 effects；两者都由 Hermes 管控。Ambiguous Tools 默认按 Backend Tool 处理，直到当前 usage mode 被证明是 artifact-only。
+- Hermes 每个任务必须选择一个 planning source of record：默认 `codex_native`；复杂或模糊任务可使用 `frontend_artifact_assisted`，但 Frontend artifact 仍只是 input evidence。
+- Frontend artifacts 必须先通过 Artifact Intake Gate，完成 source/tool mode 校验、artifact 分类、hidden effects 检测、Hermes-native draft 映射和 review/approval，才能影响 live execution。
+- Token telemetry 应按 provider/tool phase 记录；不可获得时必须标记 `unavailable`，估算时必须标记 `estimated`，并且必须与 quality telemetry 配对，不能只按 token 低来判断成功。
 - Hermes 新会话默认加载 `~/hermes-snapshots/current.md`；只有满足 reload 条件时才全量读取 constitution repo。
 - 用户 slash command 应通过 Command Handler 实现，并声明 `effects`、`no_effects`，先经过 Command Policy Gate。
 - Dashboard 和 Kanban 可以作为 Hermes-managed provider orchestration run 的可观测性界面，但不是执行权威，不得绕过 policy 或 approval gate。
@@ -160,25 +168,29 @@ cd hermes-constitution
 2. README.zh-CN.md
 3. docs/hermes-v0.1-architecture.md
 4. docs/runtime-and-provider-interfaces.md
-5. docs/constitution-snapshot.md
-6. docs/command-handler-design.md
-7. docs/provider-auth-policy.md
-8. docs/prompt-distillation.md
-9. docs/session-startup-policy.md
-10. docs/run-observability.md
-11. docs/constitution-release.md
-12. docs/human-intervention-policy.md
-13. docs/simple-shell-direct-mode.md
-14. docs/project-policy.md
-15. docs/workflow-state-machine.md
-16. docs/capability-resolver.md
-17. docs/context-manager.md
-18. docs/execution-protocol.md
-19. docs/review-gate.md
-20. docs/memory-center.md
-21. docs/agent-profile-and-skills.md
-22. schemas/*.yaml
-23. decisions/*.md
+5. docs/tools-layer.md
+6. docs/planning-modes.md
+7. docs/artifact-intake-gate.md
+8. docs/token-telemetry-policy.md
+9. docs/constitution-snapshot.md
+10. docs/command-handler-design.md
+11. docs/provider-auth-policy.md
+12. docs/prompt-distillation.md
+13. docs/session-startup-policy.md
+14. docs/run-observability.md
+15. docs/constitution-release.md
+16. docs/human-intervention-policy.md
+17. docs/simple-shell-direct-mode.md
+18. docs/project-policy.md
+19. docs/workflow-state-machine.md
+20. docs/capability-resolver.md
+21. docs/context-manager.md
+22. docs/execution-protocol.md
+23. docs/review-gate.md
+24. docs/memory-center.md
+25. docs/agent-profile-and-skills.md
+26. schemas/*.yaml
+27. decisions/*.md
 ```
 
 ## WSL / Windows 运行面原则
