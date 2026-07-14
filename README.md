@@ -122,9 +122,10 @@ diagrams/
   `constitution_version` remains the exact snapshot version.
 - Codex and CodeBuddy should be integrated through provider adapters over
   CLI/API for automation.
-- Hermes self-edit is a bounded local fallback, not the default coding path.
-  Cost-sensitive scoped implementation should prefer CodeBuddy, followed by
-  verification and Codex review when risk requires it.
+- Hermes self-edit is disabled by default. Implementation work should route to
+  CodeBuddy scoped execution, followed by verification and Codex review when
+  risk requires it. Emergency self-edit requires explicit task-specific
+  operator override.
 - Project Policy has priority over AgentProfile, Skill, and Provider preference.
 - CodeBuddy is forbidden by default from modifying `auth`, `security`, `db`, and
   `infra` domains.

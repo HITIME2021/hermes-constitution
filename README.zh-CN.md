@@ -150,7 +150,7 @@ diagrams/
 - 安全、高频、只读的 shell 检查命令可以使用简单直通模式，减少不必要的规划和 token 消耗。
 - 自动化重试、修正和重规划都有预算；重复失败、方向不清、范围不安全或 token/time 不值得时，必须停止并请求人工介入。
 - 面向人的宪法 release 是 `v0.2`；基于 git commit 的 `constitution_version` 仍然是精确 snapshot 版本。
-- Hermes self-edit 是受限的本地 fallback，不是默认编码路径。成本敏感的 scoped implementation 应优先交给 CodeBuddy，并在风险需要时经过 verification 和 Codex review。
+- Hermes self-edit 默认禁用。Implementation work 应路由到 CodeBuddy scoped execution，并在风险需要时经过 verification 和 Codex review。Emergency self-edit 必须有操作者针对具体任务的明确 override。
 
 ## WSL 如何使用
 

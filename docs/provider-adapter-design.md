@@ -144,11 +144,11 @@ The adapter may reject the request with `policy_violation` if it cannot safely
 submit it.
 
 <!-- snapshot:block id="provider-self-edit-cost-boundary" section="Provider Adapter" priority="66" -->
-## Hermes Self-Edit and Provider Cost Boundary
+## Hermes Self-Edit Disabled by Default
 
 Hermes is the orchestrator, not the default coder. Local Hermes agent
 customizations may be necessary, but self-editing through Hermes' own model
-backend is a bounded fallback, not the default implementation path.
+backend is disabled by default.
 
 Default routing for code changes:
 
@@ -156,7 +156,12 @@ Default routing for code changes:
 Hermes planning -> CodeBuddy scoped execution -> verification -> Codex review
 ```
 
-Hermes self-edit is allowed only when all conditions are true:
+Hermes must not directly patch, rewrite, create, or delete code files through
+its own model/tool loop for implementation work. This applies even when the
+target is a local Hermes agent customization.
+
+Hermes self-edit may occur only under an explicit emergency override from the
+operator. The override must be task-specific and must include all of:
 
 - the target is a local operator customization, not an upstream contribution
 - the scope is small, explicit, and limited to local files
@@ -164,9 +169,14 @@ Hermes self-edit is allowed only when all conditions are true:
   deployment, or security boundary is touched
 - no git commit, push, or pull request will be created
 - tests or smoke checks are defined before the edit
-- evidence records that this was local self-edit fallback
+- the operator explicitly states that Hermes self-edit is allowed for this task
+- evidence records that this was an emergency local self-edit override
 
-Hermes self-edit should stop and route to provider orchestration when:
+Without that explicit override, Hermes must route implementation work to
+provider orchestration.
+
+Hermes self-edit is forbidden, even with a broad local customization request,
+when:
 
 - the change affects input dispatch, shell execution, auth, memory, provider
   routing, command approval, filesystem mutation, or other safety boundary
