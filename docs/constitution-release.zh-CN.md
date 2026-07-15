@@ -12,11 +12,12 @@
 ## 当前版本
 
 <!-- snapshot:block id="constitution-release.zh-CN" section="Constitution Release" priority="11" -->
-当前 Hermes 宪法 release：`v0.3`。
+当前 Hermes 宪法 release：`v0.3.1`。
 
-`v0.3` 表示宪法在已验证的 v0.2 本地编排基线上，新增了工具治理、artifact intake、
+`v0.3.1` 表示宪法在已验证的 v0.2 本地编排基线上，新增了工具治理、artifact intake、
 planning source control、token/quality telemetry、Simple Shell Direct Mode 安全边界，
-以及更严格的 Hermes self-edit 边界。
+以及更严格的 Hermes self-edit 边界。它还新增 WSL workspace layout separation，
+用于区分生产仓库、实验项目、provider worktree 和归档实验。
 
 已验证的 v0.2 控制回路：
 
@@ -35,6 +36,7 @@ v0.3 新增能力：
 - Token telemetry 必须与 quality telemetry 配对
 - Simple Shell Direct Mode 进入 snapshot，并采用 hard-reject safety posture
 - Hermes self-edit 默认禁用；implementation work 默认路由到 CodeBuddy scoped execution、verification 和 Codex review，除非操作者对具体任务明确给出 emergency override
+- Workspace Layout Policy 区分 `~/projects/production`、`~/projects/labs`、`~/projects/worktrees` 和 `~/projects/archive`
 
 已加载 snapshot 的精确 `constitution_version` 仍然是 git commit。release label 是面向人的成熟度标记。
 <!-- /snapshot:block -->
@@ -62,6 +64,15 @@ Codex native planning = default planning mode
 Frontend artifact assistance = optional for complex or ambiguous work
 Hermes ExecutionRequest = live execution authority
 Hermes self-edit = disabled by default
+```
+
+`v0.3.1` 是 v0.3 线的 workspace layout patch：
+
+```text
+production repos -> ~/projects/production
+tool validation and smoke projects -> ~/projects/labs
+provider worktrees -> ~/projects/worktrees
+retained old experiments -> ~/projects/archive
 ```
 
 未来版本号提升应通过 ADR 记录，并说明验证了什么能力，而不只是说明文档有变更。

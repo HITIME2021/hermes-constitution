@@ -12,12 +12,14 @@ It is separate from:
 ## Current Release
 
 <!-- snapshot:block id="constitution-release" section="Constitution Release" priority="10" -->
-Current Hermes constitution release: `v0.3`.
+Current Hermes constitution release: `v0.3.1`.
 
-`v0.3` means the constitution includes the validated v0.2 local orchestration
+`v0.3.1` means the constitution includes the validated v0.2 local orchestration
 baseline and adds tool governance, artifact intake, planning-source control,
 token/quality telemetry, simple shell direct-mode safety, and a stricter
-Hermes self-edit boundary.
+Hermes self-edit boundary. It also adds WSL workspace layout separation for
+production repositories, lab projects, provider worktrees, and archived
+experiments.
 
 Validated v0.2 control loops:
 
@@ -40,6 +42,8 @@ Added v0.3 capabilities:
 - Hermes self-edit disabled by default; implementation work routes to
   CodeBuddy scoped execution, verification, and Codex review unless an explicit
   task-specific emergency override is given
+- Workspace Layout Policy separates `~/projects/production`, `~/projects/labs`,
+  `~/projects/worktrees`, and `~/projects/archive`
 
 The git commit remains the exact `constitution_version` for a loaded snapshot.
 The release label is a human-facing maturity marker.
@@ -68,6 +72,15 @@ Codex native planning = default planning mode
 Frontend artifact assistance = optional for complex or ambiguous work
 Hermes ExecutionRequest = live execution authority
 Hermes self-edit = disabled by default
+```
+
+`v0.3.1` is the workspace layout patch for the v0.3 line:
+
+```text
+production repos -> ~/projects/production
+tool validation and smoke projects -> ~/projects/labs
+provider worktrees -> ~/projects/worktrees
+retained old experiments -> ~/projects/archive
 ```
 
 Future release bumps should be recorded by ADR and should explain what

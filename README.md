@@ -2,13 +2,13 @@
 
 Chinese overview: [README.zh-CN.md](README.zh-CN.md)
 
-This repository contains the working constitution for Hermes v0.3.
+This repository contains the working constitution for Hermes v0.3.1.
 
 Hermes is designed as a multi-agent automation platform. Its core job is not to
 write every line of code itself, but to orchestrate roles, skills, context,
 execution providers, review gates, and long-term memory.
 
-## Current v0.3 Position
+## Current v0.3.1 Position
 
 - Hermes is the orchestration and learning layer.
 - Codex / GPT-5.5 is the senior brain: architecture, planning, algorithm design,
@@ -50,6 +50,7 @@ docs/
   Architecture and module design documents.
   - tools-layer.md: Frontend/Backend tool classification and intake rules.
   - tools-adapter.md: Generic invocation, scope, evidence, and artifact mapping contract for external tools.
+  - workspace-layout-policy.md: WSL workspace separation for production, labs, worktrees, and archives.
   - planning-modes.md: Planning source of record and Codex role by mode.
   - artifact-intake-gate.md: Artifact validation, normalization, and mapping.
   - token-telemetry-policy.md: Token/cost telemetry paired with quality signals.
@@ -121,8 +122,11 @@ diagrams/
   full constitution reload is used only when reload conditions are met.
 - Hermes must stop automatic loops and request human intervention after bounded
   retry, revision, or replanning budgets are exhausted.
-- The human-facing constitution release is `v0.3`; git commit based
+- The human-facing constitution release is `v0.3.1`; git commit based
   `constitution_version` remains the exact snapshot version.
+- New WSL projects should be separated by workspace class:
+  `~/projects/production`, `~/projects/labs`, `~/projects/worktrees`, and
+  `~/projects/archive`.
 - Codex and CodeBuddy should be integrated through provider adapters over
   CLI/API for automation.
 - Hermes self-edit is disabled by default. Implementation work should route to
@@ -138,7 +142,7 @@ diagrams/
 ## Resume On Another Machine
 
 On the Windows 11 + WSL machine that runs the Hermes agent, copy or pull this
-repository and point Hermes at these documents as its v0.3 constitution.
+repository and point Hermes at these documents as its v0.3.1 constitution.
 
 Recommended future flow:
 
