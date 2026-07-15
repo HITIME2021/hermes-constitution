@@ -1,0 +1,72 @@
+flowchart TD
+    A["User Intent"] --> B["Session Startup<br/>load current snapshot"]
+    B --> C["Intake / Clarification"]
+    C --> D{"Simple Shell Direct Mode?"}
+    D -->|Read-only allowlisted shell| D1["Direct Shell Result<br/>raw stdout / stderr / exit code"]
+    D -->|Dangerous shell syntax| D2["Hard Reject<br/>no command executed"]
+    D -->|Normal task| E["Workflow Engine"]
+
+    E --> F["Tools Layer Classification"]
+    F --> F1{"Tool / Input Type"}
+    F1 -->|Frontend Tool artifact| G["Artifact Intake Gate"]
+    F1 -->|Backend Tool effect| H["ExecutionRequest Required"]
+    F1 -->|No tool yet| I["Planning Mode Selection"]
+
+    G --> G1["Validate source + mode"]
+    G1 --> G2["Classify artifact type"]
+    G2 --> G3["Premise alignment<br/>target worktree + commit"]
+    G3 --> G4["Normalize + map"]
+    G4 --> I
+
+    I --> I1{"planning_source_of_record"}
+    I1 -->|codex_native default| J["Codex Planning<br/>Task / ExecutionRequest / ReviewPlan"]
+    I1 -->|frontend_artifact_assisted| K["Codex Artifact Review + Normalize<br/>no duplicate full planning"]
+    K --> J
+
+    J --> L["Risk Evaluator"]
+    L --> M["Project Policy"]
+    M --> N["Stop Conditions<br/>scope / dependency / auth / memory / safety"]
+    N --> O{"Operator Approval Needed?"}
+    O -->|Yes| O1["Ask Operator<br/>approval packet"]
+    O1 --> O
+    O -->|Approved or not needed| P["Provider Routing"]
+
+    P --> P1{"Implementation Work?"}
+    P1 -->|Scoped coding| Q["CodeBuddy<br/>scoped execution"]
+    P1 -->|Planning / review / repair| R["Codex<br/>planning / review / adversarial review"]
+    P1 -->|Hermes self-edit request| S["Self-Edit Gate<br/>disabled by default"]
+    S -->|No emergency override| Q
+    S -->|Explicit emergency override| S1["Local self-edit fallback<br/>no commit / no push"]
+
+    Q --> T["Verification<br/>targeted + full tests when needed"]
+    S1 --> T
+    T --> U["Codex Review Gate"]
+    R --> U
+    U --> U1{"Review Verdict"}
+    U1 -->|approved / approved_with_notes| V["Finalize"]
+    U1 -->|needs_revision| Q
+    U1 -->|blocked / repeated finding| W["Human Intervention<br/>or codex_scoped_repair proposal"]
+
+    V --> X["Run Observability<br/>Kanban comments / events / evidence"]
+    X --> Y["Token + Quality Telemetry"]
+    Y --> Z{"Memory Writeback Approved?"}
+    Z -->|No| Z1["MemoryCandidate only<br/>no writeback"]
+    Z -->|Yes| Z2["Memory Center"]
+
+    Z1 --> AA["Final Report"]
+    Z2 --> AA
+    W --> AA
+
+    subgraph Authority["Authority Boundaries"]
+        AB1["Frontend Tool output = input evidence, not authority"]
+        AB2["Backend Tool execution = authority-bearing effect"]
+        AB3["Hermes ExecutionRequest = live execution authority"]
+        AB4["Codex = default planner/reviewer"]
+        AB5["CodeBuddy = default scoped coder"]
+    end
+
+    F -.-> AB1
+    H -.-> AB2
+    J -.-> AB3
+    R -.-> AB4
+    Q -.-> AB5

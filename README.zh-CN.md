@@ -96,6 +96,8 @@ decisions/
 
 diagrams/
   Mermaid 流程图。
+  - hermes-v0.3-flow.mmd：当前 v0.3 受治理的编排流程。
+  - hermes-v0.1-flow.mmd：历史 v0.1 基线流程。
 ```
 
 ## 中文文档

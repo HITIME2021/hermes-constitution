@@ -63,6 +63,8 @@ decisions/
 
 diagrams/
   Mermaid diagrams.
+  - hermes-v0.3-flow.mmd: Current v0.3 governed orchestration flow.
+  - hermes-v0.1-flow.mmd: Historical v0.1 baseline flow.
 ```
 
 ## Important Decisions
