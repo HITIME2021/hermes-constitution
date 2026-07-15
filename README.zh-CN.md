@@ -1,6 +1,6 @@
 # Hermes Constitution 中文说明
 
-本仓库保存 Hermes v0.3.1 的工作宪法。
+本仓库保存 Hermes v0.3.2 的工作宪法。
 
 这里的“宪法”不是最终产品文档，而是 Hermes agent 在启动、规划、派发任务、审查结果和写入记忆时应当遵守的基础规则。
 
@@ -21,7 +21,7 @@ Hermes 是一个多 Agent 自动化调度平台。
 沉淀经验
 ```
 
-当前 v0.3.1 的基本分工是：
+当前 v0.3.2 的基本分工是：
 
 ```text
 Codex / GPT-5.5
@@ -127,6 +127,8 @@ diagrams/
 - [Tools Layer 工具层](docs/tools-layer.zh-CN.md)
 - [Tools Adapter 工具适配器](docs/tools-adapter.zh-CN.md)
 - [Workspace Layout Policy 工作区布局策略](docs/workspace-layout-policy.zh-CN.md)
+- [Gateway Entry Guard 网关入口守卫](docs/gateway-entry-guard.zh-CN.md)
+- [Self-Improvement Governance 自我改进治理](docs/self-improvement-governance.zh-CN.md)
 - [Planning Modes 规划模式](docs/planning-modes.zh-CN.md)
 - [Artifact Intake Gate](docs/artifact-intake-gate.zh-CN.md)
 - [Token Telemetry Policy](docs/token-telemetry-policy.zh-CN.md)
@@ -171,9 +173,11 @@ diagrams/
 - Dashboard 和 Kanban 可以作为 Hermes-managed provider orchestration run 的可观测性界面，但不是执行权威，不得绕过 policy 或 approval gate。
 - 安全、高频、只读的 shell 检查命令可以使用简单直通模式，减少不必要的规划和 token 消耗。
 - 自动化重试、修正和重规划都有预算；重复失败、方向不清、范围不安全或 token/time 不值得时，必须停止并请求人工介入。
-- 面向人的宪法 release 是 `v0.3.1`；基于 git commit 的 `constitution_version` 仍然是精确 snapshot 版本。
+- 面向人的宪法 release 是 `v0.3.2`；基于 git commit 的 `constitution_version` 仍然是精确 snapshot 版本。
 - 新 WSL 项目应按 workspace class 分开：`~/projects/production`、`~/projects/labs`、`~/projects/worktrees` 和 `~/projects/archive`。
 - Hermes self-edit 默认禁用。Implementation work 应路由到 CodeBuddy scoped execution，并在风险需要时经过 verification 和 Codex review。Emergency self-edit 必须有操作者针对具体任务的明确 override。
+- Gateway / DM / mobile 入口在验证已加载 constitution snapshot 和 index 前均为 untrusted。
+- Self-improvement 可以自动生成 candidate，但 apply patch 是 authority-bearing effect，必须通过可信通道和 approval。
 
 ## WSL 如何使用
 
@@ -195,28 +199,30 @@ cd hermes-constitution
 5. docs/tools-layer.md
 6. docs/tools-adapter.md
 7. docs/workspace-layout-policy.md
-8. docs/planning-modes.md
-9. docs/artifact-intake-gate.md
-10. docs/token-telemetry-policy.md
-11. docs/constitution-snapshot.md
-12. docs/command-handler-design.md
-13. docs/provider-auth-policy.md
-14. docs/prompt-distillation.md
-15. docs/session-startup-policy.md
-16. docs/run-observability.md
-17. docs/constitution-release.md
-18. docs/human-intervention-policy.md
-19. docs/simple-shell-direct-mode.md
-20. docs/project-policy.md
-21. docs/workflow-state-machine.md
-22. docs/capability-resolver.md
-23. docs/context-manager.md
-24. docs/execution-protocol.md
-25. docs/review-gate.md
-26. docs/memory-center.md
-27. docs/agent-profile-and-skills.md
-28. schemas/*.yaml
-29. decisions/*.md
+8. docs/gateway-entry-guard.md
+9. docs/self-improvement-governance.md
+10. docs/planning-modes.md
+11. docs/artifact-intake-gate.md
+12. docs/token-telemetry-policy.md
+13. docs/constitution-snapshot.md
+14. docs/command-handler-design.md
+15. docs/provider-auth-policy.md
+16. docs/prompt-distillation.md
+17. docs/session-startup-policy.md
+18. docs/run-observability.md
+19. docs/constitution-release.md
+20. docs/human-intervention-policy.md
+21. docs/simple-shell-direct-mode.md
+22. docs/project-policy.md
+23. docs/workflow-state-machine.md
+24. docs/capability-resolver.md
+25. docs/context-manager.md
+26. docs/execution-protocol.md
+27. docs/review-gate.md
+28. docs/memory-center.md
+29. docs/agent-profile-and-skills.md
+30. schemas/*.yaml
+31. decisions/*.md
 ```
 
 ## WSL / Windows 运行面原则

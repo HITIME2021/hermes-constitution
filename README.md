@@ -2,13 +2,13 @@
 
 Chinese overview: [README.zh-CN.md](README.zh-CN.md)
 
-This repository contains the working constitution for Hermes v0.3.1.
+This repository contains the working constitution for Hermes v0.3.2.
 
 Hermes is designed as a multi-agent automation platform. Its core job is not to
 write every line of code itself, but to orchestrate roles, skills, context,
 execution providers, review gates, and long-term memory.
 
-## Current v0.3.1 Position
+## Current v0.3.2 Position
 
 - Hermes is the orchestration and learning layer.
 - Codex / GPT-5.5 is the senior brain: architecture, planning, algorithm design,
@@ -69,6 +69,8 @@ docs/
   - tools-layer.md: Frontend/Backend tool classification and intake rules.
   - tools-adapter.md: Generic invocation, scope, evidence, and artifact mapping contract for external tools.
   - workspace-layout-policy.md: WSL workspace separation for production, labs, worktrees, and archives.
+  - gateway-entry-guard.md: Trust checks for gateway, DM, mobile, and webhook entrypoints.
+  - self-improvement-governance.md: Candidate-first governance for Hermes self-improvement.
   - planning-modes.md: Planning source of record and Codex role by mode.
   - artifact-intake-gate.md: Artifact validation, normalization, and mapping.
   - token-telemetry-policy.md: Token/cost telemetry paired with quality signals.
@@ -140,7 +142,7 @@ diagrams/
   full constitution reload is used only when reload conditions are met.
 - Hermes must stop automatic loops and request human intervention after bounded
   retry, revision, or replanning budgets are exhausted.
-- The human-facing constitution release is `v0.3.1`; git commit based
+- The human-facing constitution release is `v0.3.2`; git commit based
   `constitution_version` remains the exact snapshot version.
 - New WSL projects should be separated by workspace class:
   `~/projects/production`, `~/projects/labs`, `~/projects/worktrees`, and
@@ -151,6 +153,10 @@ diagrams/
   CodeBuddy scoped execution, followed by verification and Codex review when
   risk requires it. Emergency self-edit requires explicit task-specific
   operator override.
+- Gateway / DM / mobile entrypoints are untrusted until they verify the loaded
+  constitution snapshot and index.
+- Self-improvement may generate candidates automatically, but applying patches
+  is an authority-bearing effect that requires a trusted channel and approval.
 - Project Policy has priority over AgentProfile, Skill, and Provider preference.
 - CodeBuddy is forbidden by default from modifying `auth`, `security`, `db`, and
   `infra` domains.
@@ -160,7 +166,7 @@ diagrams/
 ## Resume On Another Machine
 
 On the Windows 11 + WSL machine that runs the Hermes agent, copy or pull this
-repository and point Hermes at these documents as its v0.3.1 constitution.
+repository and point Hermes at these documents as its v0.3.2 constitution.
 
 Recommended future flow:
 

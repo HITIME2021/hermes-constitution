@@ -12,12 +12,14 @@
 ## 当前版本
 
 <!-- snapshot:block id="constitution-release.zh-CN" section="Constitution Release" priority="11" -->
-当前 Hermes 宪法 release：`v0.3.1`。
+当前 Hermes 宪法 release：`v0.3.2`。
 
-`v0.3.1` 表示宪法在已验证的 v0.2 本地编排基线上，新增了工具治理、artifact intake、
+`v0.3.2` 表示宪法在已验证的 v0.2 本地编排基线上，新增了工具治理、artifact intake、
 planning source control、token/quality telemetry、Simple Shell Direct Mode 安全边界，
 以及更严格的 Hermes self-edit 边界。它还新增 WSL workspace layout separation，
-用于区分生产仓库、实验项目、provider worktree 和归档实验。
+用于区分生产仓库、实验项目、provider worktree 和归档实验。它进一步新增 Gateway
+Entry Guard 和 Self-Improvement Governance，使 DM/mobile 入口只有在 startup
+verification 后才可信，并让 self-improvement 在写入前先生成 candidate。
 
 已验证的 v0.2 控制回路：
 
@@ -37,6 +39,8 @@ v0.3 新增能力：
 - Simple Shell Direct Mode 进入 snapshot，并采用 hard-reject safety posture
 - Hermes self-edit 默认禁用；implementation work 默认路由到 CodeBuddy scoped execution、verification 和 Codex review，除非操作者对具体任务明确给出 emergency override
 - Workspace Layout Policy 区分 `~/projects/production`、`~/projects/labs`、`~/projects/worktrees` 和 `~/projects/archive`
+- Gateway Entry Guard 要求非 TUI 入口在执行工具前验证 `current.md` 和 `current.index.json`
+- Self-Improvement Governance 允许自动生成 candidate，但 apply patch 是 authority-bearing effect
 
 已加载 snapshot 的精确 `constitution_version` 仍然是 git commit。release label 是面向人的成熟度标记。
 <!-- /snapshot:block -->
@@ -73,6 +77,15 @@ production repos -> ~/projects/production
 tool validation and smoke projects -> ~/projects/labs
 provider worktrees -> ~/projects/worktrees
 retained old experiments -> ~/projects/archive
+```
+
+`v0.3.2` 是 trusted-entry 与 self-improvement governance patch：
+
+```text
+gateway / DM / mobile entrypoints -> untrusted until startup verification
+current.md + current.index.json -> required before tool execution
+self-improvement analysis -> allowed
+self-improvement patch application -> trusted channel + scope + approval
 ```
 
 未来版本号提升应通过 ADR 记录，并说明验证了什么能力，而不只是说明文档有变更。

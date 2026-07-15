@@ -4,6 +4,34 @@ This changelog is for operator-facing release notes. It summarizes what changed
 in the Hermes constitution release line. Detailed rationale remains in
 `decisions/`; runtime policy source remains in `docs/`.
 
+## v0.3.2 - 2026-07-15
+
+Trusted gateway entry and self-improvement governance patch for the v0.3 line.
+
+Added:
+
+- Gateway Entry Guard.
+- Self-Improvement Governance.
+- ADR 0011 for gateway entry and self-improvement governance.
+
+Changed:
+
+- Human-facing constitution release label changed from `v0.3.1` to `v0.3.2`.
+- Gateway / DM / mobile / webhook entrypoints are untrusted until startup
+  verification succeeds.
+- Non-TUI entrypoints must verify `current.md` and `current.index.json` before
+  tool execution.
+- Self-improvement writes are explicitly treated as authority-bearing effects.
+- Gateway startup and DM cold start may generate self-improvement candidates
+  but must not apply patches.
+
+Validated:
+
+- Gateway dry-run audit found no automatic constitution snapshot load path in
+  gateway entrypoint.
+- Background self-improvement review can patch skills after nudge intervals;
+  this is now governed as candidate-first behavior for untrusted entrypoints.
+
 ## v0.3.1 - 2026-07-15
 
 Workspace layout and tool-validation patch for the v0.3 line.

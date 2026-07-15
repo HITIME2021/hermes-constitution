@@ -12,14 +12,16 @@ It is separate from:
 ## Current Release
 
 <!-- snapshot:block id="constitution-release" section="Constitution Release" priority="10" -->
-Current Hermes constitution release: `v0.3.1`.
+Current Hermes constitution release: `v0.3.2`.
 
-`v0.3.1` means the constitution includes the validated v0.2 local orchestration
+`v0.3.2` means the constitution includes the validated v0.2 local orchestration
 baseline and adds tool governance, artifact intake, planning-source control,
 token/quality telemetry, simple shell direct-mode safety, and a stricter
 Hermes self-edit boundary. It also adds WSL workspace layout separation for
 production repositories, lab projects, provider worktrees, and archived
-experiments.
+experiments. It further adds Gateway Entry Guard and Self-Improvement
+Governance so DM/mobile entrypoints can become trusted only after startup
+verification, and self-improvement remains candidate-first before writes.
 
 Validated v0.2 control loops:
 
@@ -44,6 +46,10 @@ Added v0.3 capabilities:
   task-specific emergency override is given
 - Workspace Layout Policy separates `~/projects/production`, `~/projects/labs`,
   `~/projects/worktrees`, and `~/projects/archive`
+- Gateway Entry Guard requires non-TUI entrypoints to verify `current.md` and
+  `current.index.json` before tool execution
+- Self-Improvement Governance allows automatic candidate generation but treats
+  patch application as an authority-bearing effect
 
 The git commit remains the exact `constitution_version` for a loaded snapshot.
 The release label is a human-facing maturity marker.
@@ -81,6 +87,15 @@ production repos -> ~/projects/production
 tool validation and smoke projects -> ~/projects/labs
 provider worktrees -> ~/projects/worktrees
 retained old experiments -> ~/projects/archive
+```
+
+`v0.3.2` is the trusted-entry and self-improvement governance patch:
+
+```text
+gateway / DM / mobile entrypoints -> untrusted until startup verification
+current.md + current.index.json -> required before tool execution
+self-improvement analysis -> allowed
+self-improvement patch application -> trusted channel + scope + approval
 ```
 
 Future release bumps should be recorded by ADR and should explain what
