@@ -23,25 +23,43 @@ execution providers, review gates, and long-term memory.
 
 ```text
 User Intent
+  -> Session Snapshot Load
   -> Intake / Clarification
-  -> Workflow Engine
-  -> Task Planner
-  -> Risk Evaluator
-  -> Agency Registry
-  -> Capability Resolver
+  -> Simple Shell Direct Mode? / Command Handler?
+  -> Tools Layer Classification
+  -> Tools Adapter Invocation Plan
+  -> Artifact Intake Gate, when frontend artifacts are present
+  -> Planning Source Selection
+  -> Task / ExecutionRequest / ReviewPlan
+  -> Risk, Scope, Dependency, Auth, and Stop-Condition Gates
+  -> Operator Approval, when required
   -> Provider Routing
-  -> Execution
-  -> Review Gate
-  -> Testing / Verification
-  -> Finalize
-  -> Memory Writeback
+  -> Scoped Execution
+  -> Verification
+  -> Codex Review Gate
+  -> Run Observability / Evidence / Token and Quality Telemetry
+  -> Final Report
+  -> MemoryCandidate or approved Memory Writeback
 ```
 
 The central routing idea is:
 
 ```text
-task -> role -> skill -> provider -> review -> memory
+intent
+  -> command or tool classification
+  -> artifact intake or native planning
+  -> Task / ExecutionRequest / ReviewPlan
+  -> provider execution
+  -> verification
+  -> review
+  -> evidence
+  -> memory decision
 ```
+
+Frontend Tool output is input evidence, not authority. Backend Tool execution
+is authority-bearing effect and requires scope control. Hermes remains the
+execution authority through `ExecutionRequest`, review gates, stop conditions,
+and operator approval.
 
 ## Directory Map
 
