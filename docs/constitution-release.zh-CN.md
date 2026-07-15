@@ -12,9 +12,13 @@
 ## 当前版本
 
 <!-- snapshot:block id="constitution-release.zh-CN" section="Constitution Release" priority="11" -->
-当前 Hermes 宪法 release：`v0.2`。
+当前 Hermes 宪法 release：`v0.3`。
 
-`v0.2` 表示宪法已经不再只是 v0.1 的初始设计基线，而是完成了第一批实际控制回路验证：
+`v0.3` 表示宪法在已验证的 v0.2 本地编排基线上，新增了工具治理、artifact intake、
+planning source control、token/quality telemetry、Simple Shell Direct Mode 安全边界，
+以及更严格的 Hermes self-edit 边界。
+
+已验证的 v0.2 控制回路：
 
 - source-driven constitution snapshot，包含 block extraction 与 index output
 - Codex planning + CodeBuddy scoped execution + Codex review
@@ -22,6 +26,15 @@
 - low-risk production-code bugfix orchestration
 - Dashboard / Kanban / Gateway 对 Hermes-managed task 的生命周期可视化
 - provider orchestration observability policy
+
+v0.3 新增能力：
+
+- Tools Layer 分类：Frontend Tools produce artifacts；Backend Tools produce effects；Hermes governs both
+- `planning_source_of_record`：`codex_native` 或 `frontend_artifact_assisted`
+- Frontend artifacts 影响 live execution 前必须经过 Artifact Intake Gate
+- Token telemetry 必须与 quality telemetry 配对
+- Simple Shell Direct Mode 进入 snapshot，并采用 hard-reject safety posture
+- Hermes self-edit 默认禁用；implementation work 默认路由到 CodeBuddy scoped execution、verification 和 Codex review，除非操作者对具体任务明确给出 emergency override
 
 已加载 snapshot 的精确 `constitution_version` 仍然是 git commit。release label 是面向人的成熟度标记。
 <!-- /snapshot:block -->
@@ -38,6 +51,17 @@ Windows = human control and constitution maintenance plane
 Codex = planning and review
 CodeBuddy = scoped execution
 Dashboard/Kanban = observability for Hermes-managed runs
+```
+
+`v0.3` 是工具治理与 artifact intake 基线：
+
+```text
+Frontend Tools = artifact evidence, not authority
+Backend Tools = authority-bearing effects with scope control
+Codex native planning = default planning mode
+Frontend artifact assistance = optional for complex or ambiguous work
+Hermes ExecutionRequest = live execution authority
+Hermes self-edit = disabled by default
 ```
 
 未来版本号提升应通过 ADR 记录，并说明验证了什么能力，而不只是说明文档有变更。

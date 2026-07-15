@@ -1,6 +1,6 @@
 # Hermes Constitution 中文说明
 
-本仓库保存 Hermes v0.2 的工作宪法。
+本仓库保存 Hermes v0.3 的工作宪法。
 
 这里的“宪法”不是最终产品文档，而是 Hermes agent 在启动、规划、派发任务、审查结果和写入记忆时应当遵守的基础规则。
 
@@ -21,7 +21,7 @@ Hermes 是一个多 Agent 自动化调度平台。
 沉淀经验
 ```
 
-当前 v0.2 的基本分工是：
+当前 v0.3 的基本分工是：
 
 ```text
 Codex / GPT-5.5
@@ -149,7 +149,7 @@ diagrams/
 - Dashboard 和 Kanban 可以作为 Hermes-managed provider orchestration run 的可观测性界面，但不是执行权威，不得绕过 policy 或 approval gate。
 - 安全、高频、只读的 shell 检查命令可以使用简单直通模式，减少不必要的规划和 token 消耗。
 - 自动化重试、修正和重规划都有预算；重复失败、方向不清、范围不安全或 token/time 不值得时，必须停止并请求人工介入。
-- 面向人的宪法 release 是 `v0.2`；基于 git commit 的 `constitution_version` 仍然是精确 snapshot 版本。
+- 面向人的宪法 release 是 `v0.3`；基于 git commit 的 `constitution_version` 仍然是精确 snapshot 版本。
 - Hermes self-edit 默认禁用。Implementation work 应路由到 CodeBuddy scoped execution，并在风险需要时经过 verification 和 Codex review。Emergency self-edit 必须有操作者针对具体任务的明确 override。
 
 ## WSL 如何使用
