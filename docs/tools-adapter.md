@@ -56,6 +56,22 @@ versions, capabilities, and help text. Their output is environment evidence
 only. Tool discovery output must not automatically modify Hermes Provider
 Policy, approve new providers, or expand execution scope.
 
+Project read-only does not always mean environment no-effect. A command may
+leave the target project unchanged while still using network access, writing a
+tool cache, building a temporary package, or updating runtime metadata. Hermes
+must record these runtime effects separately from project mutation.
+
+For `uvx`-based tool invocation, Hermes must treat the invocation as
+project-read-only only when no target project files are changed. Network use,
+package build, install cache, or tool cache behavior must be captured as
+runtime environment evidence when relevant.
+
+Tool evidence intended for audit or long-term operator review should be
+captured as UTF-8 text. If output encoding is degraded, garbled, or lossy,
+Hermes must mark the evidence as encoding-degraded and should regenerate the
+evidence with explicit UTF-8 settings before relying on it for memory,
+release notes, or policy updates.
+
 Artifact generation mode may produce planning artifacts. Those artifacts remain
 input evidence and must pass Artifact Intake Gate before they influence live
 execution.
@@ -85,6 +101,13 @@ tool_adapter:
     cli_version: "0.12.16.dev0"
     python: "3.11.15"
     platform: "Linux x86_64"
+  runtime_effects:
+    project_mutation: false_for_read_only_inspection
+    possible_environment_effects:
+      - network_access
+      - uv_cache_write
+      - temporary_package_build
+    evidence_required: true
   read_only_inspection:
     - "--help"
     - "version"

@@ -55,6 +55,18 @@ tool_adapter:
 environment evidence。工具发现结果不得自动修改 Hermes Provider Policy，不得
 批准新 provider，也不得扩大 execution scope。
 
+Project read-only 不等于 environment no-effect。一个命令可以不修改目标项目文件，
+但仍然访问网络、写入工具 cache、构建临时包，或更新 runtime metadata。Hermes
+必须把这些 runtime effects 与 project mutation 分开记录。
+
+对于基于 `uvx` 的工具调用，只有在目标项目文件未改变时，Hermes 才能把该次调用
+视为 project-read-only。network use、package build、install cache 或 tool cache
+行为在相关时必须作为 runtime environment evidence 记录。
+
+用于审计或长期操作者回看的一切 tool evidence 应当以 UTF-8 文本保存。如果输出编码
+退化、乱码或有损，Hermes 必须标记 evidence 为 encoding-degraded，并应当在依赖其
+写 memory、release notes 或 policy update 前，用显式 UTF-8 设置重新生成证据。
+
 Artifact generation mode 可以产生规划 artifact。这些 artifact 仍然只是 input
 evidence，必须先通过 Artifact Intake Gate，才能影响 live execution。
 
@@ -82,6 +94,13 @@ tool_adapter:
     cli_version: "0.12.16.dev0"
     python: "3.11.15"
     platform: "Linux x86_64"
+  runtime_effects:
+    project_mutation: false_for_read_only_inspection
+    possible_environment_effects:
+      - network_access
+      - uv_cache_write
+      - temporary_package_build
+    evidence_required: true
   read_only_inspection:
     - "--help"
     - "version"
