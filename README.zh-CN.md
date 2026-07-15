@@ -107,6 +107,7 @@ diagrams/
 - [Hermes v0.1 架构](docs/hermes-v0.1-architecture.zh-CN.md)
 - [运行时与 Provider 接口](docs/runtime-and-provider-interfaces.zh-CN.md)
 - [Tools Layer 工具层](docs/tools-layer.zh-CN.md)
+- [Tools Adapter 工具适配器](docs/tools-adapter.zh-CN.md)
 - [Planning Modes 规划模式](docs/planning-modes.zh-CN.md)
 - [Artifact Intake Gate](docs/artifact-intake-gate.zh-CN.md)
 - [Token Telemetry Policy](docs/token-telemetry-policy.zh-CN.md)
@@ -172,28 +173,29 @@ cd hermes-constitution
 3. docs/hermes-v0.1-architecture.md
 4. docs/runtime-and-provider-interfaces.md
 5. docs/tools-layer.md
-6. docs/planning-modes.md
-7. docs/artifact-intake-gate.md
-8. docs/token-telemetry-policy.md
-9. docs/constitution-snapshot.md
-10. docs/command-handler-design.md
-11. docs/provider-auth-policy.md
-12. docs/prompt-distillation.md
-13. docs/session-startup-policy.md
-14. docs/run-observability.md
-15. docs/constitution-release.md
-16. docs/human-intervention-policy.md
-17. docs/simple-shell-direct-mode.md
-18. docs/project-policy.md
-19. docs/workflow-state-machine.md
-20. docs/capability-resolver.md
-21. docs/context-manager.md
-22. docs/execution-protocol.md
-23. docs/review-gate.md
-24. docs/memory-center.md
-25. docs/agent-profile-and-skills.md
-26. schemas/*.yaml
-27. decisions/*.md
+6. docs/tools-adapter.md
+7. docs/planning-modes.md
+8. docs/artifact-intake-gate.md
+9. docs/token-telemetry-policy.md
+10. docs/constitution-snapshot.md
+11. docs/command-handler-design.md
+12. docs/provider-auth-policy.md
+13. docs/prompt-distillation.md
+14. docs/session-startup-policy.md
+15. docs/run-observability.md
+16. docs/constitution-release.md
+17. docs/human-intervention-policy.md
+18. docs/simple-shell-direct-mode.md
+19. docs/project-policy.md
+20. docs/workflow-state-machine.md
+21. docs/capability-resolver.md
+22. docs/context-manager.md
+23. docs/execution-protocol.md
+24. docs/review-gate.md
+25. docs/memory-center.md
+26. docs/agent-profile-and-skills.md
+27. schemas/*.yaml
+28. decisions/*.md
 ```
 
 ## WSL / Windows 运行面原则

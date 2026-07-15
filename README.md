@@ -49,6 +49,7 @@ task -> role -> skill -> provider -> review -> memory
 docs/
   Architecture and module design documents.
   - tools-layer.md: Frontend/Backend tool classification and intake rules.
+  - tools-adapter.md: Generic invocation, scope, evidence, and artifact mapping contract for external tools.
   - planning-modes.md: Planning source of record and Codex role by mode.
   - artifact-intake-gate.md: Artifact validation, normalization, and mapping.
   - token-telemetry-policy.md: Token/cost telemetry paired with quality signals.
