@@ -31,6 +31,10 @@ Validated:
   gateway entrypoint.
 - Background self-improvement review can patch skills after nudge intervals;
   this is now governed as candidate-first behavior for untrusted entrypoints.
+- Weixin DM smoke testing found that persisted DM session history can override
+  current startup verification in model behavior; `/new` session reset restored
+  the current `constitution_version` and this is recorded in
+  `docs/validation/gateway-dm-session-history-smoke-test.md`.
 
 ## v0.3.1 - 2026-07-15
 
