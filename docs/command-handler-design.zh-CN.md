@@ -150,7 +150,7 @@ commands:
       - permission_denied: "Cannot read the snapshot file."
 ```
 
-除非快照缺失或过期，且用户明确授权 `/reload-constitution`，否则 handler 不得读取 `~/projects/hermes-constitution`。
+除非快照缺失或过期，且用户明确授权 `/reload-constitution`，否则 handler 不得读取 `~/projects/production/hermes-constitution`。
 
 ### `reload_constitution`
 
@@ -166,7 +166,7 @@ commands:
     parameters:
       source_repo:
         type: path
-        default: ~/projects/hermes-constitution
+        default: ~/projects/production/hermes-constitution
         required: false
       current_snapshot:
         type: path
@@ -216,7 +216,7 @@ commands:
       - archive_write_failed: "Cannot write the archived snapshot."
 ```
 
-该 handler 可以写入 `~/hermes-snapshots/` 下的快照文件。它不得把生成快照写入 `~/projects/hermes-constitution`。
+该 handler 可以写入 `~/hermes-snapshots/` 下的快照文件。它不得把生成快照写入 `~/projects/production/hermes-constitution`。
 
 `reload_constitution` 必须由源文档驱动：
 

@@ -15,7 +15,7 @@ constitution_snapshot:
   default_path: ~/hermes-snapshots/current.md
   archive_path_template: ~/hermes-snapshots/archive/constitution-<commit>-<date>.md
   index_path: ~/hermes-snapshots/current.index.json
-  source_repo: ~/projects/hermes-constitution
+  source_repo: ~/projects/production/hermes-constitution
 ```
 
 `current.md` 是稳定加载入口。重新生成快照时可以覆盖它。
@@ -60,7 +60,7 @@ constitution_snapshot:
 效果：
 
 - 只读取快照文件
-- 不读取完整 `~/projects/hermes-constitution` 仓库
+- 不读取完整 `~/projects/production/hermes-constitution` 仓库
 - 输出 `constitution_version`、`snapshot_path` 和 `loaded_at`
 - 不执行项目任务
 - 不修改项目文件
@@ -78,7 +78,7 @@ constitution_snapshot:
 
 效果：
 
-- 读取 `~/projects/hermes-constitution`
+- 读取 `~/projects/production/hermes-constitution`
 - 获取当前 git `HEAD`
 - 扫描源文档中声明的 snapshot blocks
 - 从 block set 生成简体中文 constitution snapshot
@@ -126,7 +126,7 @@ Block 规则：
   "schema": "hermes.constitution_snapshot_index.v1",
   "constitution_version": "acc73eb",
   "generated_at": "2026-07-06T00:00:00Z",
-  "source_repo": "~/projects/hermes-constitution",
+  "source_repo": "~/projects/production/hermes-constitution",
   "snapshot_path": "~/hermes-snapshots/current.md",
   "blocks": [
     {

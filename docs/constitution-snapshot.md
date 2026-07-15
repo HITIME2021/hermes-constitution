@@ -18,7 +18,7 @@ constitution_snapshot:
   default_path: ~/hermes-snapshots/current.md
   archive_path_template: ~/hermes-snapshots/archive/constitution-<commit>-<date>.md
   index_path: ~/hermes-snapshots/current.index.json
-  source_repo: ~/projects/hermes-constitution
+  source_repo: ~/projects/production/hermes-constitution
 ```
 
 `current.md` is the stable load target. It may be overwritten when the
@@ -71,7 +71,7 @@ Loads a snapshot as the current session constitution cache.
 Effects:
 
 - read the snapshot file only
-- do not read the full `~/projects/hermes-constitution` repository
+- do not read the full `~/projects/production/hermes-constitution` repository
 - output `constitution_version`, `snapshot_path`, and `loaded_at`
 - do not execute project tasks
 - do not mutate project files
@@ -89,7 +89,7 @@ Reloads the full constitution and regenerates the snapshot.
 
 Effects:
 
-- read `~/projects/hermes-constitution`
+- read `~/projects/production/hermes-constitution`
 - get current git `HEAD`
 - scan declared snapshot blocks from source documents
 - generate a Simplified Chinese snapshot from the block set
@@ -143,7 +143,7 @@ Each reload should write an index next to the current snapshot:
   "schema": "hermes.constitution_snapshot_index.v1",
   "constitution_version": "acc73eb",
   "generated_at": "2026-07-06T00:00:00Z",
-  "source_repo": "~/projects/hermes-constitution",
+  "source_repo": "~/projects/production/hermes-constitution",
   "snapshot_path": "~/hermes-snapshots/current.md",
   "blocks": [
     {

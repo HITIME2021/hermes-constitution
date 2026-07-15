@@ -170,7 +170,7 @@ commands:
       - permission_denied: "Cannot read the snapshot file."
 ```
 
-The handler must not read `~/projects/hermes-constitution` unless the snapshot
+The handler must not read `~/projects/production/hermes-constitution` unless the snapshot
 is missing or stale and the user explicitly authorizes `/reload-constitution`.
 
 ### `reload_constitution`
@@ -188,7 +188,7 @@ commands:
     parameters:
       source_repo:
         type: path
-        default: ~/projects/hermes-constitution
+        default: ~/projects/production/hermes-constitution
         required: false
       current_snapshot:
         type: path
@@ -239,7 +239,7 @@ commands:
 ```
 
 The handler may write snapshot files under `~/hermes-snapshots/`. It must not
-write generated snapshots into `~/projects/hermes-constitution`.
+write generated snapshots into `~/projects/production/hermes-constitution`.
 
 `reload_constitution` must be source-driven:
 

@@ -12,7 +12,7 @@ Hermes sessions should load the current constitution snapshot by default:
 /load-constitution-snapshot ~/hermes-snapshots/current.md
 ```
 
-Hermes should not reread the full `~/projects/hermes-constitution` repository
+Hermes should not reread the full `~/projects/production/hermes-constitution` repository
 on every normal task. The snapshot is the default runtime policy cache, pinned
 to a `constitution_version`.
 
@@ -46,7 +46,7 @@ Normal restart:
 After constitution update:
 
 ```bash
-cd ~/projects/hermes-constitution
+cd ~/projects/production/hermes-constitution
 git pull origin main
 /reload-constitution
 /load-constitution-snapshot ~/hermes-snapshots/current.md
