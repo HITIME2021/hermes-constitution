@@ -43,6 +43,9 @@ Validated:
 - Context budget helper review found safe code but a medium-severity process
   violation where the expected dry-run and approval gate was bypassed; recorded
   in `docs/validation/context-budget-helper-process-incident.md`.
+- Ollama background text adapter validation passed across text-only use,
+  deterministic context gating, proxy bypass, and authority-boundary review;
+  recorded in `docs/validation/ollama-background-text-adapter-smoke-test.md`.
 
 ## v0.3.1 - 2026-07-15
 
