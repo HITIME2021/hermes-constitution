@@ -49,6 +49,9 @@ User Intent
   -> Tools Adapter Invocation Plan
   -> Artifact Intake Gate（如有 Frontend artifact）
   -> Planning Source Selection
+  -> Optional Local Background Text Layer
+     （显式 marker 或确定性 auto classifier；
+      Ollama 输出只作为草稿，原始输入必须保留）
   -> Task / ExecutionRequest / ReviewPlan
   -> Risk / Scope / Dependency / Auth / Stop-Condition Gates
   -> Operator Approval（如需要）
@@ -67,6 +70,7 @@ User Intent
 intent
   -> command or tool classification
   -> artifact intake or native planning
+  -> optional non-authoritative background text preprocessing
   -> Task / ExecutionRequest / ReviewPlan
   -> provider execution
   -> verification

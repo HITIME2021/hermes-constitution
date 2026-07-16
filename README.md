@@ -33,6 +33,9 @@ User Intent
   -> Tools Adapter Invocation Plan
   -> Artifact Intake Gate, when frontend artifacts are present
   -> Planning Source Selection
+  -> Optional Local Background Text Layer
+     (explicit marker or deterministic auto classifier;
+      Ollama output is draft-only and original input is preserved)
   -> Task / ExecutionRequest / ReviewPlan
   -> Risk, Scope, Dependency, Auth, and Stop-Condition Gates
   -> Operator Approval, when required
@@ -51,6 +54,7 @@ The central routing idea is:
 intent
   -> command or tool classification
   -> artifact intake or native planning
+  -> optional non-authoritative background text preprocessing
   -> Task / ExecutionRequest / ReviewPlan
   -> provider execution
   -> verification
