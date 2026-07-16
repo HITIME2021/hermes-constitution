@@ -4,6 +4,43 @@ This changelog is for operator-facing release notes. It summarizes what changed
 in the Hermes constitution release line. Detailed rationale remains in
 `decisions/`; runtime policy source remains in `docs/`.
 
+## v0.4.0 - 2026-07-16
+
+Local background model governance and Ollama dispatch validation.
+
+Added:
+
+- ADR 0012 for local background model governance.
+- Hermes v0.4 governed orchestration flow diagram:
+  `diagrams/hermes-v0.4-flow.mmd`.
+- Local Hermes runtime patch group reference:
+  `docs/local-hermes-runtime-patches.md`.
+- Ollama process-boundary incident record:
+  `docs/validation/ollama-process-boundary-incident.md`.
+
+Changed:
+
+- Human-facing constitution release label changed from `v0.3.2` to `v0.4.0`.
+- Ollama/local models are governed as background text-processing helpers only.
+- Ollama output remains `output_authority: none` and must not become planning,
+  review, execution, approval, memory, or constitution authority.
+- Automatic Ollama routing remains disabled by default and requires both
+  `HERMES_OLLAMA_BACKGROUND_TEXT=1` and
+  `HERMES_OLLAMA_BACKGROUND_TEXT_AUTO=1`.
+- Automatic routing is limited to high-confidence text preprocessing:
+  `evidence_summary`, `translation`, `compression`, and
+  `text_normalization`.
+
+Validated:
+
+- OLLAMA-003: adapter process-boundary enforcement, 56 tests, Codex pass.
+- OLLAMA-004A: adapter live cost smoke, 5/5 cases pass, estimated 4,700
+  DeepSeek tokens saved in the smoke batch.
+- OLLAMA-004B: explicit-purpose dispatch hook, 76 tests, Codex pass.
+- OLLAMA-004C: deterministic auto classifier, 49 tests, Codex pass.
+- Total OLLAMA line evidence: 143 tests reported, six Codex review rounds,
+  risk after review LOW.
+
 ## v0.3.2 - 2026-07-15
 
 Trusted gateway entry and self-improvement governance patch for the v0.3 line.
@@ -46,6 +83,19 @@ Validated:
 - Ollama background text adapter validation passed across text-only use,
   deterministic context gating, proxy bypass, and authority-boundary review;
   recorded in `docs/validation/ollama-background-text-adapter-smoke-test.md`.
+- The Ollama validation line now includes OLLAMA-003 process-boundary
+  enforcement, OLLAMA-004A adapter live cost smoke, OLLAMA-004B explicit-purpose
+  dispatch integration, and OLLAMA-004C deterministic auto-classification. The
+  local model remains disabled by default; automatic routing requires a double
+  env gate and is limited to high-confidence text preprocessing.
+- Local Hermes runtime `.py` changes are now documented as reference patch
+  groups in `docs/local-hermes-runtime-patches.md`, so they can be audited and
+  selectively reused without treating them as upstream Hermes Agent source.
+- Ollama/background model process-boundary violations are now recorded
+  separately from code safety in
+  `docs/validation/ollama-process-boundary-incident.md`; this prevents the
+  v0.4.0 line from treating passing tests as sufficient when dry-run,
+  approval, or review gates were bypassed.
 
 ## v0.3.1 - 2026-07-15
 

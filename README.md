@@ -2,19 +2,22 @@
 
 Chinese overview: [README.zh-CN.md](README.zh-CN.md)
 
-This repository contains the working constitution for Hermes v0.3.2.
+This repository contains the working constitution for Hermes v0.4.0.
 
 Hermes is designed as a multi-agent automation platform. Its core job is not to
 write every line of code itself, but to orchestrate roles, skills, context,
 execution providers, review gates, and long-term memory.
 
-## Current v0.3.2 Position
+## Current v0.4.0 Position
 
 - Hermes is the orchestration and learning layer.
 - Codex / GPT-5.5 is the senior brain: architecture, planning, algorithm design,
   risk evaluation, review, replanning, and memory synthesis.
 - CodeBuddy is the low-cost execution worker: scoped implementation, repetitive
   code edits, small bug fixes, and test writing.
+- Ollama/local background models are bounded text-processing helpers for
+  summaries, translations, compression, evidence cleanup, and draft text. They
+  are not authority surfaces.
 - Claude Code is excluded from v0.1.
 - Default operating mode is `stable`.
 - `quality` mode is preserved as a stronger review and planning profile.
@@ -70,6 +73,7 @@ docs/
   - tools-adapter.md: Generic invocation, scope, evidence, and artifact mapping contract for external tools.
   - background-local-model-adapter.md: Ollama/local model text-processing boundary and context budget gate.
   - hermes-primary-adapter-boundary.md: Default no-self-edit boundary for Hermes Primary.
+  - local-hermes-runtime-patches.md: Reference map for local Hermes Agent runtime patch groups.
   - workspace-layout-policy.md: WSL workspace separation for production, labs, worktrees, and archives.
   - gateway-entry-guard.md: Trust checks for gateway, DM, mobile, and webhook entrypoints.
   - self-improvement-governance.md: Candidate-first governance for Hermes self-improvement.
@@ -87,7 +91,8 @@ decisions/
 
 diagrams/
   Mermaid diagrams.
-  - hermes-v0.3-flow.mmd: Current v0.3 governed orchestration flow.
+  - hermes-v0.4-flow.mmd: Current v0.4 governed orchestration flow.
+  - hermes-v0.3-flow.mmd: Historical v0.3 governed orchestration flow.
   - hermes-v0.1-flow.mmd: Historical v0.1 baseline flow.
 ```
 
@@ -143,6 +148,23 @@ diagrams/
 - Ollama/local background models may transform bounded text packets, but they
   are not planning, review, execution, approval, memory, or constitution
   authority. Over-budget context must be routed back to Hermes Primary.
+- The v0.4.0 local background model line has validated adapter
+  process-boundary enforcement, explicit-purpose dispatch, and deterministic
+  auto-classification. Ollama remains disabled by default and automatic routing
+  requires both `HERMES_OLLAMA_BACKGROUND_TEXT=1` and
+  `HERMES_OLLAMA_BACKGROUND_TEXT_AUTO=1`.
+- Automatic Ollama routing is limited to high-confidence text preprocessing:
+  `evidence_summary`, `translation`, `compression`, and
+  `text_normalization`. Planning, review, approval, execution, memory,
+  stop-condition, scope-expansion, dependency, auth, git, database, and infra
+  work bypasses Ollama.
+- Ollama/local model validation must record process violations separately from
+  code safety. Passing local adapter tests does not excuse bypassed dry-run,
+  approval, scoped execution, or review gates.
+- Local Hermes runtime `.py` patches should be documented as reference patch
+  groups, not as upstream Hermes Agent source. Other operators may adapt them
+  selectively after comparing against their own Hermes version and rerunning
+  review.
 - Local Ollama traffic must bypass workstation HTTP proxies; `127.0.0.1`,
   `localhost`, and `::1` should be present in `NO_PROXY` / `no_proxy` before
   diagnosing Ollama `503` responses as model failures.
@@ -154,7 +176,7 @@ diagrams/
   full constitution reload is used only when reload conditions are met.
 - Hermes must stop automatic loops and request human intervention after bounded
   retry, revision, or replanning budgets are exhausted.
-- The human-facing constitution release is `v0.3.2`; git commit based
+- The human-facing constitution release is `v0.4.0`; git commit based
   `constitution_version` remains the exact snapshot version.
 - New WSL projects should be separated by workspace class:
   `~/projects/production`, `~/projects/labs`, `~/projects/worktrees`, and
@@ -178,7 +200,7 @@ diagrams/
 ## Resume On Another Machine
 
 On the Windows 11 + WSL machine that runs the Hermes agent, copy or pull this
-repository and point Hermes at these documents as its v0.3.2 constitution.
+repository and point Hermes at these documents as its v0.4.0 constitution.
 
 Recommended future flow:
 

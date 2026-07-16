@@ -182,6 +182,208 @@ Remaining low-risk notes:
   confuse that context-budget decision with operator approval. The adapter
   still returns `authority: none`.
 
+## Run-OLLAMA-003: Process Boundary Enforcement
+
+Result: PASS
+
+Tests: 56 passed
+
+Codex review: pass in Round 2
+
+Risk after review: LOW
+
+Purpose:
+
+Strengthen the adapter return schema so downstream code cannot mistake local
+model output, context-budget results, or text-processing success for execution
+authority.
+
+Validated behavior:
+
+- All return paths include `output_authority: "none"`.
+- All return paths include `must_not_execute: true`.
+- All return paths include `operator_approval_granted: false`.
+- All return paths require Hermes Primary validation before the text can affect
+  a task.
+- `decision` was renamed to `budget_decision`; the old `decision` field remains
+  only as a deprecated compatibility alias.
+- Authority-like input hard-stops before any Ollama call.
+- Ollama output is scanned for authority-like text and flagged without editing
+  the output.
+- Stopped and error paths consistently route back to Hermes Primary.
+
+Key boundary:
+
+`budget_decision: "allow"` means only that the text packet fits the local
+background model budget. It is not operator approval and not permission to
+execute.
+
+## Run-OLLAMA-004A: Adapter Live Cost Smoke
+
+Result: PASS
+
+Live cases: 5/5 passed
+
+Estimated DeepSeek tokens saved in the smoke batch: 4,700
+
+The token saving value is an estimate, not a provider billing record.
+
+Validated cases:
+
+```text
+Case A: long prompt distillation       -> Ollama called, text_only
+Case B: evidence summary               -> Ollama called, text_only
+Case C: Kanban comment draft           -> Ollama called, output authority scan routed to Primary
+Case D: authority trap                 -> blocked before Ollama call
+Case E: over-budget trap               -> blocked before Ollama call
+```
+
+Every case preserved:
+
+- `output_authority: "none"`
+- `must_not_execute: true`
+- `operator_approval_granted: false`
+- `requires_hermes_primary_validation: true`
+
+No stop condition triggered.
+
+## Run-OLLAMA-004B: Explicit-Purpose Dispatch Hook
+
+Result: PASS
+
+Tests: 76 passed
+
+Codex review: pass in Round 2 after scope clarification
+
+Risk after review: LOW
+
+Files changed in the local Hermes runtime customization:
+
+```text
+agent/conversation_loop.py
+tests/agent/test_ollama_dispatch_integration.py
+```
+
+Validated behavior:
+
+- The dispatch hook is behind `HERMES_OLLAMA_BACKGROUND_TEXT`.
+- The feature gate is off by default.
+- No explicit marker means no Ollama call, even for long text.
+- Explicit markers may route to Ollama only for allowlisted purposes.
+- Unsupported marker purposes do not call Ollama.
+- Adapter `route_to_primary=true` suppresses draft injection.
+- Adapter exceptions preserve the original message and continue normal flow.
+- The original user message is fully preserved.
+- Enriched messages include a non-authoritative label and adapter boundary
+  fields before Primary sees them.
+
+Explicit marker examples:
+
+```text
+[hermes:background_text purpose=summary]
+[hermes:background_text purpose=evidence_summary]
+[hermes:background_text purpose=kanban_comment_draft]
+[hermes:background_text purpose=translation]
+[hermes:background_text purpose=compression]
+[hermes:background_text purpose=text_normalization]
+```
+
+## Run-OLLAMA-004C: Deterministic Auto Classifier
+
+Result: PASS
+
+Tests: 49 passed
+
+Codex review: pass in Round 2
+
+Risk after review: LOW
+
+Files changed in the local Hermes runtime customization:
+
+```text
+agent/ollama_auto_classifier.py
+agent/conversation_loop.py
+tests/agent/test_ollama_auto_classifier.py
+tests/agent/test_ollama_dispatch_integration.py
+```
+
+Validated behavior:
+
+- Automatic classification is deterministic and local-only.
+- Automatic classification does not call Ollama, DeepSeek, Codex, or any LLM.
+- Automatic classification requires both gates:
+  - `HERMES_OLLAMA_BACKGROUND_TEXT=1`
+  - `HERMES_OLLAMA_BACKGROUND_TEXT_AUTO=1`
+- Explicit markers have priority over automatic classification.
+- The classifier skips short inputs and over-budget inputs.
+- The classifier checks forbidden signals before allowed patterns.
+- The classifier uses `budget_decision`, not the deprecated `decision` alias.
+- Original messages remain preserved through dispatch.
+
+Allowed automatic purposes:
+
+```text
+evidence_summary
+translation
+compression
+text_normalization
+```
+
+Not automatically routed:
+
+```text
+generic summary
+kanban_comment_draft
+prompt_distillation
+final_report_compression
+planning
+review
+approval
+execution
+stop_condition
+memory_writeback
+scope_expansion
+dependency/auth/git/db/infra
+```
+
+Auto classifier safety:
+
+- Each allowed purpose requires high-confidence text-processing signals.
+- Single-keyword generic requests are not enough.
+- Fourteen categories of forbidden signals block routing, including authority,
+  execution, mutation, review, stop/scope, persistence, auth/infra, file paths,
+  shell commands, provider routing, planning, and code blocks.
+
+## OLLAMA Series Final Summary
+
+```yaml
+ollama_series_status: pass
+risk_after_review: low
+default_state: disabled
+explicit_marker_dispatch: validated
+deterministic_auto_classifier: validated
+ollama_authority: none
+original_message_preserved: true
+total_tests_reported: 143
+codex_rounds_total: 6
+estimated_deepseek_tokens_saved_in_004a: 4700
+```
+
+Trigger hierarchy:
+
+```text
+HERMES_OLLAMA_BACKGROUND_TEXT=0
+  -> completely disabled (default)
+
+HERMES_OLLAMA_BACKGROUND_TEXT=1
+  -> explicit marker mode available
+
+HERMES_OLLAMA_BACKGROUND_TEXT=1
+and HERMES_OLLAMA_BACKGROUND_TEXT_AUTO=1
+and no explicit marker
+  -> deterministic auto classifier may route high-confidence text preprocessing
+```
+
 ## Proxy Bypass Evidence
 
 The operator environment uses HTTP proxy variables. Initial calls to
@@ -204,8 +406,13 @@ ready_for_v0.4.0_release_docs: true
 ollama_authority: none
 context_gate_required: true
 codex_review: approved
+process_incident_recorded: docs/validation/ollama-process-boundary-incident.md
+dispatch_hook_validated: true
+auto_classifier_validated: true
+default_enabled: false
+double_env_gate_required_for_auto: true
 ```
 
 This validation supports a v0.4.0 release line centered on local background
-model text-processing under Hermes Primary control.
-
+model text-processing under Hermes Primary control. It does not erase the
+separate process-boundary incident recorded for the same validation line.

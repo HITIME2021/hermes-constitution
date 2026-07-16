@@ -12,14 +12,13 @@
 ## 当前版本
 
 <!-- snapshot:block id="constitution-release.zh-CN" section="Constitution Release" priority="11" -->
-当前 Hermes 宪法 release：`v0.3.2`。
+当前 Hermes 宪法 release：`v0.4.0`。
 
-`v0.3.2` 表示宪法在已验证的 v0.2 本地编排基线上，新增了工具治理、artifact intake、
-planning source control、token/quality telemetry、Simple Shell Direct Mode 安全边界，
-以及更严格的 Hermes self-edit 边界。它还新增 WSL workspace layout separation，
-用于区分生产仓库、实验项目、provider worktree 和归档实验。它进一步新增 Gateway
-Entry Guard 和 Self-Improvement Governance，使 DM/mobile 入口只有在 startup
-verification 后才可信，并让 self-improvement 在写入前先生成 candidate。
+`v0.4.0` 表示宪法包含已验证的 v0.2 本地编排基线、v0.3 工具治理与
+artifact intake 线、v0.3.1 workspace layout patch，以及 v0.3.2 trusted-entry /
+self-improvement governance patch。它进一步新增本地后台模型治理：Ollama 可以作为有
+边界的文本处理层，但绝不是 planning、review、execution、approval、memory 或
+constitution authority。
 
 已验证的 v0.2 控制回路：
 
@@ -41,6 +40,11 @@ v0.3 新增能力：
 - Workspace Layout Policy 区分 `~/projects/production`、`~/projects/labs`、`~/projects/worktrees` 和 `~/projects/archive`
 - Gateway Entry Guard 要求非 TUI 入口在执行工具前验证 `current.md` 和 `current.index.json`
 - Self-Improvement Governance 允许自动生成 candidate，但 apply patch 是 authority-bearing effect
+- Background Local Model Adapter 允许本地 Ollama 文本预处理，但必须保持
+  `output_authority: none`，调用前执行确定性 context budget gate，不启用 tool calling，
+  对本地流量绕过代理，并由 Hermes Primary 验证结果
+- Ollama dispatch integration 支持显式 marker 路由和确定性 auto classifier；自动路由在双
+  env gate 后才启用，默认关闭
 
 已加载 snapshot 的精确 `constitution_version` 仍然是 git commit。release label 是面向人的成熟度标记。
 <!-- /snapshot:block -->
@@ -86,6 +90,17 @@ gateway / DM / mobile entrypoints -> untrusted until startup verification
 current.md + current.index.json -> required before tool execution
 self-improvement analysis -> allowed
 self-improvement patch application -> trusted channel + scope + approval
+```
+
+`v0.4.0` 是本地后台模型治理与 Ollama dispatch 验证线：
+
+```text
+Ollama/local model -> 只做有边界的文本预处理
+output authority -> none
+context budget -> 调用本地模型前先检查
+explicit marker dispatch -> 已验证
+deterministic auto classifier -> 已在双 env gate 后验证
+planning/review/execution/approval/memory/scope -> 绕过 Ollama
 ```
 
 未来版本号提升应通过 ADR 记录，并说明验证了什么能力，而不只是说明文档有变更。

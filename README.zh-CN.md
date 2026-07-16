@@ -1,6 +1,6 @@
 # Hermes Constitution 中文说明
 
-本仓库保存 Hermes v0.3.2 的工作宪法。
+本仓库保存 Hermes v0.4.0 的工作宪法。
 
 这里的“宪法”不是最终产品文档，而是 Hermes agent 在启动、规划、派发任务、审查结果和写入记忆时应当遵守的基础规则。
 
@@ -21,7 +21,7 @@ Hermes 是一个多 Agent 自动化调度平台。
 沉淀经验
 ```
 
-当前 v0.3.2 的基本分工是：
+当前 v0.4.0 的基本分工是：
 
 ```text
 Codex / GPT-5.5
@@ -29,6 +29,10 @@ Codex / GPT-5.5
 
 CodeBuddy
   低成本执行者，负责明确边界内的代码修改、重复性实现、简单 bugfix、补测试。
+
+Ollama / 本地后台模型
+  只作为低成本文字处理工具，负责摘要、翻译、压缩、证据整理和草稿生成。
+  它不是 planning、review、execution、approval、memory 或 constitution authority。
 
 Claude Code
   v0.1 暂时排除。
@@ -114,7 +118,8 @@ decisions/
 
 diagrams/
   Mermaid 流程图。
-  - hermes-v0.3-flow.mmd：当前 v0.3 受治理的编排流程。
+  - hermes-v0.4-flow.mmd：当前 v0.4 受治理的编排流程。
+  - hermes-v0.3-flow.mmd：历史 v0.3 受治理的编排流程。
   - hermes-v0.1-flow.mmd：历史 v0.1 基线流程。
 ```
 
@@ -126,6 +131,9 @@ diagrams/
 - [运行时与 Provider 接口](docs/runtime-and-provider-interfaces.zh-CN.md)
 - [Tools Layer 工具层](docs/tools-layer.zh-CN.md)
 - [Tools Adapter 工具适配器](docs/tools-adapter.zh-CN.md)
+- [Background Local Model Adapter 本地后台模型适配器](docs/background-local-model-adapter.zh-CN.md)
+- [Hermes Primary Adapter Boundary 主调度器边界](docs/hermes-primary-adapter-boundary.zh-CN.md)
+- [Local Hermes Runtime Patches 本地运行时补丁参考](docs/local-hermes-runtime-patches.md)
 - [Workspace Layout Policy 工作区布局策略](docs/workspace-layout-policy.zh-CN.md)
 - [Gateway Entry Guard 网关入口守卫](docs/gateway-entry-guard.zh-CN.md)
 - [Self-Improvement Governance 自我改进治理](docs/self-improvement-governance.zh-CN.md)
@@ -168,16 +176,98 @@ diagrams/
 - Hermes 每个任务必须选择一个 planning source of record：默认 `codex_native`；复杂或模糊任务可使用 `frontend_artifact_assisted`，但 Frontend artifact 仍只是 input evidence。
 - Frontend artifacts 必须先通过 Artifact Intake Gate，完成 source/tool mode 校验、artifact 分类、hidden effects 检测、Hermes-native draft 映射和 review/approval，才能影响 live execution。
 - Token telemetry 应按 provider/tool phase 记录；不可获得时必须标记 `unavailable`，估算时必须标记 `estimated`，并且必须与 quality telemetry 配对，不能只按 token 低来判断成功。
+- Ollama / 本地后台模型只能处理有边界的文本包，例如摘要、翻译、压缩、Kanban comment draft、evidence summary 和 text normalization。它的输出只能是 draft text 或 input evidence，不得作为 planning、review、execution、approval、memory 或 constitution authority。
+- 在调用 Ollama 前，Hermes 必须先用本地确定性逻辑进行 context budget 检查。超过预算的内容必须返回 Hermes Primary，不得让 Ollama 决定丢弃哪些 evidence，也不得静默截断或盲目分块。
+- Ollama 本地 API 流量必须绕过工作机 HTTP 代理。`127.0.0.1`、`localhost` 和 `::1` 应加入 `NO_PROXY` / `no_proxy`，避免把 `127.0.0.1:11434` 的 `503 Proxy-Connection` 误判为模型失败。
+- Ollama 相关验证必须把代码安全和流程合规分开记录。即使本地 adapter 测试通过，也不能掩盖 dry-run、operator approval、CodeBuddy scoped execution 或 Codex review gate 被绕过的问题。
+- Hermes 本地 `.py` runtime patch 应记录为 reference patch groups，而不是上游 Hermes Agent 官方源码。其他使用者可以选择性借鉴，但必须先比对自己的 Hermes 版本并重新测试、审查。
 - Hermes 新会话默认加载 `~/hermes-snapshots/current.md`；只有满足 reload 条件时才全量读取 constitution repo。
 - 用户 slash command 应通过 Command Handler 实现，并声明 `effects`、`no_effects`，先经过 Command Policy Gate。
 - Dashboard 和 Kanban 可以作为 Hermes-managed provider orchestration run 的可观测性界面，但不是执行权威，不得绕过 policy 或 approval gate。
 - 安全、高频、只读的 shell 检查命令可以使用简单直通模式，减少不必要的规划和 token 消耗。
 - 自动化重试、修正和重规划都有预算；重复失败、方向不清、范围不安全或 token/time 不值得时，必须停止并请求人工介入。
-- 面向人的宪法 release 是 `v0.3.2`；基于 git commit 的 `constitution_version` 仍然是精确 snapshot 版本。
+- 面向人的宪法 release 是 `v0.4.0`；基于 git commit 的 `constitution_version` 仍然是精确 snapshot 版本。
 - 新 WSL 项目应按 workspace class 分开：`~/projects/production`、`~/projects/labs`、`~/projects/worktrees` 和 `~/projects/archive`。
 - Hermes self-edit 默认禁用。Implementation work 应路由到 CodeBuddy scoped execution，并在风险需要时经过 verification 和 Codex review。Emergency self-edit 必须有操作者针对具体任务的明确 override。
 - Gateway / DM / mobile 入口在验证已加载 constitution snapshot 和 index 前均为 untrusted。
 - Self-improvement 可以自动生成 candidate，但 apply patch 是 authority-bearing effect，必须通过可信通道和 approval。
+
+## v0.4.0 本地后台模型线
+
+当前 v0.4.0 的核心能力之一是把 Ollama / 本地模型接入 Hermes，但只作为后台文本处理工具，而不是新的执行权威。
+
+允许的使用方式：
+
+```text
+长 prompt / evidence / comment draft
+  -> context budget check
+  -> Ollama text preprocessing
+  -> Hermes Primary validation
+  -> Codex / CodeBuddy / operator, when authority is needed
+```
+
+禁止的使用方式：
+
+- 让 Ollama 决定是否执行任务
+- 让 Ollama 替代 Codex review
+- 让 Ollama 判断 stop condition
+- 让 Ollama 选择要丢弃的 evidence
+- 让 Ollama 执行 tool calling
+- 把 Ollama 的 `decision: allow` 误读成 operator approval
+
+当前验证状态：
+
+```text
+OLLAMA-003  Adapter process boundary enforcement  -> pass
+OLLAMA-004A Adapter live cost smoke               -> pass
+OLLAMA-004B Explicit-purpose dispatch hook        -> pass
+OLLAMA-004C Deterministic auto classifier         -> pass
+```
+
+默认状态：
+
+```text
+HERMES_OLLAMA_BACKGROUND_TEXT=0
+  -> 完全禁用（默认）
+
+HERMES_OLLAMA_BACKGROUND_TEXT=1
+  -> 允许显式 marker 调用
+
+HERMES_OLLAMA_BACKGROUND_TEXT=1
+HERMES_OLLAMA_BACKGROUND_TEXT_AUTO=1
+  -> 允许本地确定性 auto classifier 在高置信文本处理场景下调用
+```
+
+自动分类只允许四类高置信文本预处理：
+
+```text
+evidence_summary
+translation
+compression
+text_normalization
+```
+
+以下场景必须绕过 Ollama：
+
+```text
+planning
+review
+approval
+execution
+stop_condition
+memory_writeback
+scope_expansion
+dependency/auth/git/db/infra
+代码修改、文件路径、shell 命令、Provider 调度请求
+```
+
+已记录的验证和事件：
+
+- [Ollama Background Text Adapter Smoke Test](docs/validation/ollama-background-text-adapter-smoke-test.md)
+- [Ollama Process Boundary Incident](docs/validation/ollama-process-boundary-incident.md)
+- [Context Budget Helper Process Incident](docs/validation/context-budget-helper-process-incident.md)
+
+这些记录说明：本地模型可以降低摘要、压缩和整理文本的成本，但所有会产生权威效果的动作仍必须回到 Hermes Primary、Codex、CodeBuddy 或 operator approval。
 
 ## WSL 如何使用
 

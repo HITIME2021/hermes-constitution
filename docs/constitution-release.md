@@ -12,16 +12,14 @@ It is separate from:
 ## Current Release
 
 <!-- snapshot:block id="constitution-release" section="Constitution Release" priority="10" -->
-Current Hermes constitution release: `v0.3.2`.
+Current Hermes constitution release: `v0.4.0`.
 
-`v0.3.2` means the constitution includes the validated v0.2 local orchestration
-baseline and adds tool governance, artifact intake, planning-source control,
-token/quality telemetry, simple shell direct-mode safety, and a stricter
-Hermes self-edit boundary. It also adds WSL workspace layout separation for
-production repositories, lab projects, provider worktrees, and archived
-experiments. It further adds Gateway Entry Guard and Self-Improvement
-Governance so DM/mobile entrypoints can become trusted only after startup
-verification, and self-improvement remains candidate-first before writes.
+`v0.4.0` means the constitution includes the validated v0.2 local orchestration
+baseline, the v0.3 tool governance and artifact-intake line, the v0.3.1
+workspace layout patch, and the v0.3.2 trusted-entry/self-improvement
+governance patch. It further adds local background model governance: Ollama may
+be used as a bounded text-processing layer, but never as planning, review,
+execution, approval, memory, or constitution authority.
 
 Validated v0.2 control loops:
 
@@ -50,6 +48,12 @@ Added v0.3 capabilities:
   `current.index.json` before tool execution
 - Self-Improvement Governance allows automatic candidate generation but treats
   patch application as an authority-bearing effect
+- Background Local Model Adapter allows local Ollama text preprocessing with
+  `output_authority: none`, a deterministic context budget gate, no tool
+  calling, proxy bypass for local traffic, and Hermes Primary validation
+- Ollama dispatch integration supports explicit marker routing and a
+  deterministic auto classifier behind environment gates; it remains disabled
+  by default
 
 The git commit remains the exact `constitution_version` for a loaded snapshot.
 The release label is a human-facing maturity marker.
@@ -96,6 +100,18 @@ gateway / DM / mobile entrypoints -> untrusted until startup verification
 current.md + current.index.json -> required before tool execution
 self-improvement analysis -> allowed
 self-improvement patch application -> trusted channel + scope + approval
+```
+
+`v0.4.0` is the local background model governance and Ollama dispatch
+validation line:
+
+```text
+Ollama/local model -> bounded text preprocessing only
+output authority -> none
+context budget -> checked before local model dispatch
+explicit marker dispatch -> validated
+deterministic auto classifier -> validated behind double env gate
+planning/review/execution/approval/memory/scope -> bypass Ollama
 ```
 
 Future release bumps should be recorded by ADR and should explain what

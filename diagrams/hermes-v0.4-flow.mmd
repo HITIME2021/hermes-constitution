@@ -1,0 +1,124 @@
+flowchart TD
+    %% Hermes v0.4 governed orchestration flow.
+    %% Keep this diagram readable by grouping phases instead of drawing every
+    %% policy edge directly in the main lane.
+
+    Start["User intent / inbound message"] --> Entry["Trusted entry setup<br/>snapshot + index verification"]
+    Entry --> Intake["Intake and clarification"]
+
+    subgraph FastPath["Fast Local Paths"]
+        ShellQ{"Simple Shell<br/>Direct Mode?"}
+        ShellOK["Read-only shell result<br/>raw stdout / stderr / exit code"]
+        ShellStop["Hard reject<br/>no command executed"]
+    end
+
+    Intake --> ShellQ
+    ShellQ -->|allowlisted read-only| ShellOK
+    ShellQ -->|dangerous syntax / secret / write-capable| ShellStop
+    ShellQ -->|normal task| Tools["Tools Layer classification"]
+
+    subgraph ToolGovernance["Tool And Artifact Governance"]
+        Tools
+        ToolType{"Input / tool mode"}
+        ArtifactGate["Artifact Intake Gate<br/>validate, classify, normalize"]
+        BackendEffect["Backend effect<br/>ExecutionRequest required"]
+        NativePlanning["Native planning path"]
+    end
+
+    Tools --> ToolType
+    ToolType -->|frontend artifact| ArtifactGate
+    ToolType -->|backend effect| BackendEffect
+    ToolType -->|no external tool| NativePlanning
+    ArtifactGate --> PlanningSource["Planning source selection"]
+    BackendEffect --> PlanningSource
+    NativePlanning --> PlanningSource
+
+    subgraph BackgroundText["Optional Local Background Text Layer"]
+        MarkerQ{"Explicit marker<br/>or deterministic auto match?"}
+        Budget["Context budget gate<br/>local deterministic check"]
+        Ollama["Ollama text preprocessing<br/>authority = none"]
+        DraftGate{"Draft safe for<br/>Primary validation?"}
+        DraftInject["Attach non-authoritative draft<br/>original message preserved"]
+        PrimaryOnly["Bypass Ollama<br/>route to Primary"]
+    end
+
+    PlanningSource --> MarkerQ
+    MarkerQ -->|disabled / no match / forbidden signal| PrimaryOnly
+    MarkerQ -->|allowed text purpose| Budget
+    Budget -->|over budget| PrimaryOnly
+    Budget -->|within budget| Ollama
+    Ollama --> DraftGate
+    DraftGate -->|route_to_primary / authority-like output| PrimaryOnly
+    DraftGate -->|text-only draft| DraftInject
+
+    PrimaryOnly --> Plan["Task / ExecutionRequest / ReviewPlan"]
+    DraftInject --> Plan
+
+    subgraph PolicyGates["Policy Gates"]
+        Risk["Risk and scope evaluation"]
+        ProjectPolicy["Project Policy"]
+        StopCond["Stop conditions<br/>scope, deps, auth, memory, safety"]
+        Approval{"Operator approval<br/>required?"}
+        Ask["Ask operator<br/>approval packet"]
+    end
+
+    Plan --> Risk --> ProjectPolicy --> StopCond --> Approval
+    Approval -->|yes| Ask --> Approval
+    Approval -->|approved / not required| Route["Provider routing"]
+
+    subgraph Providers["Provider Execution And Review"]
+        Route
+        WorkType{"Work type"}
+        CodeBuddy["CodeBuddy<br/>scoped implementation"]
+        Codex["Codex<br/>planning / review / repair"]
+        SelfEdit["Hermes self-edit gate<br/>disabled by default"]
+        LocalOverride["Emergency local override<br/>explicit operator approval"]
+        Verify["Verification<br/>targeted + full tests as needed"]
+        Review["Codex Review Gate"]
+        Verdict{"Review verdict"}
+    end
+
+    Route --> WorkType
+    WorkType -->|implementation| CodeBuddy
+    WorkType -->|planning / review / repair| Codex
+    WorkType -->|self-edit request| SelfEdit
+    SelfEdit -->|no override| CodeBuddy
+    SelfEdit -->|explicit emergency override| LocalOverride
+    CodeBuddy --> Verify
+    LocalOverride --> Verify
+    Codex --> Review
+    Verify --> Review
+    Review --> Verdict
+    Verdict -->|approved / approved_with_notes| Finalize["Finalize result"]
+    Verdict -->|needs_revision| CodeBuddy
+    Verdict -->|blocked / repeated finding| Human["Human intervention<br/>or scoped repair proposal"]
+
+    subgraph Evidence["Evidence, Telemetry, Memory"]
+        Obs["Run observability<br/>Kanban, events, evidence"]
+        Telemetry["Token + quality telemetry"]
+        MemoryQ{"Memory writeback<br/>approved?"}
+        Candidate["MemoryCandidate only<br/>no writeback"]
+        Memory["Memory Center"]
+        Report["Final report"]
+    end
+
+    Finalize --> Obs --> Telemetry --> MemoryQ
+    MemoryQ -->|no| Candidate --> Report
+    MemoryQ -->|yes| Memory --> Report
+    Human --> Report
+
+    subgraph Boundaries["Authority Boundaries"]
+        B1["Frontend artifacts = input evidence"]
+        B2["Backend tools = authority-bearing effects"]
+        B3["Ollama = draft text only"]
+        B4["ExecutionRequest = live execution authority"]
+        B5["Codex = planner / reviewer"]
+        B6["CodeBuddy = scoped coder"]
+    end
+
+    ArtifactGate -.-> B1
+    BackendEffect -.-> B2
+    Ollama -.-> B3
+    Plan -.-> B4
+    Codex -.-> B5
+    CodeBuddy -.-> B6
