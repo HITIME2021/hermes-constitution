@@ -72,6 +72,7 @@ Examples:
 - design exporters
 - document analyzers
 - prompt distillers
+- local background text models when used only for bounded text transformation
 - checklist generators
 - clarification assistants
 - project scaffolding tools when used in dry-run or artifact-only mode
@@ -113,6 +114,12 @@ Backend Tool use must be traceable through the run evidence. When a Backend Tool
 needs broader scope, new dependencies, credentials, provider configuration
 changes, destructive operations, network-sensitive operations, or interactive
 confirmation, Hermes must follow the existing approval and stop-condition rules.
+
+Local background model calls, such as Ollama text-processing calls, are Backend
+Tool invocations with a tightly limited permitted effect: text transformation
+only. They must follow the Background Local Model Adapter rules and must not be
+treated as provider planning, review, execution, approval, memory, or
+constitution authority.
 
 ## Tool Examples
 

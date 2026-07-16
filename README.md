@@ -68,6 +68,8 @@ docs/
   Architecture and module design documents.
   - tools-layer.md: Frontend/Backend tool classification and intake rules.
   - tools-adapter.md: Generic invocation, scope, evidence, and artifact mapping contract for external tools.
+  - background-local-model-adapter.md: Ollama/local model text-processing boundary and context budget gate.
+  - hermes-primary-adapter-boundary.md: Default no-self-edit boundary for Hermes Primary.
   - workspace-layout-policy.md: WSL workspace separation for production, labs, worktrees, and archives.
   - gateway-entry-guard.md: Trust checks for gateway, DM, mobile, and webhook entrypoints.
   - self-improvement-governance.md: Candidate-first governance for Hermes self-improvement.
@@ -138,6 +140,16 @@ diagrams/
 - Token telemetry should be recorded per provider/tool phase when available,
   but it must be paired with quality telemetry; Hermes must not fabricate token
   counts or optimize for low token use alone.
+- Ollama/local background models may transform bounded text packets, but they
+  are not planning, review, execution, approval, memory, or constitution
+  authority. Over-budget context must be routed back to Hermes Primary.
+- Local Ollama traffic must bypass workstation HTTP proxies; `127.0.0.1`,
+  `localhost`, and `::1` should be present in `NO_PROXY` / `no_proxy` before
+  diagnosing Ollama `503` responses as model failures.
+- Hermes Primary is the orchestrator, not the default coder. Implementation-like
+  work must default to dry-run planning, operator approval, CodeBuddy scoped
+  execution, verification, and Codex review unless the operator grants an
+  explicit task-specific self-edit override.
 - New Hermes sessions should load `~/hermes-snapshots/current.md` by default;
   full constitution reload is used only when reload conditions are met.
 - Hermes must stop automatic loops and request human intervention after bounded

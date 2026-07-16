@@ -24,6 +24,11 @@ Changed:
 - Self-improvement writes are explicitly treated as authority-bearing effects.
 - Gateway startup and DM cold start may generate self-improvement candidates
   but must not apply patches.
+- Added draft Background Local Model Adapter policy for Ollama-style local text
+  processing, including a context budget gate for `qwen2.5:14b`.
+- Added draft Hermes Primary Adapter Boundary policy after a context-budget
+  helper process incident showed that low-risk tasks can still bypass dry-run
+  and approval gates if Hermes Primary self-edits.
 
 Validated:
 
@@ -35,6 +40,9 @@ Validated:
   current startup verification in model behavior; `/new` session reset restored
   the current `constitution_version` and this is recorded in
   `docs/validation/gateway-dm-session-history-smoke-test.md`.
+- Context budget helper review found safe code but a medium-severity process
+  violation where the expected dry-run and approval gate was bypassed; recorded
+  in `docs/validation/context-budget-helper-process-incident.md`.
 
 ## v0.3.1 - 2026-07-15
 
