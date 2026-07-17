@@ -136,6 +136,7 @@ diagrams/
 - [Tools Layer 工具层](docs/tools-layer.zh-CN.md)
 - [Tools Adapter 工具适配器](docs/tools-adapter.zh-CN.md)
 - [Background Local Model Adapter 本地后台模型适配器](docs/background-local-model-adapter.zh-CN.md)
+- [Snapshot Layering 快照分层策略](docs/snapshot-layering.zh-CN.md)
 - [Hermes Primary Adapter Boundary 主调度器边界](docs/hermes-primary-adapter-boundary.zh-CN.md)
 - [Local Hermes Runtime Patches 本地运行时补丁参考](docs/local-hermes-runtime-patches.md)
 - [Workspace Layout Policy 工作区布局策略](docs/workspace-layout-policy.zh-CN.md)
@@ -175,6 +176,7 @@ diagrams/
 - Codex CLI 默认使用操作者在 WSL 中通过 `codex login` 建立的 ChatGPT/OAuth 会话。Hermes 不得默认注入 `OPENAI_API_KEY`，也不得查看或保存认证材料。
 - 普通会话默认加载 `~/hermes-snapshots/current.md` 作为 constitution snapshot，不应每轮全量读取 `~/projects/production/hermes-constitution`。
 - `/reload-constitution` 应从源文档声明的 `snapshot:block` 标记生成快照，并写入 `current.index.json`；不得把手工维护的大型模板当作策略事实源。
+- 计划中的 v0.4.1 Snapshot Layering 会保留完整兼容 `current.md`，同时生成 `boot.md`、`core.md` 和 `packs/*.md`，用于降低普通会话和 DM/gateway 冷启动的上下文成本。
 - 长 prompt 应先提炼成结构化 Task、ExecutionRequest、ReviewPlan、stop conditions 和 evidence packet，再分发给 Provider。
 - 工具必须按 effect 分类：Frontend Tools 只产出 advisory artifacts，Backend Tools 会产生 effects；两者都由 Hermes 管控。Ambiguous Tools 默认按 Backend Tool 处理，直到当前 usage mode 被证明是 artifact-only。
 - Hermes 每个任务必须选择一个 planning source of record：默认 `codex_native`；复杂或模糊任务可使用 `frontend_artifact_assisted`，但 Frontend artifact 仍只是 input evidence。

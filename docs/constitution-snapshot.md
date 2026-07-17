@@ -16,13 +16,21 @@ Default local storage:
 ```yaml
 constitution_snapshot:
   default_path: ~/hermes-snapshots/current.md
+  boot_path: ~/hermes-snapshots/boot.md
+  core_path: ~/hermes-snapshots/core.md
+  pack_dir: ~/hermes-snapshots/packs
   archive_path_template: ~/hermes-snapshots/archive/constitution-<commit>-<date>.md
   index_path: ~/hermes-snapshots/current.index.json
   source_repo: ~/projects/production/hermes-constitution
 ```
 
 `current.md` is the stable load target. It may be overwritten when the
-constitution is reloaded.
+constitution is reloaded. It remains the full compatibility snapshot while
+Hermes moves toward layered loading.
+
+`boot.md`, `core.md`, and `packs/*.md` are optional generated layered artifacts
+defined by [Snapshot Layering Policy](snapshot-layering.md). They must be
+generated from the same source block set as `current.md`.
 
 `archive/constitution-<commit>-<date>.md` is an optional historical copy for
 manual audit and rollback.
@@ -41,6 +49,10 @@ Default startup:
 
 Hermes should cite the snapshot `constitution_version` in task outputs when
 policy matters.
+
+Layer-aware sessions may load `boot.md`, `core.md`, and selected domain packs
+instead of loading all of `current.md`, but `current.md` remains a valid
+compatibility fallback.
 
 <!-- snapshot:block id="constitution-version-attribution" section="Constitution Snapshot" priority="30" -->
 Task reports must attribute policy decisions to the loaded constitution
@@ -93,6 +105,8 @@ Effects:
 - get current git `HEAD`
 - scan declared snapshot blocks from source documents
 - generate a Simplified Chinese snapshot from the block set
+- generate layered artifacts when the implementation supports snapshot
+  layering: `boot.md`, `core.md`, and `packs/*.md`
 - overwrite `~/hermes-snapshots/current.md`
 - archive a copy at `~/hermes-snapshots/archive/constitution-<commit>-<date>.md`
 - write `~/hermes-snapshots/current.index.json`
@@ -226,3 +240,22 @@ Guidance:
 
 A shorter snapshot is not better if it loses information or becomes harder to
 review, compare, or clean up manually.
+
+## Snapshot Layering
+
+When snapshot size becomes operationally expensive, Hermes should reduce
+routine load size through generated layers rather than by deleting required
+policy.
+
+The planned v0.4.1 layout is:
+
+```text
+boot.md       -> trust, version, index, load order, fallback
+core.md       -> always-needed runtime policy
+packs/*.md    -> domain policy loaded on demand
+current.md    -> full compatibility snapshot
+```
+
+Layered loading is an optimization. It must preserve the same source-driven
+policy semantics as `current.md`, and it must fail closed when a relevant layer
+is missing or invalid. See [Snapshot Layering Policy](snapshot-layering.md).

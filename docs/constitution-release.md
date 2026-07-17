@@ -114,5 +114,15 @@ deterministic auto classifier -> validated behind double env gate
 planning/review/execution/approval/memory/scope -> bypass Ollama
 ```
 
+Planned `v0.4.1` is the snapshot layering patch for the v0.4 line:
+
+```text
+boot.md -> trusted startup verification only
+core.md -> always-loaded runtime policy
+packs/*.md -> deterministic domain policy loaded on demand
+current.md -> full compatibility snapshot
+current.index.json -> block hashes plus optional layer metadata
+```
+
 Future release bumps should be recorded by ADR and should explain what
 capability was validated, not merely that documents changed.

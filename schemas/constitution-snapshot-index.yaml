@@ -2,21 +2,42 @@ schema: hermes.constitution_snapshot_index.v1
 constitution_snapshot_index:
   constitution_version: acc73eb
   generated_at: "2026-07-06T00:00:00Z"
-  source_repo: ~/projects/hermes-constitution
+  source_repo: ~/projects/production/hermes-constitution
   snapshot_path: ~/hermes-snapshots/current.md
+  boot_path: ~/hermes-snapshots/boot.md
+  core_path: ~/hermes-snapshots/core.md
+  pack_dir: ~/hermes-snapshots/packs
   archive_path: ~/hermes-snapshots/archive/constitution-acc73eb-2026-07-06.md
+  snapshot_layout:
+    mode: layered_with_current_compat
+    boot_path: ~/hermes-snapshots/boot.md
+    core_path: ~/hermes-snapshots/core.md
+    compat_snapshot_path: ~/hermes-snapshots/current.md
+    pack_dir: ~/hermes-snapshots/packs
+    packs:
+      - id: project-policy
+        path: ~/hermes-snapshots/packs/project-policy.md
+        sections:
+          - Project Policy
+        block_ids:
+          - dependency-policy
+        hash: sha256:example
   blocks:
     - id: dependency-policy
       section: Project Policy
       priority: 40
       source: docs/project-policy.md
       hash: sha256:example
+      layer: packs/project-policy.md
   changes:
     added:
       - dependency-policy
     changed: []
     removed: []
+    layer_assignments_changed: []
   diagnostics:
     duplicate_block_ids: []
     malformed_blocks: []
     missing_required_sections: []
+    missing_required_layers: []
+    invalid_layer_hashes: []

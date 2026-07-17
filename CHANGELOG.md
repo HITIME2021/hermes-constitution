@@ -4,6 +4,25 @@ This changelog is for operator-facing release notes. It summarizes what changed
 in the Hermes constitution release line. Detailed rationale remains in
 `decisions/`; runtime policy source remains in `docs/`.
 
+## Unreleased
+
+Planned v0.4.1 snapshot layering design.
+
+Added:
+
+- Snapshot Layering Policy:
+  `docs/snapshot-layering.md`.
+- ADR 0013 for the v0.4.1 boot/core/domain-pack snapshot model.
+
+Changed:
+
+- Constitution Snapshot Policy now describes layered generated artifacts:
+  `boot.md`, `core.md`, `packs/*.md`, and compatibility `current.md`.
+- Command Handler Design now reserves layered snapshot load/write effects and
+  load modes.
+- Snapshot index schema example now includes optional `snapshot_layout`
+  metadata while preserving `current.md` compatibility.
+
 ## v0.4.0 - 2026-07-16
 
 Local background model governance and Ollama dispatch validation.

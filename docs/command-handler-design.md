@@ -82,9 +82,11 @@ conversation suggests it.
 | Effect | Meaning |
 |--------|---------|
 | `read_snapshot_only` | Read a snapshot file without touching the source repo |
+| `read_layered_snapshot` | Read generated layered snapshot files without touching the source repo |
 | `read_full_constitution` | Read constitution docs, schemas, and decisions |
 | `generate_snapshot` | Generate a new constitution snapshot from source docs |
 | `overwrite_current_snapshot` | Overwrite `~/hermes-snapshots/current.md` |
+| `write_layered_snapshots` | Write generated `boot.md`, `core.md`, and `packs/*.md` under `~/hermes-snapshots/` |
 | `archive_versioned_snapshot` | Write an archive copy under `~/hermes-snapshots/archive/` |
 | `write_snapshot_index` | Write `~/hermes-snapshots/current.index.json` for block change tracking |
 | `read_file` | Read one or more files |
@@ -149,8 +151,17 @@ commands:
         type: path
         default: ~/hermes-snapshots/current.md
         required: false
+      load_mode:
+        type: choice
+        default: current_compat
+        choices:
+          - current_compat
+          - boot_core
+          - boot_core_domain
+        required: false
     effects:
       - read_snapshot_only
+      - read_layered_snapshot
     no_effects:
       - full_constitution_reload
       - task_execution
@@ -163,6 +174,8 @@ commands:
       required_fields:
         - constitution_version
         - snapshot_path
+        - load_mode
+        - loaded_layers
         - loaded_at
     errors:
       - snapshot_not_found: "Snapshot file does not exist. Run /reload-constitution first."
@@ -170,8 +183,14 @@ commands:
       - permission_denied: "Cannot read the snapshot file."
 ```
 
-The handler must not read `~/projects/production/hermes-constitution` unless the snapshot
-is missing or stale and the user explicitly authorizes `/reload-constitution`.
+The handler must not read `~/projects/production/hermes-constitution` unless the
+snapshot is missing or stale and the user explicitly authorizes
+`/reload-constitution`.
+
+Layer-aware loaders may read `boot.md`, `core.md`, and selected `packs/*.md`
+when `current.index.json` proves they belong to the same `constitution_version`.
+They must fall back to `current.md` or stop if a relevant layer is missing,
+unreadable, hash-invalid, or version-mismatched.
 
 ### `reload_constitution`
 
@@ -194,6 +213,18 @@ commands:
         type: path
         default: ~/hermes-snapshots/current.md
         required: false
+      boot_snapshot:
+        type: path
+        default: ~/hermes-snapshots/boot.md
+        required: false
+      core_snapshot:
+        type: path
+        default: ~/hermes-snapshots/core.md
+        required: false
+      pack_dir:
+        type: path
+        default: ~/hermes-snapshots/packs
+        required: false
       archive_dir:
         type: path
         default: ~/hermes-snapshots/archive
@@ -206,6 +237,7 @@ commands:
       - read_full_constitution
       - generate_snapshot
       - overwrite_current_snapshot
+      - write_layered_snapshots
       - archive_versioned_snapshot
       - write_snapshot_index
     no_effects:
@@ -222,8 +254,12 @@ commands:
         - constitution_version
         - commit
         - snapshot_path
+        - boot_path
+        - core_path
+        - pack_dir
         - archive_path
         - index_path
+        - snapshot_layout
         - loaded_at
         - added_blocks
         - changed_blocks
@@ -245,8 +281,10 @@ write generated snapshots into `~/projects/production/hermes-constitution`.
 
 - scan source documents for explicit `snapshot:block` markers
 - render `current.md` from the extracted block set
+- when snapshot layering is supported, render `boot.md`, `core.md`, and
+  domain packs from the same extracted block set
 - write `current.index.json` with block ids, sections, priorities, source paths,
-  and content hashes
+  content hashes, and optional layer metadata
 - compare with the previous index and report added / changed / removed blocks
 - reject duplicate block ids and malformed markers
 - never treat the previous `current.md` as the policy source of truth

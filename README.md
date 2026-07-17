@@ -76,6 +76,7 @@ docs/
   - tools-layer.md: Frontend/Backend tool classification and intake rules.
   - tools-adapter.md: Generic invocation, scope, evidence, and artifact mapping contract for external tools.
   - background-local-model-adapter.md: Ollama/local model text-processing boundary and context budget gate.
+  - snapshot-layering.md: Planned v0.4.1 boot/core/domain-pack snapshot model.
   - hermes-primary-adapter-boundary.md: Default no-self-edit boundary for Hermes Primary.
   - local-hermes-runtime-patches.md: Reference map for local Hermes Agent runtime patch groups.
   - workspace-layout-policy.md: WSL workspace separation for production, labs, worktrees, and archives.
@@ -127,6 +128,9 @@ diagrams/
 - `/reload-constitution` should generate snapshots from declared source
   `snapshot:block` markers and write `current.index.json`; it must not depend on
   a hand-maintained template as the policy source of truth.
+- The planned v0.4.1 snapshot layering model keeps `current.md` as a full
+  compatibility snapshot while adding generated `boot.md`, `core.md`, and
+  `packs/*.md` artifacts for lower-cost runtime loading.
 - User slash commands should be implemented through Command Handlers with
   declared `effects`, `no_effects`, and a Command Policy Gate.
 - Dashboard and Kanban may be used as observability surfaces for
