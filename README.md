@@ -81,7 +81,7 @@ docs/
   - local-hermes-runtime-patches.md: Reference map for local Hermes Agent runtime patch groups.
   - workspace-layout-policy.md: WSL workspace separation for production, labs, worktrees, and archives.
   - gateway-entry-guard.md: Trust checks for gateway, DM, mobile, and webhook entrypoints.
-  - self-improvement-governance.md: Candidate-first governance for Hermes self-improvement.
+  - self-improvement-governance.md: Candidate-first and observable patch governance for Hermes self-improvement.
   - planning-modes.md: Planning source of record and Codex role by mode.
   - artifact-intake-gate.md: Artifact validation, normalization, and mapping.
   - token-telemetry-policy.md: Token/cost telemetry paired with quality signals.
@@ -128,6 +128,9 @@ diagrams/
 - `/reload-constitution` should generate snapshots from declared source
   `snapshot:block` markers and write `current.index.json`; it must not depend on
   a hand-maintained template as the policy source of truth.
+- Hermes self-improvement remains enabled as a learning mechanism, but applied
+  patches must be attributable, diffable, risk-classified, operator-visible, and
+  reversible before they are treated as trusted behavior.
 - The planned v0.4.1 snapshot layering model keeps `current.md` as a full
   compatibility snapshot while adding generated `boot.md`, `core.md`, and
   `packs/*.md` artifacts for lower-cost runtime loading.

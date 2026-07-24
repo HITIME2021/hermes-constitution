@@ -142,6 +142,7 @@ diagrams/
 - [Workspace Layout Policy 工作区布局策略](docs/workspace-layout-policy.zh-CN.md)
 - [Gateway Entry Guard 网关入口守卫](docs/gateway-entry-guard.zh-CN.md)
 - [Self-Improvement Governance 自我改进治理](docs/self-improvement-governance.zh-CN.md)
+- [Self-Improvement Observability Audit 自我改进可观测性审计](docs/validation/self-improvement-observability-audit.md)
 - [Planning Modes 规划模式](docs/planning-modes.zh-CN.md)
 - [Artifact Intake Gate](docs/artifact-intake-gate.zh-CN.md)
 - [Token Telemetry Policy](docs/token-telemetry-policy.zh-CN.md)
@@ -197,6 +198,7 @@ diagrams/
 - Hermes self-edit 默认禁用。Implementation work 应路由到 CodeBuddy scoped execution，并在风险需要时经过 verification 和 Codex review。Emergency self-edit 必须有操作者针对具体任务的明确 override。
 - Gateway / DM / mobile 入口在验证已加载 constitution snapshot 和 index 前均为 untrusted。
 - Self-improvement 可以自动生成 candidate，但 apply patch 是 authority-bearing effect，必须通过可信通道和 approval。
+- Self-improvement 仍然是 Hermes 的学习机制，但 apply 后的 patch 必须可归因、可 diff、可风险分类、operator 可见、可回滚，才能被视为 trusted behavior。
 
 ## v0.4.0 本地后台模型线
 

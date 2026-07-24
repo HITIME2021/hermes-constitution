@@ -78,6 +78,55 @@ Apply self-improvement candidate 必须具备：
 低风险纯文本 skill patch 可以批处理或通过 Kanban surfaced，但不得从 gateway startup
 或 DM cold start 直接 apply。Runtime code patch、provider policy change、memory write
 和 command handler change 需要更强 review 和明确 operator approval。
+
+每一个已经 apply 的 self-improvement patch 都必须具备：
+可归因、可 diff、可分类、operator 可见、可回滚。即使 patch 本身有用，
+silent self-improvement 也不是 trusted authority。
+
+Hermes 应当为每一次 self-improvement write 写入 patch record：
+
+```yaml
+self_improvement_patch_record:
+  id: sip-YYYYMMDD-HHMMSS
+  source_candidate: si-YYYYMMDD-HHMMSS
+  skill_or_target_id: hermes-constitution-maintenance
+  trigger: stale_path_correction
+  source_evidence:
+    - user correction
+    - failed smoke test
+    - review finding
+  target_path: ~/.hermes/skills/example/SKILL.md
+  before_hash: sha256:...
+  after_hash: sha256:...
+  diff_path: ~/.hermes/kanban/logs/<board>/<task>/<run>/self-improvement.diff
+  risk_class: low | medium | high
+  operator_visible: true
+  operator_approval_required: true
+  rollback_hint: restore before_hash or backup path
+  verification:
+    status: pass | fail | not_run
+    evidence_path: ~/.hermes/kanban/logs/<board>/<task>/<run>/evidence.txt
+```
+
+Risk classes：
+
+- `low`：措辞、错别字、过期路径、文档或不改变行为的 skill clarification。
+- `medium`：workflow 顺序、默认行为、tool classification、report format，
+  或可能改变 routing decision 的 policy wording。
+- `high`：approval gate、scope boundary、provider routing、memory、credential、
+  auth、shell/tool execution、runtime code、dependency manifest，或任何可能授予
+  execution authority 的变更。
+
+如果 patch 没有 source evidence、visible diff、before/after identity 或 risk class，
+Hermes 必须将它标记为 `self_improvement_patch_needs_review`。High-risk
+self-improvement 必须在 apply 前获得明确 operator approval。如果现有 runtime
+已经在 approval 前 apply 了 high-risk patch，该 patch 必须先 quarantine/review，
+后续 run 才能把它当作 trusted behavior。
+
+过长的 self-improvement report 应写入本地 evidence 文件。Chat response 应只包含
+`final_status`、关键 finding、需要 operator 决策的事项、可用时的 telemetry/token
+摘要，以及本地 report path。不要只说“报告如上”；如果报告过长，应给出本地
+`cat`、`less` 或 `rg` 检查命令。
 <!-- /snapshot:block -->
 
 ## 非目标

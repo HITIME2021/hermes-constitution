@@ -13,6 +13,9 @@ Added:
 - Snapshot Layering Policy:
   `docs/snapshot-layering.md`.
 - ADR 0013 for the v0.4.1 boot/core/domain-pack snapshot model.
+- ADR 0014 for self-improvement patch observability.
+- Self-improvement observability audit record:
+  `docs/validation/self-improvement-observability-audit.md`.
 
 Changed:
 
@@ -22,6 +25,10 @@ Changed:
   load modes.
 - Snapshot index schema example now includes optional `snapshot_layout`
   metadata while preserving `current.md` compatibility.
+- Self-Improvement Governance now requires applied patches to be attributable,
+  diffable, risk-classified, operator-visible, and reversible. Long
+  self-improvement reports should be written to local evidence files with a
+  compact chat summary and local inspection commands.
 
 ## v0.4.0 - 2026-07-16
 
